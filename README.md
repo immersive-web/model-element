@@ -1,7 +1,11 @@
 
-# MyNote
+# Model Element
 
-This is the repository for MyNote.
+Contacts:
+* Dean Jackson (Apple)
+* Ayşegül Yönet (Microsoft)
+
+This is the repository for the Model Element.
 
 ## Remove everything from this line when you're done
 
