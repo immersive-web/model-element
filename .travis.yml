@@ -1,0 +1,21 @@
+language: node_js
+dist: xenial
+node_js:
+  - lts/*
+branches:
+  only:
+    - gh-pages
+env:
+  global:
+    - URL="https://w3c.github.io/mynote/echidna-manifest.txt"
+    - DECISION="https://lists.w3.org/Archives/Public/public-mynote/2015May/0021.html"
+    - secure: ENCODEME
+install:
+ - npm install respec-validator
+
+script:
+  - npx respec-validator --manifest=echidna-manifest.txt --gh-user=$GH_USER --gh-token=$GH_TOKEN index.html
+
+after_success:
+  - CC="dev-null@w3.org"
+  - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && curl "https://labs.w3.org/echidna/api/request" --data "cc=$CC" --data "url=$URL" --data "decision=$DECISION" --data "token=$TOKEN"'
