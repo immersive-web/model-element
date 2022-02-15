@@ -7,7 +7,7 @@ Contacts:
 
 This is the Immersive-Web repository for the Model Element.
 
-Apple's proposed [&lt;model> element explainer](https://github.com/WebKit/explainers/tree/main/model)
+Apple's proposed [&lt;model> element explainer](./model/) (copied from https://github.com/WebKit/explainers/tree/main/model)
 
 ### Additional Resources
 * [_&lt;model> Evolution_ companion document](https://github.com/WebKit/explainers/blob/main/model/HistoryAndEvolution.md)
