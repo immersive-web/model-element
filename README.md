@@ -5,13 +5,17 @@ Contacts:
 * Dean Jackson (Apple)
 * Ayşegül Yönet (Microsoft)
 
-This is the repository for the Model Element.
+This is the Immersive-Web repository for the Model Element.
 
-## Remove everything from this line when you're done
+Apple's proposed [&lt;model> element explainer](./model/) (copied from https://github.com/WebKit/explainers/tree/main/model)
 
-Please update the following files:
+### Additional Resources
+* [_&lt;model> Evolution_ companion document](https://github.com/WebKit/explainers/blob/main/model/HistoryAndEvolution.md)
+* Google's [&lt;model-viewer> explainer](https://modelviewer.dev/)
+* [_Render Fidelity Comparison Results_](https://modelviewer.dev/fidelity/)
+* [_glTF Runtime 3D Asset Delivery_](https://www.khronos.org/gltf/)
+* [MaterialX](https://www.materialx.org/)
+* [_USDZ File Format Specification_](https://graphics.pixar.com/usd/release/wp_usdz.html)
+* [_Vieweing Augment Reality Assets in Safari for iOS_](https://webkit.org/blog/8421/viewing-augmented-reality-assets-in-safari-for-ios/)
+* [_Web Animations_ document timeline](https://www.w3.org/TR/web-animations-1/#the-documents-default-timeline)
 
-* w3c.json : make sure group ID and contacts are correct
-* index.html : update the respec config as needed
-* README.md : remove these instructions and update as needed
-* .travis.yml : for automatic publishing, you'll need the [proper group decision email](https://github.com/w3c/echidna/wiki/How-to-use-Echidna-with-ReSpec-and-GitHub#working-group-approval) and you'll need to [secure your TOKEN](https://github.com/w3c/echidna/wiki/How-to-use-Echidna-with-ReSpec-and-GitHub#working-group-approval)
