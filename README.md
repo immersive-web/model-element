@@ -7,10 +7,8 @@ Contacts:
 
 This is the Immersive-Web repository for the `<model>` element - `HTMLModelElement` and associated APIs.
 
-Apple's proposed [`<model>` element explainer](https://github.com/immersive-web/proposals/issues/76)
-
+[`<model>` element explainer](explainer.md)
 ### Additional Resources
-* [_&lt;model> Evolution_ companion document](https://github.com/WebKit/explainers/blob/main/model/HistoryAndEvolution.md)
 * Google's [&lt;model-viewer> explainer](https://modelviewer.dev/)
 * [_Render Fidelity Comparison Results_](https://modelviewer.dev/fidelity/)
 * [_glTF Runtime 3D Asset Delivery_](https://www.khronos.org/gltf/)
