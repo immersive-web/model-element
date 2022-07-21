@@ -86,7 +86,7 @@ the definition of
 [type](https://html.spec.whatwg.org/multipage/embedded-content.html#attr-source-type) and
 [media](https://html.spec.whatwg.org/multipage/embedded-content.html#attr-source-media).
 
-This is an example showing a 400px by 300px, allowing the browser to choose between a
+This is an example showing a 400px by 300px model, allowing the browser to choose between a
 [USDZ](https://graphics.pixar.com/usd/docs/Usdz-File-Format-Specification.html)
 file and a [glTF](https://www.khronos.org/gltf/) file, depending on what the browser supports.
 
@@ -140,7 +140,7 @@ As such, the original example can be augmented to allow for both animations and 
 Like the `<video>`, the `<model>` element has an optional `poster` attribute that references
 an image to be shown while the content is being loaded, or if the content fails to load.
 
-Here is [an example](example.html) of the `<model>` element. On a browser that has implemented
+Here is [an example](examples/index.html) of the `<model>` element. On a browser that has implemented
 the element, it should appear as in the image below.
 
 ![Ha-Ha iMessage tap-back bubble](https://github.com/WebKit/explainers/raw/main/model/assets/haha.png)
