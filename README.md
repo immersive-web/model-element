@@ -2,12 +2,12 @@
 # Model Element
 
 Contacts:
-* Dean Jackson (Apple)
+* Marcos Cáceres (Apple)
 * Ayşegül Yönet (Microsoft)
 
-This is the Immersive-Web repository for the Model Element.
+This is the Immersive-Web repository for the `<model>` element - `HTMLModelElement` and associated APIs.
 
-Apple's proposed [&lt;model> element explainer](./model/) (copied from https://github.com/WebKit/explainers/tree/main/model)
+Apple's proposed [`<model>` element explainer](https://github.com/immersive-web/proposals/issues/76)
 
 ### Additional Resources
 * [_&lt;model> Evolution_ companion document](https://github.com/WebKit/explainers/blob/main/model/HistoryAndEvolution.md)
