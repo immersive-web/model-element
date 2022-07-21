@@ -5,9 +5,7 @@
 - [Antoine Quint](https://github.com/graouts)
 - [Dean Jackson](https://github.com/grorg)
 - [Theresa O'Connor](https://github.com/hober)
-
-## Participate
-- https://github.com/WebKit/explainers
+- [Marcos Cáceres](https://github.com/marcoscaceres)
 
 ## Table of Contents
 
@@ -43,13 +41,13 @@ a renderer built-in to the browser.
 ## Introduction
 
 HTML allows the display of many media types through elements such as `<img>`,
-`<picture>`, or `<video>`, but it does not provide a native manner to directly
-consume 3D content. Embedding such content within a page is comparatively
+`<picture>`, or `<video>`, but it does not provide a declarative manner to directly
+display 3D content. Embedding 3D content within a page is comparatively
 cumbersome and relies on scripting the `<canvas>` element. We believe it is
 time to put 3D models on equal footing with other, already supported, media
 types.
 
-There is a variety of prior art here: For example,
+There is a long history of presenting 3D content on the Web: For example,
 [three.js](https://threejs.org/) and [Babylon JS](https://babylonjs.com/)
 are WebGL frameworks that can process many different formats. Then there is
 the [model-viewer](https://modelviewer.dev) project which shows models
@@ -59,7 +57,7 @@ directly to an augmented reality view with its
 [AR Quick Look feature](https://webkit.org/blog/8421/viewing-augmented-reality-assets-in-safari-for-ios/).
 
 However, there are cases where these current options cannot render content.
-This might be due to security restrictions or to the limitations of `<canvas>`
+This is due to security restrictions or to technical limitations of `<canvas>`
 (see below for [more details on motivation](#detailed-design-discussion)).
 
 The HTML `<model>` element aims to allow a website to embed interactive 3D models as
@@ -73,7 +71,7 @@ more immersive experiences, such as augmented reality.
 This proposal does *not* aim to define a mechanism that allows the creation of a 3D scene
 within a browser using declarative primitives or a programmatic API.
 
-## The HTMLModelElement
+## The `HTMLModelElement`
 
 The `<model>` element is a new
 [replaced](https://drafts.csswg.org/css-display/#replaced-element) HTML
@@ -88,11 +86,9 @@ the definition of
 [type](https://html.spec.whatwg.org/multipage/embedded-content.html#attr-source-type) and
 [media](https://html.spec.whatwg.org/multipage/embedded-content.html#attr-source-media).
 
-This is an example showing how a
+This is an example showing a 400px by 300px, allowing the browser to choose between a
 [USDZ](https://graphics.pixar.com/usd/docs/Usdz-File-Format-Specification.html)
-file may be shown in an area measuring 400px by 300px, with a fallback
-to a [glTF](https://www.khronos.org/gltf/) binary
-file.
+file and a [glTF](https://www.khronos.org/gltf/) file, depending on what the browser supports.
 
 ```html
 <model style="width: 400px; height: 300px">
@@ -101,7 +97,7 @@ file.
 </model>
 ```
 
-Browsers may support direct manipulation of the `<model>` element while presented in the page. A browser
+Browsers may support direct manipulation of the `<model>` element while presented in the page. For example, a browser
 may allow the model to be rotated or zoomed within the element's bounds without affecting the scrolling
 position or zoom level of the page. To opt into this behavior, the author may use the `interactive`
 HTML attribute.
@@ -147,7 +143,7 @@ an image to be shown while the content is being loaded, or if the content fails 
 Here is [an example](example.html) of the `<model>` element. On a browser that has implemented
 the element, it should appear as in the image below.
 
-![Ha-Ha iMessage tap-back bubble](assets/haha.png)
+![Ha-Ha iMessage tap-back bubble](https://github.com/WebKit/explainers/raw/main/model/assets/haha.png)
 
 ### Fallback content
 
@@ -189,6 +185,7 @@ behaviour that allows the user to transform the virtual camera around the model,
 and dragging.
 * `loading`: behaves in the same manner as the
 [`img` attribute of the same name](https://html.spec.whatwg.org/multipage/embedded-content.html#attr-img-loading).
+* `poster`: behaves in the same manner as the [`video` attribute of the same name](https://html.spec.whatwg.org/multipage/media.html#attr-video-poster)
 
 Similar to other elements with sub-resources, the `HTMLModelElement` will provide
 APIs to observe the loading and decoding of data.
@@ -228,7 +225,7 @@ document.
 
 ### Controlling animations
 
-Formats supported by `<model>` may support animations built into the resource itself, such as the USDZ
+Formats supported by `<model>` may support animations built into the resource itself, such as those supported by the USDZ
 file format. We propose allowing page authors to control such animations.
 
 This is a wide topic with likely dependencies on the file format support for animations itself. Another
@@ -321,7 +318,7 @@ However, some existing browsers already process such formats in a non-inline man
 
 ### Why add a new element?
 
-We believe it is time for files representing 3D geometric data to become a first class
+We believe it is time for files representing 3D geometric data to become a first-class
 citizen on the web.
 
 Adding a new element to HTML requires significant justification. At first glance, the `<model>` element
@@ -370,7 +367,7 @@ an attempt was made, it would likely pose too many restrictions on the browser e
 on a number of operating systems, hardware, and environments.
 
 Instead we suggest adopting a Physically-Based Rendering approach, probably referencing an existing
-shading model such as [MaterialX](https://materialx.org/). Browsers would be free to
+shading model such as [MaterialX](https://www.materialx.org/). Browsers would be free to
 implement the system as they wish, with a goal of producing the most accurate rendering possible.
 We do not expect pixel-accurate results between browsers.
 
@@ -392,6 +389,9 @@ A future version of this explainer will describe the lighting model and environm
 
    It would be possible to reuse one of the generic embedding elements, such as `<embed>` or `<object>`,
    for this purpose. However, we think that 3D content should behave like other media types.
+   Further, having an accompanying IDL interface (`HTMLModelElement`) provides developers with a means 
+   to programmatically interact with various aspects of the 3D content (which would otherwise not be possible
+   or simply cumbersome via `<embed>` or `<object>`). 
 
 2. *Reuse `<img>`, `<picture>` or `<video>` instead of adding a new element*
 
@@ -413,7 +413,7 @@ A future version of this explainer will describe the lighting model and environm
 ## Additional reading
 
 For additional insight into the history and how we see the potential evolution
-of the `<model>` element going, please see the ["`<model>` Evolution"](HistoryAndEvolution.md)
+of the `<model>` element going, please see the ["`<model>` Evolution"](https://github.com/WebKit/explainers/blob/main/model/HistoryAndEvolution.md)
 companion document.
 
 ## Acknowledgements
