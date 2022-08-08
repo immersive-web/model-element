@@ -1,0 +1,19 @@
+name: Node CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request: {}
+
+jobs:
+  validate-and-publish:
+    name: Validate and Publish
+    runs-on: ubuntu-latest # only linux supported at present
+    steps:
+      - uses: actions/checkout@v2
+      - uses: w3c/spec-prod@v2
+        with:
+          TOOLCHAIN: respec
+          VALIDATE_LINKS: false
+          GH_PAGES_BRANCH: gh-pages
