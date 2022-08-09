@@ -233,7 +233,6 @@
       </pre>
       <aside class="issue" data-number="12"></aside>
       <aside class="issue" data-number="42"></aside>
-
     </section>
     <section>
       <h2>
@@ -529,5 +528,29 @@
       <aside class="issue" data-number="38"></aside>
     </section>
     <section id="conformance"></section>
+    <section id="issue-summary"></section>
+    <section class="informative">
+      <h2>
+        Change log
+      </h2>
+      <p>
+        The following are some significant changes that were made since the
+        initial proposal:
+      </p>
+      <script class="remove">
+        const ignoredHashes = [];
+        function removeCommits(entry) {
+          const { message, hash } = entry;
+          for (const ignoredHash of ignoredHashes) {
+            if (ignoredHash.startsWith(hash)) {
+              return false;
+            };
+          }
+          return !/^editorial|^chore|^\[chore|^fix|^refactor|^tests?|^docs|^typo|^nit/i.test(message);
+        }
+      </script> <rs-changelog from="initial" filter=
+      "removeCommits"></rs-changelog>
+    </section>
+    <section id="index"></section>
   </body>
 </html>
