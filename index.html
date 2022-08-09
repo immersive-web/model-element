@@ -2,46 +2,536 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>MyNote</title>
-    <script
-      defer
-      class="remove"
-      src="https://www.w3.org/Tools/respec/respec-w3c"
-    ></script>
+    <title>
+      The &lt;model&gt; element
+    </title>
+    <script defer class="remove" src=
+    "https://www.w3.org/Tools/respec/respec-w3c"></script>
     <script class="remove">
       // See: https://respec.org/docs/ for all configuration options
       var respecConfig = {
-        shortName: "my-note",
-        specStatus: "ED", // "WG-NOTE"
-        noRecTrack: true,
-        edDraftURI: "https://w3c.github.io/mynote/",
+        shortName: "model-element",
+        specStatus: "CG-DRAFT",
         editors: [
           {
-            name: "Victor Hugo",
-            w3cid: "0000",
+            name: "Marcos Cáceres",
+            company: "Apple Inc.",
+            companyURL: "https://apple.com/",
           },
         ],
-        group: "webperfs", // find your group at https://respec.org/w3c/groups/
+        group: "cg/immersive-web",
         github: {
-          repoURL: "w3c/mynote",
-          branch: "master",
+          repoURL: "immersive-web/model-element",
+          branch: "main",
         },
+        xref: "web-platform",
       };
     </script>
   </head>
   <body>
+    <h1 id="title">
+      The <code>&lt;model&gt;</code> element
+    </h1>
     <section id="abstract">
-      <p>This is a Note.</p>
-    </section>
-    <section id="sotd">
-      <p>This is a placeholder document.</p>
-    </section>
-    <section id="purpose">
-      <h2>Purpose</h2>
       <p>
-        This is a placeholder. Check the
-        <a href="https://respec.org/docs/">ReSpec documentation</a>.
+        The `model` element allows embedding 3D graphical content into a
+        [[HTML]] document. The `HTMLModelElement` interface then provides a
+        means to interface with the embedded resource. <a data-xref-type=
+        "http-header">Access-Control-Request-Method</a>
       </p>
     </section>
+    <section id="sotd">
+      <p>
+        This is a work on progress.
+      </p>
+    </section>
+    <section>
+      <h2>
+        Examples
+      </h2>
+      <h3>
+        Adding a model to a document
+      </h3>
+      <aside class="issue" data-number="19"></aside>
+      <h3>
+        Enabling interactivity
+      </h3>
+      <aside class="issue" data-number="20"></aside>
+      <h3>
+        Supporting multiple formats
+      </h3>
+      <aside class="issue" data-number="21"></aside>
+      <h3>
+        Providing fallback content for legacy user agents
+      </h3>
+      <aside class="issue" data-number="22"></aside>
+      <h3>
+        Making `model` accessible
+      </h3>
+      <aside class="issue" data-number="23"></aside>
+    </section>
+    <section>
+      <h2>
+        The <code><dfn class="element">model</dfn></code> element
+      </h2>
+      <dl>
+        <dt>
+          Categories
+        </dt>
+        <dd>
+          [=Flow content=].
+        </dd>
+        <dd>
+          [=Phrasing content=].
+        </dd>
+        <dd>
+          [=Embedded content=].
+        </dd>
+        <dd>
+          If the element has an `interactive` attribute: [=interactive
+          content=].
+        </dd>
+        <dd>
+          [=Palpable content=].
+        </dd>
+        <dt>
+          Contexts in which this element can be used:
+        </dt>
+        <dd>
+          Where [=embedded content=] is expected.
+        </dd>
+        <dt>
+          Content model:
+        </dt>
+        <dd>
+          If the element has a `src` attribute: transparent, a [^picture^] or
+          [^img^], or a [=media element=] descendant.
+        </dd>
+        <dd>
+          If the element has no `src` attribute: Zero or more source elements,
+          then transparent, optionally intermixed with script-supporting
+          elements.
+        </dd>
+        <dt>
+          Tag omission in text/html:
+        </dt>
+        <dd>
+          Neither tag is omissible.
+        </dd>
+        <dt>
+          Content Attributes:
+        </dt>
+        <dd>
+          [=Global attributes=]
+        </dd>
+        <dd>
+          [^model/alt^] — Replacement text for use when the resource is not
+          available
+        </dd>
+        <dd>
+          [^model/autoplay^] — Hint that the resource can be started
+          automatically when the page is loaded
+        </dd>
+        <dd>
+          [^model/interactive^] — Allows the user to interact with the model
+        </dd>
+        <dd>
+          [^model/crossorigin^] — How the element handles crossorigin requests
+        </dd>
+        <dd>
+          [^model/height^] — Vertical dimension
+        </dd>
+        <dd>
+          [^model/loading^] — Used when determining loading deferral
+        </dd>
+        <dd>
+          [^model/loop^] — Whether to loop the media resource
+        </dd>
+        <dd>
+          [^model/muted^] — Whether to mute the media resource by default
+        </dd>
+        <dd>
+          [^model/poster^] — Poster frame to show while the resource is loading
+        </dd>
+        <dd>
+          [^model/src^] — Address of the resource
+        </dd>
+        <dd>
+          [^model/width^] — Horizontal dimension
+        </dd>
+        <dt>
+          DOM Interface
+        </dt>
+        <dd>
+          The {{HTMLModelElement}} interface provides a means to interface with
+          the embedded resource.
+        </dd>
+      </dl>
+      <p>
+        The [^model^] element is used for embedding 3D models into a document.
+      </p>
+      <p>
+        Content may be provided inside the [^model^] element. User agents
+        should not show this content to the user; it is intended for web
+        browsers which do not support [^model^], to be shown as [=fallback
+        content=].
+      </p>
+      <p>
+        The `poster` attribute gives the URL of an image file that the user
+        agent can show while 3D content is unavailable. The attribute, if
+        present, must contain a [=valid non-empty URL potentially surrounded by
+        spaces=].
+      </p>
+      <aside class="issue" data-number="14"></aside>
+      <h3>
+        <code><dfn class="element-attr">alt</dfn></code> attribute
+      </h3>
+      <h3>
+        <code><dfn class="element-attr">autoplay</dfn></code> attribute
+      </h3>
+      <h3>
+        <code><dfn class="element-attr">interactive</dfn></code> attribute
+      </h3>
+      <h3>
+        <code><dfn class="element-attr">crossorigin</dfn></code> attribute
+      </h3>
+      <h3>
+        <code><dfn class="element-attr">height</dfn></code> attribute
+      </h3>
+      <h3>
+        <code><dfn class="element-attr">loading</dfn></code> attribute
+      </h3>
+      <h3>
+        <code><dfn class="element-attr">loop</dfn></code> attribute
+      </h3>
+      <h3>
+        <code><dfn class="element-attr">muted</dfn></code> attribute
+      </h3>
+      <h3>
+        <code><dfn class="element-attr">poster</dfn></code> attribute
+      </h3>
+      <h3>
+        <code><dfn class="element-attr">src</dfn></code> attribute
+      </h3>
+      <h3>
+        <code><dfn class="element-attr">width</dfn></code> attribute
+      </h3>
+    </section>
+    <section data-dfn-for="HTMLModelElement">
+      <h2>
+        The `HTMLModelElement` interface
+      </h2>
+      <pre class="idl">
+      [Exposed=Window]
+      interface HTMLModelElement :  HTMLMediaElement {
+        Promise&lt;undefined&gt; getModelCoordinates();
+        undefined resetModelCoordinates();
+      };
+    </pre>
+      <aside class="issue" data-number="12"></aside>
+    </section>
+    <section>
+      <h2>
+        `source` element integration
+      </h2>
+      <h3>
+        The `source` element's parent is a [^model^] element
+      </h3>
+      <aside class="issue" data-number="24"></aside>
+    </section>
+    <section>
+      <h2>
+        Interaction
+      </h2>
+      <aside class="issue" data-number="2"></aside>
+    </section>
+    <aside class="issue" data-number="25"></aside>
+    <section>
+      <h2>
+        Controls
+      </h2>
+    </section>
+    <section>
+      <h2>
+        Rendering
+      </h2>
+      <aside class="issue" data-number="1"></aside>
+      <aside class="issue" data-number="5"></aside>
+      <h3>
+        Embedded content
+      </h3>
+      <aside class="issue" data-number="27"></aside>
+      <p>
+        Whether a [^model^] element is [=exposing a user interface=] is not
+        expected to affect the size of the rendering; controls are expected to
+        be overlaid above the page content without causing any layout changes,
+        and may disappear when the user does not need them.
+      </p>
+      <p>
+        When a [^model^] element represents a poster frame, the poster frame is
+        expected to be rendered at the largest size that maintains the aspect
+        ratio of that poster frame without being taller or wider than the
+        [^model^] element itself, and is expected to be centered in the
+        [^model^] element.
+      </p>
+    </section>
+    <section>
+      <h2>
+        Events
+      </h2>
+      <aside class="issue" data-number="26"></aside>
+    </section>
+    <section>
+      <h2>
+        Formats
+      </h2>
+      <aside class="issue" data-number="18"></aside>
+    </section>
+    <section>
+      <h2>
+        Overlap with "media elements"
+      </h2>
+      <aside class="issue" data-number="13"></aside>
+    </section>
+    <section>
+      <h2>
+        HTML Integrations
+      </h2>
+      <p>
+        Additional integrations into HTML:
+      </p>
+      <ol>
+        <li>Need same behavior as [^audio^] and [^video^] when including into a
+        [^p^] element with no end tag.
+        </li>
+        <li>[^model^] is an appropriate child of [^figure^].
+        </li>
+      </ol>
+      <h3>
+        Preload link relationship
+      </h3>
+      <aside class="issue">
+        <p>
+          Integration with [^link/rel/preload^]
+        </p>
+      </aside>
+      <h3>
+        Integrations with `source` element
+      </h3>
+      <aside class="issue">
+        <p>
+          Some attributes on `source` are currently restricted to [^picture^].
+          We need to figure out which apply to [^model^].
+        </p>
+      </aside>
+    </section>
+    <section>
+      <h2>
+        CSS integrations
+      </h2>
+      <h3>
+        Media Playback States (`:playing`, `:paused`, `:seeking`)
+      </h3>
+      <h3>
+        The `:muted` and `:volume-locked` pseudo-classes
+      </h3>
+      <h3>
+        Fullscreen Presentation State: the `:fullscreen` pseudo-class
+      </h3>
+    </section>
+    <section>
+      <h2>
+        Fetch integration
+      </h2>
+      <h3>
+        `"model"` destination
+      </h3>
+      <aside class="issue">
+        <p>
+          We need to figure out how to integrate with [[fetch]].
+        </p>
+      </aside>
+    </section>
+    <section>
+      <h2>
+        Privacy considerations
+      </h2>
+      <aside class="issue" title="Need to investigate formats">
+        <p>
+          We need to check that the formats don't leak information about the
+          user's environment.
+        </p>
+      </aside>
+    </section>
+    <section>
+      <h2>
+        Security considerations
+      </h2>
+      <h3>
+        CORS
+      </h3>
+      <h3>
+        Formats and CORS
+      </h3>
+      <aside class="issue" data-number="15"></aside>
+      <h3>
+        Content Security Policy
+      </h3>
+      <aside class="issue" data-number="16"></aside>
+      <h3>
+        Format concerns
+      </h3>
+      <aside class="issue"></aside>
+    </section>
+    <section>
+      <h2>
+        Accessibility considerations
+      </h2>
+      <h3>
+        Requirements for providing text to act as an alternative for 3D content
+      </h3>
+      <p>
+        The <code>alt</code> attribute is used to provide text to act as an
+        alternative for 3D content.
+      </p>
+      <h3>
+        For authors
+      </h3>
+      <aside class="note">
+        <p>
+          This section would eventually be moved to [[HTML-ARIA]].
+        </p>
+      </aside>
+      <table class="complex data">
+        <caption>
+          Rules of ARIA attribute usage by HTML element ([[HTML-ARIA]])
+        </caption>
+        <thead>
+          <tr>
+            <th>
+              HTML element
+            </th>
+            <th>
+              Implicit ARIA semantics
+            </th>
+            <th>
+              ARIA roles, states and properties which MAY be used
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              [^model^]
+            </td>
+            <td>
+              TBD
+            </td>
+            <td>
+              TBD
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <h3>
+        For implementers
+      </h3>
+      <aside class="note">
+        <p>
+          This section would eventually move to [[HTML-AAM-1.0]].
+        </p>
+      </aside>
+      <table class="complex data">
+        <caption>
+          [^model^]
+        </caption>
+        <tbody>
+          <tr>
+            <th>
+              [[wai-aria-1.2]]
+            </th>
+            <td>
+              No corresponding role
+            </td>
+          </tr>
+          <tr>
+            <th>
+              <a href=
+              "https://msdn.microsoft.com/en-us/library/dd373608%28v=VS.85%29.aspx">
+              MSAA</a> + <a href=
+              "http://accessibility.linuxfoundation.org/a11yspecs/ia2/docs/html/">
+              IAccessible2</a>
+            </th>
+            <td>
+              <div class="general">
+                Not mapped
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <th>
+              <a href=
+              "https://msdn.microsoft.com/en-us/library/ms726297%28v=VS.85%29.aspx">
+              UIA</a>
+            </th>
+            <td>
+              <div class="general">
+                Not mapped
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <th>
+              <a href="https://gnome.pages.gitlab.gnome.org/atk/">ATK</a>
+            </th>
+            <td>
+              <div class="general">
+                Not mapped
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <th>
+              <a href=
+              "https://developer.apple.com/reference/appkit/nsaccessibility">AX</a>
+            </th>
+            <td>
+              <div class="general">
+                Not mapped
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <th>
+              Comments
+            </th>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+    <section>
+      <h2>
+        MIME
+      </h2>
+      <aside class="issue">
+        <p>
+          We need to check if there are any relevant MIME parameters for
+          `model/*` content.
+        </p>
+      </aside>
+      <h3>
+        MIME Sniffing
+      </h3>
+      <aside class="issue">
+        <p>
+          Need to describe how we sniff for MIME types in [[MIMESNIFF]]. See
+          also IANA "<a href=
+          "https://www.iana.org/assignments/media-types/media-types.xhtml#model">model</a>"
+          types. We might need specific rules for sniffing.
+        </p>
+      </aside>
+    </section>
+    <section id="conformance"></section>
   </body>
 </html>
