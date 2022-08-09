@@ -193,6 +193,9 @@
         <code><dfn class="element-attr">interactive</dfn></code> attribute
       </h3>
       <h3>
+        <code><dfn class="element-attr">controls</dfn></code> attribute
+      </h3>
+      <h3>
         <code><dfn class="element-attr">crossorigin</dfn></code> attribute
       </h3>
       <h3>
@@ -201,6 +204,7 @@
       <h3>
         <code><dfn class="element-attr">loading</dfn></code> attribute
       </h3>
+      <aside class="issue" data-number="44"></aside>
       <h3>
         <code><dfn class="element-attr">loop</dfn></code> attribute
       </h3>
@@ -222,13 +226,14 @@
         The `HTMLModelElement` interface
       </h2>
       <pre class="idl">
-      [Exposed=Window]
-      interface HTMLModelElement :  HTMLMediaElement {
-        Promise&lt;undefined&gt; getModelCoordinates();
-        undefined resetModelCoordinates();
-      };
-    </pre>
+        [Exposed=Window]
+        interface HTMLModelElement : HTMLElement {
+        
+        };
+      </pre>
       <aside class="issue" data-number="12"></aside>
+      <aside class="issue" data-number="42"></aside>
+
     </section>
     <section>
       <h2>
@@ -244,12 +249,14 @@
         Interaction
       </h2>
       <aside class="issue" data-number="2"></aside>
+      <aside class="issue" data-number="46"></aside>
     </section>
     <aside class="issue" data-number="25"></aside>
     <section>
       <h2>
         Controls
       </h2>
+      <aside class="issue" data-number="43"></aside>
     </section>
     <section>
       <h2>
@@ -257,6 +264,13 @@
       </h2>
       <aside class="issue" data-number="1"></aside>
       <aside class="issue" data-number="5"></aside>
+      <aside class="issue" data-number="48"></aside>
+      <aside class="issue" data-number="47"></aside>
+      <h3>
+        Orientation/camera
+      </h3>
+      <aside class="issue" data-number="42"></aside>
+      <aside class="issue" data-number="41"></aside>
       <h3>
         Embedded content
       </h3>
@@ -300,21 +314,12 @@
       <p>
         Additional integrations into HTML:
       </p>
-      <ol>
-        <li>Need same behavior as [^audio^] and [^video^] when including into a
-        [^p^] element with no end tag.
-        </li>
-        <li>[^model^] is an appropriate child of [^figure^].
-        </li>
-      </ol>
+      <aside class="issue" data-number="28"></aside>
+      <aside class="issue" data-number="29"></aside>
       <h3>
         Preload link relationship
       </h3>
-      <aside class="issue">
-        <p>
-          Integration with [^link/rel/preload^]
-        </p>
-      </aside>
+      <aside class="issue" data-number="30"></aside>
       <h3>
         Integrations with `source` element
       </h3>
@@ -324,6 +329,10 @@
           We need to figure out which apply to [^model^].
         </p>
       </aside>
+      <h3>
+        Link rel="ar"
+      </h3>
+      <aside class="issue" data-number="45"></aside>
     </section>
     <section>
       <h2>
@@ -332,6 +341,7 @@
       <h3>
         Media Playback States (`:playing`, `:paused`, `:seeking`)
       </h3>
+      <aside class="issue" data-number="3"></aside>
       <h3>
         The `:muted` and `:volume-locked` pseudo-classes
       </h3>
@@ -341,27 +351,24 @@
     </section>
     <section>
       <h2>
+        Fullscreen integration
+      </h2>
+      <aside class="issue" data-number="31"></aside>
+    </section>
+    <section>
+      <h2>
         Fetch integration
       </h2>
       <h3>
         `"model"` destination
       </h3>
-      <aside class="issue">
-        <p>
-          We need to figure out how to integrate with [[fetch]].
-        </p>
-      </aside>
+      <aside class="issue" data-number="35"></aside>
     </section>
     <section>
       <h2>
         Privacy considerations
       </h2>
-      <aside class="issue" title="Need to investigate formats">
-        <p>
-          We need to check that the formats don't leak information about the
-          user's environment.
-        </p>
-      </aside>
+      <aside class="issue" data-number="36"></aside>
     </section>
     <section>
       <h2>
@@ -381,12 +388,13 @@
       <h3>
         Format concerns
       </h3>
-      <aside class="issue"></aside>
+      <aside class="issue" data-number="17"></aside>
     </section>
     <section>
       <h2>
         Accessibility considerations
       </h2>
+      <aside class="issue" data-number="39"></aside>
       <h3>
         Requirements for providing text to act as an alternative for 3D content
       </h3>
@@ -514,23 +522,11 @@
       <h2>
         MIME
       </h2>
-      <aside class="issue">
-        <p>
-          We need to check if there are any relevant MIME parameters for
-          `model/*` content.
-        </p>
-      </aside>
+      <aside class="issue" data-number="37"></aside>
       <h3>
         MIME Sniffing
       </h3>
-      <aside class="issue">
-        <p>
-          Need to describe how we sniff for MIME types in [[MIMESNIFF]]. See
-          also IANA "<a href=
-          "https://www.iana.org/assignments/media-types/media-types.xhtml#model">model</a>"
-          types. We might need specific rules for sniffing.
-        </p>
-      </aside>
+      <aside class="issue" data-number="38"></aside>
     </section>
     <section id="conformance"></section>
   </body>
