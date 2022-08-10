@@ -1,47 +1,1510 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>MyNote</title>
-    <script
-      defer
-      class="remove"
-      src="https://www.w3.org/Tools/respec/respec-w3c"
-    ></script>
-    <script class="remove">
-      // See: https://respec.org/docs/ for all configuration options
-      var respecConfig = {
-        shortName: "my-note",
-        specStatus: "ED", // "WG-NOTE"
-        noRecTrack: true,
-        edDraftURI: "https://w3c.github.io/mynote/",
-        editors: [
-          {
-            name: "Victor Hugo",
-            w3cid: "0000",
-          },
-        ],
-        group: "webperfs", // find your group at https://respec.org/w3c/groups/
-        github: {
-          repoURL: "w3c/mynote",
-          branch: "master",
-        },
-      };
-    </script>
-  </head>
-  <body>
-    <section id="abstract">
-      <p>This is a Note.</p>
-    </section>
-    <section id="sotd">
-      <p>This is a placeholder document.</p>
-    </section>
-    <section id="purpose">
-      <h2>Purpose</h2>
+<!DOCTYPE html><html lang="en" dir="ltr"><head>
+<meta charset="utf-8">
+<meta name="generator" content="ReSpec 32.2.2">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<style>
+.issue-label{text-transform:initial}
+.warning>p:first-child{margin-top:0}
+.warning{padding:.5em;border-left-width:.5em;border-left-style:solid}
+span.warning{padding:.1em .5em .15em}
+.issue.closed span.issue-number{text-decoration:line-through}
+.issue.closed span.issue-number::after{content:" (Closed)";font-size:smaller}
+.warning{border-color:#f11;border-width:.2em;border-style:solid;background:#fbe9e9}
+.warning-title:before{content:"⚠";font-size:1.3em;float:left;padding-right:.3em;margin-top:-.3em}
+li.task-list-item{list-style:none}
+input.task-list-item-checkbox{margin:0 .35em .25em -1.6em;vertical-align:middle}
+.issue a.respec-gh-label{padding:5px;margin:0 2px 0 2px;font-size:10px;text-transform:none;text-decoration:none;font-weight:700;border-radius:4px;position:relative;bottom:2px;border:none;display:inline-block}
+</style>
+<style>
+pre.idl{padding:1em;position:relative}
+pre.idl>code{color:#000}
+@media print{
+pre.idl{white-space:pre-wrap}
+}
+.idlHeader{display:block;width:150px;background:#8ccbf2;color:#fff;font-family:sans-serif;font-weight:700;margin:-1em 0 1em -1em;height:28px;line-height:28px}
+.idlHeader a.self-link{margin-left:.3cm;text-decoration:none;border-bottom:none}
+.idlID{font-weight:700;color:#005a9c}
+.idlType{color:#005a9c}
+.idlName{color:#ff4500}
+.idlName a{color:#ff4500;border-bottom:1px dotted #ff4500;text-decoration:none}
+a.idlEnumItem{color:#000;border-bottom:1px dotted #ccc;text-decoration:none}
+.idlSuperclass{font-style:italic;color:#005a9c}
+.idlDefaultValue,.idlParamName{font-style:italic}
+.extAttr{color:#666}
+.idlSectionComment{color:gray}
+.idlIncludes a{font-weight:700}
+.respec-button-copy-paste:focus{text-decoration:none;border-color:#51a7e8;outline:0;box-shadow:0 0 5px rgba(81,167,232,.5)}
+.respec-button-copy-paste:is(:focus:hover,.selected:focus){border-color:#51a7e8}
+.respec-button-copy-paste:is(:hover,:active,.zeroclipboard-is-hover,.zeroclipboard-is-active){text-decoration:none;background-color:#ddd;background-image:linear-gradient(#eee,#ddd);border-color:#ccc}
+.respec-button-copy-paste:is(:active,.selected,.zeroclipboard-is-active){background-color:#dcdcdc;background-image:none;border-color:#b5b5b5;box-shadow:inset 0 2px 4px rgba(0,0,0,.15)}
+.respec-button-copy-paste.selected:hover{background-color:#cfcfcf}
+.respec-button-copy-paste:is(:disabled,:disabled:hover,.disabled,.disabled:hover){color:rgba(102,102,102,.5);cursor:default;background-color:rgba(229,229,229,.5);background-image:none;border-color:rgba(197,197,197,.5);box-shadow:none}
+@media print{
+.respec-button-copy-paste{visibility:hidden}
+}
+</style>
+<style>
+dfn{cursor:pointer}
+.dfn-panel{position:absolute;z-index:35;min-width:300px;max-width:500px;padding:.5em .75em;margin-top:.6em;font-family:"Helvetica Neue",sans-serif;font-size:small;background:#fff;color:#000;box-shadow:0 1em 3em -.4em rgba(0,0,0,.3),0 0 1px 1px rgba(0,0,0,.05);border-radius:2px}
+.dfn-panel:not(.docked)>.caret{position:absolute;top:-9px}
+.dfn-panel:not(.docked)>.caret::after,.dfn-panel:not(.docked)>.caret::before{content:"";position:absolute;border:10px solid transparent;border-top:0;border-bottom:10px solid #fff;top:0}
+.dfn-panel:not(.docked)>.caret::before{border-bottom:9px solid #a2a9b1}
+.dfn-panel *{margin:0}
+.dfn-panel b{display:block;color:#000;margin-top:.25em}
+.dfn-panel ul a[href]{color:#333}
+.dfn-panel>div{display:flex}
+.dfn-panel a.self-link{font-weight:700;margin-right:auto}
+.dfn-panel .marker{padding:.1em;margin-left:.5em;border-radius:.2em;text-align:center;white-space:nowrap;font-size:90%;color:#040b1c}
+.dfn-panel .marker.dfn-exported{background:#d1edfd;box-shadow:0 0 0 .125em #1ca5f940}
+.dfn-panel .marker.idl-block{background:#8ccbf2;box-shadow:0 0 0 .125em #0670b161}
+.dfn-panel a:not(:hover){text-decoration:none!important;border-bottom:none!important}
+.dfn-panel a[href]:hover{border-bottom-width:1px}
+.dfn-panel ul{padding:0}
+.dfn-panel li{margin-left:1em}
+.dfn-panel.docked{position:fixed;left:.5em;top:unset;bottom:2em;margin:0 auto;max-width:calc(100vw - .75em * 2 - .5em - .2em * 2);max-height:30vh;overflow:auto}
+</style>
+    
+    
+<title>The &lt;model&gt; element</title>
+    
+    
+  
+<style id="respec-mainstyle">
+@keyframes pop{
+0%{transform:scale(1,1)}
+25%{transform:scale(1.25,1.25);opacity:.75}
+100%{transform:scale(1,1)}
+}
+:is(h1,h2,h3,h4,h5,h6,a) abbr{border:none}
+dfn{font-weight:700}
+a.internalDFN{color:inherit;border-bottom:1px solid #99c;text-decoration:none}
+a.externalDFN{color:inherit;border-bottom:1px dotted #ccc;text-decoration:none}
+a.bibref{text-decoration:none}
+.respec-offending-element:target{animation:pop .25s ease-in-out 0s 1}
+.respec-offending-element,a[href].respec-offending-element{text-decoration:red wavy underline}
+@supports not (text-decoration:red wavy underline){
+.respec-offending-element:not(pre){display:inline-block}
+.respec-offending-element{background:url(data:image/gif;base64,R0lGODdhBAADAPEAANv///8AAP///wAAACwAAAAABAADAEACBZQjmIAFADs=) bottom repeat-x}
+}
+#references :target{background:#eaf3ff;animation:pop .4s ease-in-out 0s 1}
+cite .bibref{font-style:normal}
+a[href].orcid{padding-left:4px;padding-right:4px}
+a[href].orcid>svg{margin-bottom:-2px}
+.toc a,.tof a{text-decoration:none}
+a .figno,a .secno{color:#000}
+ol.tof,ul.tof{list-style:none outside none}
+.caption{margin-top:.5em;font-style:italic}
+table.simple{border-spacing:0;border-collapse:collapse;border-bottom:3px solid #005a9c}
+.simple th{background:#005a9c;color:#fff;padding:3px 5px;text-align:left}
+.simple th a{color:#fff;padding:3px 5px;text-align:left}
+.simple th[scope=row]{background:inherit;color:inherit;border-top:1px solid #ddd}
+.simple td{padding:3px 10px;border-top:1px solid #ddd}
+.simple tr:nth-child(even){background:#f0f6ff}
+.section dd>p:first-child{margin-top:0}
+.section dd>p:last-child{margin-bottom:0}
+.section dd{margin-bottom:1em}
+.section dl.attrs dd,.section dl.eldef dd{margin-bottom:0}
+#issue-summary>ul{column-count:2}
+#issue-summary li{list-style:none;display:inline-block}
+details.respec-tests-details{margin-left:1em;display:inline-block;vertical-align:top}
+details.respec-tests-details>*{padding-right:2em}
+details.respec-tests-details[open]{z-index:999999;position:absolute;border:thin solid #cad3e2;border-radius:.3em;background-color:#fff;padding-bottom:.5em}
+details.respec-tests-details[open]>summary{border-bottom:thin solid #cad3e2;padding-left:1em;margin-bottom:1em;line-height:2em}
+details.respec-tests-details>ul{width:100%;margin-top:-.3em}
+details.respec-tests-details>li{padding-left:1em}
+.self-link:hover{opacity:1;text-decoration:none;background-color:transparent}
+aside.example .marker>a.self-link{color:inherit}
+.header-wrapper{display:flex;align-items:baseline}
+:is(h2,h3,h4,h5,h6):not(#toc>h2,#abstract>h2,#sotd>h2,.head>h2){position:relative;left:-.5em}
+:is(h2,h3,h4,h5,h6):not(#toch2)+a.self-link{color:inherit;order:-1;position:relative;left:-1.1em;font-size:1rem;opacity:.5}
+:is(h2,h3,h4,h5,h6)+a.self-link::before{content:"§";text-decoration:none;color:var(--heading-text)}
+:is(h2,h3)+a.self-link{top:-.2em}
+:is(h4,h5,h6)+a.self-link::before{color:#000}
+@media (max-width:767px){
+dd{margin-left:0}
+}
+@media print{
+.removeOnSave{display:none}
+}
+</style>
+<style>
+ul.index{columns:30ch;column-gap:1.5em}
+ul.index li{list-style:inherit}
+ul.index li span{color:inherit;cursor:pointer;white-space:normal}
+#index-defined-here ul.index li{font-size:.9rem}
+ul.index code{color:inherit}
+#index-defined-here .print-only{display:none}
+@media print{
+#index-defined-here .print-only{display:initial}
+}
+</style>
+<meta name="description" content="The model element allows embedding 3D graphical content into a
+        [HTML] document. The HTMLModelElement interface then provides a
+        means to interface with the embedded resource. Access-Control-Request-Method">
+<style>
+var{position:relative;cursor:pointer}
+var[data-type]::after,var[data-type]::before{position:absolute;left:50%;top:-6px;opacity:0;transition:opacity .4s;pointer-events:none}
+var[data-type]::before{content:"";transform:translateX(-50%);border-width:4px 6px 0 6px;border-style:solid;border-color:transparent;border-top-color:#000}
+var[data-type]::after{content:attr(data-type);transform:translateX(-50%) translateY(-100%);background:#000;text-align:center;font-family:"Dank Mono","Fira Code",monospace;font-style:normal;padding:6px;border-radius:3px;color:#daca88;text-indent:0;font-weight:400}
+var[data-type]:hover::after,var[data-type]:hover::before{opacity:1}
+</style>
+<script id="initialUserConfig" type="application/json">{
+  "shortName": "model-element",
+  "specStatus": "CG-DRAFT",
+  "editors": [
+    {
+      "name": "Marcos Cáceres",
+      "company": "Apple Inc.",
+      "companyURL": "https://apple.com/"
+    }
+  ],
+  "group": "cg/immersive-web",
+  "github": {
+    "repoURL": "immersive-web/model-element",
+    "branch": "main"
+  },
+  "xref": "web-platform",
+  "publishISODate": "2022-08-10T00:00:00.000Z",
+  "generatedSubtitle": "Draft Community Group Report 10 August 2022"
+}</script>
+<link rel="stylesheet" href="https://www.w3.org/StyleSheets/TR/2021/cg-draft"></head>
+  <body class="h-entry" data-cite="WEBIDL HTML INFRA URL WEBIDL DOM FETCH"><div class="head">
+    
+    <h1 id="title" class="title">
+      The <code>&lt;model&gt;</code> element
+    </h1> 
+    <p id="w3c-state">
+      <a href="https://www.w3.org/standards/types#reports">Draft Community Group Report</a>
+      <time class="dt-published" datetime="2022-08-10">10 August 2022</time>
+    </p>
+    <dl>
+      
+      <dt>Latest published version:</dt><dd>
+              <a href="https://www.w3.org/model-element/">https://www.w3.org/model-element/</a>
+            </dd>
+      <dt>Latest editor's draft:</dt><dd><a href="https://immersive-web.github.io/model-element/">https://immersive-web.github.io/model-element/</a></dd>
+      
+      
+      
+      
+      <dt>Editor:</dt><dd class="editor p-author h-card vcard">
+    <span class="p-name fn">Marcos Cáceres</span> (<a class="p-org org h-org" href="https://apple.com/">Apple Inc.</a>)
+  </dd>
+      
+      
+      <dt>Feedback:</dt><dd>
+        <a href="https://github.com/immersive-web/model-element/">GitHub immersive-web/model-element</a>
+        (<a href="https://github.com/immersive-web/model-element/pulls/">pull requests</a>,
+        <a href="https://github.com/immersive-web/model-element/issues/new/choose">new issue</a>,
+        <a href="https://github.com/immersive-web/model-element/issues/">open issues</a>)
+      </dd>
+    </dl>
+    
+    <p class="copyright">
+          <a href="https://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a>
+          ©
+          2022
+          
+          the Contributors to the 
+      The <code>&lt;model&gt;</code> element
+    
+          Specification, published by the
+          <a href="https://www.w3.org/groups/cg/immersive-web">Immersive Web Community Group</a> under the
+          <a href="https://www.w3.org/community/about/agreements/cla/">W3C Community Contributor License Agreement (CLA)</a>. A human-readable
+                <a href="https://www.w3.org/community/about/agreements/cla-deed/">summary</a>
+                is available.
+              
+        </p>
+    <hr title="Separator for header">
+  </div>
+    
+    <section id="abstract" class="introductory"><h2>Abstract</h2>
       <p>
-        This is a placeholder. Check the
-        <a href="https://respec.org/docs/">ReSpec documentation</a>.
+        The <code>model</code> element allows embedding 3D graphical content into a
+        [<cite><a class="bibref" data-link-type="biblio" href="#bib-html" title="HTML Standard">HTML</a></cite>] document. The <code>HTMLModelElement</code> interface then provides a
+        means to interface with the embedded resource. <a data-type="http-header" href="https://fetch.spec.whatwg.org/#http-access-control-request-method" id="ref-for-index-term-access-control-request-method-1">Access-Control-Request-Method</a>
       </p>
     </section>
-  </body>
-</html>
+    <section id="sotd" class="introductory"><h2>Status of This Document</h2><p>
+      This specification was published by the
+      <a href="https://www.w3.org/groups/cg/immersive-web">Immersive Web Community Group</a>. It is not a W3C Standard nor is it
+      on the W3C Standards Track.
+      
+            Please note that under the
+            <a href="https://www.w3.org/community/about/agreements/cla/">W3C Community Contributor License Agreement (CLA)</a>
+            there is a limited opt-out and other conditions apply.
+          
+      Learn more about
+      <a href="https://www.w3.org/community/">W3C Community and Business Groups</a>.
+    </p>
+      <p>
+        This is a work on progress.
+      </p>
+    <p>
+    <a href="https://github.com/immersive-web/model-element/issues/">GitHub Issues</a> are preferred for
+          discussion of this specification.
+        
+    
+  </p></section><nav id="toc"><h2 class="introductory" id="table-of-contents">Table of Contents</h2><ol class="toc"><li class="tocline"><a class="tocxref" href="#abstract">Abstract</a></li><li class="tocline"><a class="tocxref" href="#sotd">Status of This Document</a></li><li class="tocline"><a class="tocxref" href="#examples"><bdi class="secno">1. </bdi>
+        Examples
+      </a><ol class="toc"><li class="tocline"><a class="tocxref" href="#adding-a-model-to-a-document"><bdi class="secno">1.1 </bdi>
+        Adding a model to a document
+      </a></li><li class="tocline"><a class="tocxref" href="#enabling-interactivity"><bdi class="secno">1.2 </bdi>
+        Enabling interactivity
+      </a></li><li class="tocline"><a class="tocxref" href="#supporting-multiple-formats"><bdi class="secno">1.3 </bdi>
+        Supporting multiple formats
+      </a></li><li class="tocline"><a class="tocxref" href="#providing-fallback-content-for-legacy-user-agents"><bdi class="secno">1.4 </bdi>
+        Providing fallback content for legacy user agents
+      </a></li><li class="tocline"><a class="tocxref" href="#making-model-accessible"><bdi class="secno">1.5 </bdi>
+        Making <code>model</code> accessible
+      </a></li></ol></li><li class="tocline"><a class="tocxref" href="#the-model-element"><bdi class="secno">2. </bdi>
+        The <code><span class="element" data-dfn-type="element">model</span></code> element
+      </a><ol class="toc"><li class="tocline"><a class="tocxref" href="#alt-attribute"><bdi class="secno">2.1 </bdi>
+        <code><span class="element-attr">alt</span></code> attribute
+      </a></li><li class="tocline"><a class="tocxref" href="#autoplay-attribute"><bdi class="secno">2.2 </bdi>
+        <code><span class="element-attr">autoplay</span></code> attribute
+      </a></li><li class="tocline"><a class="tocxref" href="#interactive-attribute"><bdi class="secno">2.3 </bdi>
+        <code><span class="element-attr">interactive</span></code> attribute
+      </a></li><li class="tocline"><a class="tocxref" href="#controls-attribute"><bdi class="secno">2.4 </bdi>
+        <code><span class="element-attr">controls</span></code> attribute
+      </a></li><li class="tocline"><a class="tocxref" href="#crossorigin-attribute"><bdi class="secno">2.5 </bdi>
+        <code><span class="element-attr">crossorigin</span></code> attribute
+      </a></li><li class="tocline"><a class="tocxref" href="#height-attribute"><bdi class="secno">2.6 </bdi>
+        <code><span class="element-attr">height</span></code> attribute
+      </a></li><li class="tocline"><a class="tocxref" href="#loading-attribute"><bdi class="secno">2.7 </bdi>
+        <code><span class="element-attr">loading</span></code> attribute
+      </a></li><li class="tocline"><a class="tocxref" href="#loop-attribute"><bdi class="secno">2.8 </bdi>
+        <code><span class="element-attr">loop</span></code> attribute
+      </a></li><li class="tocline"><a class="tocxref" href="#muted-attribute"><bdi class="secno">2.9 </bdi>
+        <code><span class="element-attr">muted</span></code> attribute
+      </a></li><li class="tocline"><a class="tocxref" href="#poster-attribute"><bdi class="secno">2.10 </bdi>
+        <code><span class="element-attr">poster</span></code> attribute
+      </a></li><li class="tocline"><a class="tocxref" href="#src-attribute"><bdi class="secno">2.11 </bdi>
+        <code><span class="element-attr">src</span></code> attribute
+      </a></li><li class="tocline"><a class="tocxref" href="#width-attribute"><bdi class="secno">2.12 </bdi>
+        <code><span class="element-attr">width</span></code> attribute
+      </a></li></ol></li><li class="tocline"><a class="tocxref" href="#the-htmlmodelelement-interface"><bdi class="secno">3. </bdi>
+        The <code>HTMLModelElement</code> interface
+      </a></li><li class="tocline"><a class="tocxref" href="#source-element-integration"><bdi class="secno">4. </bdi>
+        <code>source</code> element integration
+      </a><ol class="toc"><li class="tocline"><a class="tocxref" href="#the-source-element-s-parent-is-a-model-element"><bdi class="secno">4.1 </bdi>
+        The <code>source</code> element's parent is a <code><span data-xref-type="element" class="formerLink" data-link-type="dfn"><code>model</code></span></code> element
+      </a></li></ol></li><li class="tocline"><a class="tocxref" href="#interaction"><bdi class="secno">5. </bdi>
+        Interaction
+      </a></li><li class="tocline"><a class="tocxref" href="#controls"><bdi class="secno">6. </bdi>
+        Controls
+      </a></li><li class="tocline"><a class="tocxref" href="#rendering"><bdi class="secno">7. </bdi>
+        Rendering
+      </a><ol class="toc"><li class="tocline"><a class="tocxref" href="#orientation-camera"><bdi class="secno">7.1 </bdi>
+        Orientation/camera
+      </a></li><li class="tocline"><a class="tocxref" href="#embedded-content"><bdi class="secno">7.2 </bdi>
+        Embedded content
+      </a></li></ol></li><li class="tocline"><a class="tocxref" href="#events"><bdi class="secno">8. </bdi>
+        Events
+      </a></li><li class="tocline"><a class="tocxref" href="#formats"><bdi class="secno">9. </bdi>
+        Formats
+      </a></li><li class="tocline"><a class="tocxref" href="#overlap-with-media-elements"><bdi class="secno">10. </bdi>
+        Overlap with "media elements"
+      </a></li><li class="tocline"><a class="tocxref" href="#html-integrations"><bdi class="secno">11. </bdi>
+        HTML Integrations
+      </a><ol class="toc"><li class="tocline"><a class="tocxref" href="#preload-link-relationship"><bdi class="secno">11.1 </bdi>
+        Preload link relationship
+      </a></li><li class="tocline"><a class="tocxref" href="#integrations-with-source-element"><bdi class="secno">11.2 </bdi>
+        Integrations with <code>source</code> element
+      </a></li><li class="tocline"><a class="tocxref" href="#link-rel-ar"><bdi class="secno">11.3 </bdi>
+        Link rel="ar"
+      </a></li></ol></li><li class="tocline"><a class="tocxref" href="#css-integrations"><bdi class="secno">12. </bdi>
+        CSS integrations
+      </a><ol class="toc"><li class="tocline"><a class="tocxref" href="#media-playback-states-playing-paused-seeking"><bdi class="secno">12.1 </bdi>
+        Media Playback States (<code>:playing</code>, <code>:paused</code>, <code>:seeking</code>)
+      </a></li><li class="tocline"><a class="tocxref" href="#the-muted-and-volume-locked-pseudo-classes"><bdi class="secno">12.2 </bdi>
+        The <code>:muted</code> and <code>:volume-locked</code> pseudo-classes
+      </a></li><li class="tocline"><a class="tocxref" href="#fullscreen-presentation-state-the-fullscreen-pseudo-class"><bdi class="secno">12.3 </bdi>
+        Fullscreen Presentation State: the <code>:fullscreen</code> pseudo-class
+      </a></li></ol></li><li class="tocline"><a class="tocxref" href="#fullscreen-integration"><bdi class="secno">13. </bdi>
+        Fullscreen integration
+      </a></li><li class="tocline"><a class="tocxref" href="#fetch-integration"><bdi class="secno">14. </bdi>
+        Fetch integration
+      </a><ol class="toc"><li class="tocline"><a class="tocxref" href="#model-destination"><bdi class="secno">14.1 </bdi>
+        <code>"model"</code> destination
+      </a></li></ol></li><li class="tocline"><a class="tocxref" href="#privacy-considerations"><bdi class="secno">15. </bdi>
+        Privacy considerations
+      </a></li><li class="tocline"><a class="tocxref" href="#security-considerations"><bdi class="secno">16. </bdi>
+        Security considerations
+      </a><ol class="toc"><li class="tocline"><a class="tocxref" href="#cors"><bdi class="secno">16.1 </bdi>
+        CORS
+      </a></li><li class="tocline"><a class="tocxref" href="#formats-and-cors"><bdi class="secno">16.2 </bdi>
+        Formats and CORS
+      </a></li><li class="tocline"><a class="tocxref" href="#content-security-policy"><bdi class="secno">16.3 </bdi>
+        Content Security Policy
+      </a></li><li class="tocline"><a class="tocxref" href="#format-concerns"><bdi class="secno">16.4 </bdi>
+        Format concerns
+      </a></li></ol></li><li class="tocline"><a class="tocxref" href="#accessibility-considerations"><bdi class="secno">17. </bdi>
+        Accessibility considerations
+      </a><ol class="toc"><li class="tocline"><a class="tocxref" href="#requirements-for-providing-text-to-act-as-an-alternative-for-3d-content"><bdi class="secno">17.1 </bdi>
+        Requirements for providing text to act as an alternative for 3D content
+      </a></li><li class="tocline"><a class="tocxref" href="#for-authors"><bdi class="secno">17.2 </bdi>
+        For authors
+      </a></li><li class="tocline"><a class="tocxref" href="#for-implementers"><bdi class="secno">17.3 </bdi>
+        For implementers
+      </a></li></ol></li><li class="tocline"><a class="tocxref" href="#mime"><bdi class="secno">18. </bdi>
+        MIME
+      </a><ol class="toc"><li class="tocline"><a class="tocxref" href="#mime-sniffing"><bdi class="secno">18.1 </bdi>
+        MIME Sniffing
+      </a></li></ol></li><li class="tocline"><a class="tocxref" href="#conformance"><bdi class="secno">19. </bdi>Conformance</a></li><li class="tocline"><a class="tocxref" href="#issue-summary"><bdi class="secno">20. </bdi>Issue summary</a></li><li class="tocline"><a class="tocxref" href="#change-log"><bdi class="secno">21. </bdi>
+        Change log
+      </a></li><li class="tocline"><a class="tocxref" href="#index"><bdi class="secno">A. </bdi>Index</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#index-defined-here"><bdi class="secno">A.1 </bdi>Terms defined by this specification</a></li><li class="tocline"><a class="tocxref" href="#index-defined-elsewhere"><bdi class="secno">A.2 </bdi>Terms defined by reference</a></li></ol></li><li class="tocline"><a class="tocxref" href="#references"><bdi class="secno">B. </bdi>References</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#normative-references"><bdi class="secno">B.1 </bdi>Normative references</a></li><li class="tocline"><a class="tocxref" href="#informative-references"><bdi class="secno">B.2 </bdi>Informative references</a></li></ol></li></ol></nav>
+    <section id="examples"><div class="header-wrapper"><h2 id="x1-examples"><bdi class="secno">1. </bdi>
+        Examples
+      </h2><a class="self-link" href="#examples" aria-label="Permalink for Section 1."></a></div>
+      
+      <section id="adding-a-model-to-a-document"><div class="header-wrapper"><h3 id="x1-1-adding-a-model-to-a-document"><bdi class="secno">1.1 </bdi>
+        Adding a model to a document
+      </h3><a class="self-link" href="#adding-a-model-to-a-document" aria-label="Permalink for Section 1.1"></a></div>
+      <div class="issue" id="issue-container-number-19"><div role="heading" class="issue-title marker" id="h-issue" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/19"><span class="issue-number">Issue 19</span></a><span class="issue-label">: Add example for adding a model to a page</span></div><p dir="auto">It would be great to have an example that shows how to adding a model to a document.</p></div>
+      </section><section id="enabling-interactivity"><div class="header-wrapper"><h3 id="x1-2-enabling-interactivity"><bdi class="secno">1.2 </bdi>
+        Enabling interactivity
+      </h3><a class="self-link" href="#enabling-interactivity" aria-label="Permalink for Section 1.2"></a></div>
+      <div class="issue" id="issue-container-number-20"><div role="heading" class="issue-title marker" id="h-issue-0" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/20"><span class="issue-number">Issue 20</span></a><span class="issue-label">: Add example showing enabling interactivity</span></div><p dir="auto">Add an example that shows how to enabling interactivity.</p></div>
+      </section><section id="supporting-multiple-formats"><div class="header-wrapper"><h3 id="x1-3-supporting-multiple-formats"><bdi class="secno">1.3 </bdi>
+        Supporting multiple formats
+      </h3><a class="self-link" href="#supporting-multiple-formats" aria-label="Permalink for Section 1.3"></a></div>
+      <div class="issue" id="issue-container-number-21"><div role="heading" class="issue-title marker" id="h-issue-1" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/21"><span class="issue-number">Issue 21</span></a><span class="issue-label">: Add example showing how to support multiple formats</span></div><p dir="auto">Having an example that shows how to support multiple formats via <code class="notranslate">&lt;source&gt;</code> would be great.</p></div>
+      </section><section id="providing-fallback-content-for-legacy-user-agents"><div class="header-wrapper"><h3 id="x1-4-providing-fallback-content-for-legacy-user-agents"><bdi class="secno">1.4 </bdi>
+        Providing fallback content for legacy user agents
+      </h3><a class="self-link" href="#providing-fallback-content-for-legacy-user-agents" aria-label="Permalink for Section 1.4"></a></div>
+      <div class="issue" id="issue-container-number-22"><div role="heading" class="issue-title marker" id="h-issue-2" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/22"><span class="issue-number">Issue 22</span></a><span class="issue-label">: Add example for providing fallback content for legacy user agents</span></div><p dir="auto">It would be great to show how one can provide fallback content for user agents that don't support model. This could include showing a <code class="notranslate">&lt;video&gt;</code> or <code class="notranslate">&lt;picture&gt;</code> instead.</p></div>
+      </section><section id="making-model-accessible"><div class="header-wrapper"><h3 id="x1-5-making-model-accessible"><bdi class="secno">1.5 </bdi>
+        Making <code>model</code> accessible
+      </h3><a class="self-link" href="#making-model-accessible" aria-label="Permalink for Section 1.5"></a></div>
+      <div class="issue" id="issue-container-number-23"><div role="heading" class="issue-title marker" id="h-issue-3" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/23"><span class="issue-number">Issue 23</span></a><span class="issue-label">: Add example for making model accessible</span></div><p dir="auto">It would be great to have some examples that shows how to maximize the accessibility of <code class="notranslate">&lt;model&gt;</code>.</p></div>
+    </section></section>
+    <section id="the-model-element"><div class="header-wrapper"><h2 id="x2-the-model-element"><bdi class="secno">2. </bdi>
+        The <code><dfn class="element" data-dfn-type="element" id="dfn-model" tabindex="0" aria-haspopup="dialog" data-export="">model</dfn></code> element
+      </h2><a class="self-link" href="#the-model-element" aria-label="Permalink for Section 2."></a></div>
+      
+      <dl>
+        <dt>
+          Categories
+        </dt>
+        <dd>
+          <a data-link-type="dfn" data-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#flow-content-2" id="ref-for-index-term-flow-content-1">Flow content</a>.
+        </dd>
+        <dd>
+          <a data-link-type="dfn" data-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#phrasing-content-2" id="ref-for-index-term-phrasing-content-1">Phrasing content</a>.
+        </dd>
+        <dd>
+          <a data-link-type="dfn" data-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#embedded-content-category" id="ref-for-index-term-embedded-content-1">Embedded content</a>.
+        </dd>
+        <dd>
+          If the element has an <code>interactive</code> attribute: <a data-link-type="dfn" data-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#interactive-content-2" id="ref-for-index-term-interactive-content-1">interactive content</a>.
+        </dd>
+        <dd>
+          <a data-link-type="dfn" data-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#palpable-content-2" id="ref-for-index-term-palpable-content-1">Palpable content</a>.
+        </dd>
+        <dt>
+          Contexts in which this element can be used:
+        </dt>
+        <dd>
+          Where <a data-link-type="dfn" data-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#embedded-content-category" id="ref-for-index-term-embedded-content-2">embedded content</a> is expected.
+        </dd>
+        <dt>
+          Content model:
+        </dt>
+        <dd>
+          If the element has a <code>src</code> attribute: transparent, a <code><a data-type="element" href="https://html.spec.whatwg.org/multipage/embedded-content.html#the-picture-element" id="ref-for-index-term-picture-element-1">picture</a></code> or
+          <code><a data-type="element" href="https://html.spec.whatwg.org/multipage/embedded-content.html#the-img-element" id="ref-for-index-term-img-element-1">img</a></code>, or a <span class="link-me">media element</span> descendant.
+        </dd>
+        <dd>
+          If the element has no <code>src</code> attribute: Zero or more source elements,
+          then transparent, optionally intermixed with script-supporting
+          elements.
+        </dd>
+        <dt>
+          Tag omission in text/html:
+        </dt>
+        <dd>
+          Neither tag is omissible.
+        </dd>
+        <dt>
+          Content Attributes:
+        </dt>
+        <dd>
+          <span class="link-me">Global attributes</span>
+        </dd>
+        <dd>
+          <code><a href="#dfn-alt" class="internalDFN" data-link-type="dfn" id="ref-for-dfn-alt-1"><code>alt</code></a></code> — Replacement text for use when the resource is not
+          available
+        </dd>
+        <dd>
+          <code><a href="#dfn-autoplay" class="internalDFN" data-link-type="dfn" id="ref-for-dfn-autoplay-1"><code>autoplay</code></a></code> — Hint that the resource can be started
+          automatically when the page is loaded
+        </dd>
+        <dd>
+          <code><a href="#dfn-interactive" class="internalDFN" data-link-type="dfn" id="ref-for-dfn-interactive-1"><code>interactive</code></a></code> — Allows the user to interact with the model
+        </dd>
+        <dd>
+          <code><a href="#dfn-crossorigin" class="internalDFN" data-link-type="dfn" id="ref-for-dfn-crossorigin-1"><code>crossorigin</code></a></code> — How the element handles crossorigin requests
+        </dd>
+        <dd>
+          <code><a href="#dfn-height" class="internalDFN" data-link-type="dfn" id="ref-for-dfn-height-1"><code>height</code></a></code> — Vertical dimension
+        </dd>
+        <dd>
+          <code><a href="#dfn-loading" class="internalDFN" data-link-type="dfn" id="ref-for-dfn-loading-1"><code>loading</code></a></code> — Used when determining loading deferral
+        </dd>
+        <dd>
+          <code><a href="#dfn-loop" class="internalDFN" data-link-type="dfn" id="ref-for-dfn-loop-1"><code>loop</code></a></code> — Whether to loop the media resource
+        </dd>
+        <dd>
+          <code><a href="#dfn-muted" class="internalDFN" data-link-type="dfn" id="ref-for-dfn-muted-1"><code>muted</code></a></code> — Whether to mute the media resource by default
+        </dd>
+        <dd>
+          <code><a href="#dfn-poster" class="internalDFN" data-link-type="dfn" id="ref-for-dfn-poster-1"><code>poster</code></a></code> — Poster frame to show while the resource is loading
+        </dd>
+        <dd>
+          <code><a href="#dfn-src" class="internalDFN" data-link-type="dfn" id="ref-for-dfn-src-1"><code>src</code></a></code> — Address of the resource
+        </dd>
+        <dd>
+          <code><a href="#dfn-width" class="internalDFN" data-link-type="dfn" id="ref-for-dfn-width-1"><code>width</code></a></code> — Horizontal dimension
+        </dd>
+        <dt>
+          DOM Interface
+        </dt>
+        <dd>
+          The <a data-link-type="idl" data-lt="HTMLModelElement" href="#dom-htmlmodelelement" class="internalDFN" id="ref-for-dom-htmlmodelelement-1"><code>HTMLModelElement</code></a> interface provides a means to interface with
+          the embedded resource.
+        </dd>
+      </dl>
+      <p>
+        The <code><a href="#dfn-model" class="internalDFN" data-link-type="dfn" id="ref-for-dfn-model-1"><code>model</code></a></code> element is used for embedding 3D models into a document.
+      </p>
+      <p>
+        Content may be provided inside the <code><a href="#dfn-model" class="internalDFN" data-link-type="dfn" id="ref-for-dfn-model-2"><code>model</code></a></code> element. User agents
+        should not show this content to the user; it is intended for web
+        browsers which do not support <code><a href="#dfn-model" class="internalDFN" data-link-type="dfn" id="ref-for-dfn-model-3"><code>model</code></a></code>, to be shown as <span class="link-me">fallback content</span>.
+      </p>
+      <p>
+        The <code>poster</code> attribute gives the URL of an image file that the user
+        agent can show while 3D content is unavailable. The attribute, if
+        present, must contain a <span class="link-me">valid non-empty URL
+        potentially surrounded by spaces</span>.
+      </p>
+      <div class="issue" id="issue-container-number-14"><div role="heading" class="issue-title marker" id="h-issue-4" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/14"><span class="issue-number">Issue 14</span></a><span class="issue-label">: Update poster algorithm for model?</span></div><p dir="auto">HTML defines an algorithm to determine the [=poster frame=], but it's <code class="notranslate">&lt;video&gt;</code> specific. Should we accommodate it support <code class="notranslate">&lt;model&gt;</code> or specify our own?</p>
+<p dir="auto">We also need to consider what happens if the animation resets and the model is paused: does the poster show again? (i.e., do we follow video's behavior?)</p></div>
+      <section id="alt-attribute"><div class="header-wrapper"><h3 id="x2-1-alt-attribute"><bdi class="secno">2.1 </bdi>
+        <code><dfn class="element-attr" id="dfn-alt" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">alt</dfn></code> attribute
+      </h3><a class="self-link" href="#alt-attribute" aria-label="Permalink for Section 2.1"></a></div>
+      </section><section id="autoplay-attribute"><div class="header-wrapper"><h3 id="x2-2-autoplay-attribute"><bdi class="secno">2.2 </bdi>
+        <code><dfn class="element-attr" id="dfn-autoplay" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">autoplay</dfn></code> attribute
+      </h3><a class="self-link" href="#autoplay-attribute" aria-label="Permalink for Section 2.2"></a></div>
+      </section><section id="interactive-attribute"><div class="header-wrapper"><h3 id="x2-3-interactive-attribute"><bdi class="secno">2.3 </bdi>
+        <code><dfn class="element-attr" id="dfn-interactive" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">interactive</dfn></code> attribute
+      </h3><a class="self-link" href="#interactive-attribute" aria-label="Permalink for Section 2.3"></a></div>
+      </section><section id="controls-attribute"><div class="header-wrapper"><h3 id="x2-4-controls-attribute"><bdi class="secno">2.4 </bdi>
+        <code><dfn class="element-attr respec-offending-element" id="dfn-controls" tabindex="0" aria-haspopup="dialog" title="Found definition for &quot;controls&quot;, but nothing links to it. This is usually a spec bug!" data-dfn-type="dfn">controls</dfn></code> attribute
+      </h3><a class="self-link" href="#controls-attribute" aria-label="Permalink for Section 2.4"></a></div>
+      </section><section id="crossorigin-attribute"><div class="header-wrapper"><h3 id="x2-5-crossorigin-attribute"><bdi class="secno">2.5 </bdi>
+        <code><dfn class="element-attr" id="dfn-crossorigin" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">crossorigin</dfn></code> attribute
+      </h3><a class="self-link" href="#crossorigin-attribute" aria-label="Permalink for Section 2.5"></a></div>
+      </section><section id="height-attribute"><div class="header-wrapper"><h3 id="x2-6-height-attribute"><bdi class="secno">2.6 </bdi>
+        <code><dfn class="element-attr" id="dfn-height" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">height</dfn></code> attribute
+      </h3><a class="self-link" href="#height-attribute" aria-label="Permalink for Section 2.6"></a></div>
+      </section><section id="loading-attribute"><div class="header-wrapper"><h3 id="x2-7-loading-attribute"><bdi class="secno">2.7 </bdi>
+        <code><dfn class="element-attr" id="dfn-loading" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">loading</dfn></code> attribute
+      </h3><a class="self-link" href="#loading-attribute" aria-label="Permalink for Section 2.7"></a></div>
+      <div class="issue" id="issue-container-number-44"><div role="heading" class="issue-title marker" id="h-issue-5" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/44"><span class="issue-number">Issue 44</span></a><span class="issue-label">: Lazy loading</span></div><p dir="auto">Some <code class="notranslate">&lt;model&gt;</code>'s resources can be significant in size. As such, it might be good to support the <code class="notranslate">loading</code> attribute to allow these resources to be lazy-loaded.</p></div>
+      </section><section id="loop-attribute"><div class="header-wrapper"><h3 id="x2-8-loop-attribute"><bdi class="secno">2.8 </bdi>
+        <code><dfn class="element-attr" id="dfn-loop" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">loop</dfn></code> attribute
+      </h3><a class="self-link" href="#loop-attribute" aria-label="Permalink for Section 2.8"></a></div>
+      </section><section id="muted-attribute"><div class="header-wrapper"><h3 id="x2-9-muted-attribute"><bdi class="secno">2.9 </bdi>
+        <code><dfn class="element-attr" id="dfn-muted" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">muted</dfn></code> attribute
+      </h3><a class="self-link" href="#muted-attribute" aria-label="Permalink for Section 2.9"></a></div>
+      </section><section id="poster-attribute"><div class="header-wrapper"><h3 id="x2-10-poster-attribute"><bdi class="secno">2.10 </bdi>
+        <code><dfn class="element-attr" id="dfn-poster" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">poster</dfn></code> attribute
+      </h3><a class="self-link" href="#poster-attribute" aria-label="Permalink for Section 2.10"></a></div>
+      </section><section id="src-attribute"><div class="header-wrapper"><h3 id="x2-11-src-attribute"><bdi class="secno">2.11 </bdi>
+        <code><dfn class="element-attr" id="dfn-src" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">src</dfn></code> attribute
+      </h3><a class="self-link" href="#src-attribute" aria-label="Permalink for Section 2.11"></a></div>
+      </section><section id="width-attribute"><div class="header-wrapper"><h3 id="x2-12-width-attribute"><bdi class="secno">2.12 </bdi>
+        <code><dfn class="element-attr" id="dfn-width" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">width</dfn></code> attribute
+      </h3><a class="self-link" href="#width-attribute" aria-label="Permalink for Section 2.12"></a></div>
+    </section></section>
+    <section data-dfn-for="HTMLModelElement" id="the-htmlmodelelement-interface"><div class="header-wrapper"><h2 id="x3-the-htmlmodelelement-interface"><bdi class="secno">3. </bdi>
+        The <code>HTMLModelElement</code> interface
+      </h2><a class="self-link" href="#the-htmlmodelelement-interface" aria-label="Permalink for Section 3."></a></div>
+      
+      <pre class="idl def" id="webidl-696703704"><span class="idlHeader"><a class="self-link" href="#webidl-696703704">WebIDL</a></span><code><span data-idl="" class="idlInterface" id="idl-def-htmlmodelelement" data-title="HTMLModelElement">[<span class="extAttr"><a data-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed" id="ref-for-index-term-exposed-extended-attribute-1">Exposed</a>=Window</span>]
+interface <dfn data-export="" data-dfn-type="interface" id="dom-htmlmodelelement" data-idl="interface" data-title="HTMLModelElement" data-dfn-for="" class="idlID" tabindex="0" aria-haspopup="dialog"><code>HTMLModelElement</code></dfn> : <span class="idlSuperclass"><a data-type="interface" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement" id="ref-for-index-term-htmlelement-interface-1">HTMLElement</a></span> {
+
+};</span></code></pre>
+      <div class="issue" id="issue-container-number-12"><div role="heading" class="issue-title marker" id="h-issue-6" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/12"><span class="issue-number">Issue 12</span></a><span class="issue-label">: Almost everything is `promise` based</span></div><p dir="auto">Is it necessary that every method and attribute returns a promise?</p></div>
+      <div class="issue" id="issue-container-number-42"><div role="heading" class="issue-title marker" id="h-issue-7" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/42"><span class="issue-number">Issue 42</span></a><span class="issue-label">: Reseting the camera?</span></div><p dir="auto">As the model can be interactive, it's foreseeable that users might place/rotate a model in such a way that they are unsure which direction the model is facing. It might be nice to provide some way of resetting the camera to its initial position.</p>
+<p dir="auto">This is a "nice to have" (i.e., probably not critical) because a developer could take a snapshot of the camera's position when the model loads. However, that's kinda annoying because then they need to keep their own accounting of the starting position of each model.</p></div>
+    </section>
+    <section id="source-element-integration"><div class="header-wrapper"><h2 id="x4-source-element-integration"><bdi class="secno">4. </bdi>
+        <code>source</code> element integration
+      </h2><a class="self-link" href="#source-element-integration" aria-label="Permalink for Section 4."></a></div>
+      
+      <section id="the-source-element-s-parent-is-a-model-element"><div class="header-wrapper"><h3 id="x4-1-the-source-element-s-parent-is-a-model-element"><bdi class="secno">4.1 </bdi>
+        The <code>source</code> element's parent is a <code><a href="#dfn-model" class="internalDFN" data-link-type="dfn" id="ref-for-dfn-model-4"><code>model</code></a></code> element
+      </h3><a class="self-link" href="#the-source-element-s-parent-is-a-model-element" aria-label="Permalink for Section 4.1"></a></div>
+      <div class="issue" id="issue-container-number-24"><div role="heading" class="issue-title marker" id="h-issue-8" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/24"><span class="issue-number">Issue 24</span></a><span class="issue-label">: Specify the behavior for when a &lt;source&gt; element's parent is a &lt;model&gt; element</span></div><p dir="auto">The <code class="notranslate">&lt;source&gt;</code> element behaves differently depending on who the parent is. For instance, when the parent is <code class="notranslate">&lt;picture&gt;</code>, the <code class="notranslate">srcset</code> attribute comes into to play. We need to look at the attributes of <code class="notranslate">&lt;source&gt;</code> and figure out what they mean in when used in the context of <code class="notranslate">&lt;model&gt;</code>.</p></div>
+    </section></section>
+    <section id="interaction"><div class="header-wrapper"><h2 id="x5-interaction"><bdi class="secno">5. </bdi>
+        Interaction
+      </h2><a class="self-link" href="#interaction" aria-label="Permalink for Section 5."></a></div>
+      
+      <div class="issue" id="issue-container-number-2"><div role="heading" class="issue-title marker" id="h-issue-9" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/2"><span class="issue-number">Issue 2</span></a><span class="issue-label">: Dealing with format specific animations and Interaction</span></div><p dir="auto">glTF is not a run-time format. It does not define what an application should do with a model once it is loaded and rendered. It does provide some capabilities that a run-time engine may use to enhance the user experience. glTF currently does not store any interactivity information. Currently that is solely a run-time determination. The run-time determines what parts (if any) of the model may be active and the behavior based on any trigger.</p>
+<p dir="auto">Like Interactivity, animation is not built-into glTF. glTF files may contain animation parameters that specify the type of animation (e.g., morph, skin &amp; bones, etc.) and the associated parameters needed to perform the animation. There is nothing in the glTF specification that defines how one animation interacts with another. For example, a human model may include walk, jump, and drop animations; but it is unlikely that they should all be played at the same time.</p>
+<p dir="auto">Any HTML element that wishes to handle animation as stored in a glTF file needs to understand how the content creator intended the animation to play.</p></div>
+      <div class="issue" id="issue-container-number-46"><div role="heading" class="issue-title marker" id="h-issue-10" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/46"><span class="issue-number">Issue 46</span></a><span class="issue-label">: Exit interaction event (with data?)</span></div><p dir="auto">When exiting an AR experience it's sometimes useful to pass data from the model out back to the page. On iOS [1], for instance, a "message" event is sent:</p>
+<p dir="auto"><a target="_blank" rel="noopener noreferrer" href="downloaded-assets/user-images.githubusercontent.com/870154/183339484-18bc88e5-f358-4418-b428-fe5521cb0c76.png"><img src="downloaded-assets/user-images.githubusercontent.com/870154/183339484-18bc88e5-f358-4418-b428-fe5521cb0c76.png" alt="Screen Shot 2022-08-08 at 2 29 52 pm" style="max-width: 100%;"></a></p>
+<p dir="auto">Which then allows a web page to over and perform some action through the web page. In the case above, it triggers Apple Pay through (presumedly) the Payment Request API.</p>
+<p dir="auto">Obviously, the "message" with the custom <code class="notranslate">.data</code> <code class="notranslate">"_apple_ar_quicklook_button_tapped..."</code> is not something we would want to standardize, but it might be good to consider some kind of user activation action resulting form the format itself causing the scene to exit with some action. The <code class="notranslate">.data</code> could be an IDL <code class="notranslate">object</code> (or something better) that could be used to handle the action (e.g., buy a thing).</p>
+<p dir="auto">[1] <a href="https://developer.apple.com/videos/play/wwdc2020/1" rel="nofollow">https://developer.apple.com/videos/play/wwdc2020/1</a></p></div>
+    </section>
+    <div class="issue" id="issue-container-number-25"><div role="heading" class="issue-title marker" id="h-issue-11" aria-level="2"><a href="https://github.com/immersive-web/model-element/issues/25"><span class="issue-number">Issue 25</span></a><span class="issue-label">: Define interactivity</span></div><p dir="auto">The proposal introduces an <code class="notranslate">interactive</code> attribute, which would allow a user to interact with the model. We need to specify what that means to some degree, or at least some expectations.</p></div>
+    <section id="controls"><div class="header-wrapper"><h2 id="x6-controls"><bdi class="secno">6. </bdi>
+        Controls
+      </h2><a class="self-link" href="#controls" aria-label="Permalink for Section 6."></a></div>
+      
+      <div class="issue" id="issue-container-number-43"><div role="heading" class="issue-title marker" id="h-issue-12" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/43"><span class="issue-number">Issue 43</span></a><span class="issue-label">: Adding "controls" </span></div><p dir="auto">As with other media elements (again <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1326697046" data-permission-text="Title is private" data-url="https://github.com/immersive-web/model-element/issues/13" data-hovercard-type="issue" data-hovercard-url="/immersive-web/model-element/issues/13/hovercard" href="https://github.com/immersive-web/model-element/issues/13">#13</a>), having "controls" for media specific things can be extremely helpful for accessibility (and just generally helpful for developers not needing to deal with things like the fullscreen API).</p>
+<p dir="auto">It would be nice to consider adding support for <code class="notranslate">controls</code> and then leaving it mostly to the UA as to what those controls are... we could figure out a standard set of things, like <code class="notranslate">&lt;video&gt;</code> provides.</p></div>
+    </section>
+    <section id="rendering"><div class="header-wrapper"><h2 id="x7-rendering"><bdi class="secno">7. </bdi>
+        Rendering
+      </h2><a class="self-link" href="#rendering" aria-label="Permalink for Section 7."></a></div>
+      
+      <div class="issue" id="issue-container-number-1"><div role="heading" class="issue-title marker" id="h-issue-13" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/1"><span class="issue-number">Issue 1</span></a><span class="issue-label">: Consistent presentation/rendering of model resources</span></div><p dir="auto">I agree that it is very good to make it easy for people to display 3D content in a web page. I completely disagree with the methods and processes described in this proposal to make it an HTML element. HTML elements need to be fully defined so that they can be similarly implemented across browsers and reflect what people would see in applications outside of browsers. The process of rendering a high-quality model requires proper handling and rendering of the model's geometry, appearance, animation, and interaction.</p>
+<p dir="auto">My knowledge is in glTF (and glTF binary) so these comments may or may not reflect on the capabilities of USDZ. I will address the topics as separate issues: Appearance and Animation / interactivity; with respect to 3D models in glTF format. Static geometry is pretty straight-forward and not subject to much interpretation.</p>
+<p dir="auto">The really difficult part is appearance. The document states that "it is impractical to define a pixel accurate rendering..." for models. However, this is really important. Khronos has done extensive work in the 3D Commerce Working Group towards pixel accurate rendering across multiple 3D viewers (<a href="https://www.khronos.org/3dcommerce/certification/" rel="nofollow">https://www.khronos.org/3dcommerce/certification/</a>). The accuracy was demanded by retailers so their products would appear visually identical across different web sites. There were so many factors that mattered in producing acceptable renderings that include lighting, rendering calculations (including equation approximations), conversion from GPU to display, and tone mapping.</p>
+<p dir="auto">The component that caused the most issues and difficulties is lighting. A model built for physically-based rendering looks best in a complex lighting environment. This is usually done with image based lighting, but punctual plus area lights will also work. The statement that "A future version ... will describe the lighting model and environment .... Both items will require community collaboration and some consensus." makes the process sound much easier that Khronos found it to be.</p>
+<p dir="auto">Some issues that came from the Certification work. Note that the Certification program did not solve all of these in the initial release.</p>
+<ul dir="auto">
+<li>Is lighting done as an 8-bit RGB or 16-bit HDR image</li>
+<li>Is lighting done with many point and area lights?</li>
+<li>How does the content creator provide for different lighting?</li>
+<li>How does the user adjust the lighting to match a particular environment?</li>
+<li>What background is used for the model display?</li>
+<li>How is the (floating-point) rendering converted to an 8-bit RGB display?</li>
+<li>How is the rendering adjusted depending on user environment?</li>
+<li>How is the rendering adjusted depending on device (hardware, OS, browser)</li>
+<li>How is time-dependent display degradation handled?</li>
+</ul>
+<p dir="auto">It may be possible to construct an initial release without resolving all of these items.</p></div>
+      <div class="issue" id="issue-container-number-5"><div role="heading" class="issue-title marker" id="h-issue-14" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/5"><span class="issue-number">Issue 5</span></a><span class="issue-label">: How would the model display on curved screens?</span></div><p dir="auto">The Oculus browser is displayed on a curved surface.<br>
+How we envision the display of multiple models? Would we allow them to bump into each other or would there be clipping?</p></div>
+      <div class="issue" id="issue-container-number-48"><div role="heading" class="issue-title marker" id="h-issue-15" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/48"><span class="issue-number">Issue 48</span></a><span class="issue-label">: Means of controlling the shadow</span></div><p dir="auto">There are cases where it may not be desirable to have a shadow being cast, because the shadow can be larger than the viewport in which an object is being show. Also, as the "camera" rotates, the shadow can end up looking weird and exposing the boundary of the <code class="notranslate">&lt;model&gt;</code> element.</p>
+<p dir="auto">For example:</p>
+<p dir="auto"><a target="_blank" rel="noopener noreferrer" href="downloaded-assets/user-images.githubusercontent.com/870154/183563942-49a837b5-91ad-4641-a1dc-6ff02a0c4273.png"><img src="downloaded-assets/user-images.githubusercontent.com/870154/183563942-49a837b5-91ad-4641-a1dc-6ff02a0c4273.png" alt="Screen Shot 2022-08-09 at 2 25 31 pm" style="max-width: 100%;"></a></p>
+<p dir="auto">It might be good to disable the shadow entirely? Or some other means for developers to express where the light source should be to cast the shadow where they might want.</p></div>
+      <div class="issue" id="issue-container-number-47"><div role="heading" class="issue-title marker" id="h-issue-16" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/47"><span class="issue-number">Issue 47</span></a><span class="issue-label">: Setting the image-based lighting (IBL) </span></div><p dir="auto">In order for models to be rendered appropriately within the context of web document, it might be useful to give developers some means of controlling the IBL.</p>
+<p dir="auto">For example, it might not make sense to use sunny environment light for models sitting on a predominately dark document (and vice versa).</p>
+<p dir="auto">There may be some overlap here with light/dark mode in CSS... but not sure.</p></div>
+      <section id="orientation-camera"><div class="header-wrapper"><h3 id="x7-1-orientation-camera"><bdi class="secno">7.1 </bdi>
+        Orientation/camera
+      </h3><a class="self-link" href="#orientation-camera" aria-label="Permalink for Section 7.1"></a></div>
+      <div class="issue" id="issue-container-number-42-0"><div role="heading" class="issue-title marker" id="h-issue-17" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/42"><span class="issue-number">Issue 42</span></a><span class="issue-label">: Reseting the camera?</span></div><p dir="auto">As the model can be interactive, it's foreseeable that users might place/rotate a model in such a way that they are unsure which direction the model is facing. It might be nice to provide some way of resetting the camera to its initial position.</p>
+<p dir="auto">This is a "nice to have" (i.e., probably not critical) because a developer could take a snapshot of the camera's position when the model loads. However, that's kinda annoying because then they need to keep their own accounting of the starting position of each model.</p></div>
+      <div class="issue" id="issue-container-number-41"><div role="heading" class="issue-title marker" id="h-issue-18" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/41"><span class="issue-number">Issue 41</span></a><span class="issue-label">: Camera controls and requestAnimationFrame()</span></div><p dir="auto">The proposal includes the ability to change the orientation/camera's view of the model. However, it's unclear how that will interact with <code class="notranslate">requestAnimationFrame()</code>. That is, do we leave it to developers to control how those changes are interpolated? or do we just leave it to the user agent to perform the change in position.</p>
+<p dir="auto">There are naturally pro's and cons to each approach. Like, controlling the speed of the translation/transition, and the smoothness curve of the animation. Or. what if the developer wants to just flip the object without any animation?</p></div>
+      </section><section id="embedded-content"><div class="header-wrapper"><h3 id="x7-2-embedded-content"><bdi class="secno">7.2 </bdi>
+        Embedded content
+      </h3><a class="self-link" href="#embedded-content" aria-label="Permalink for Section 7.2"></a></div>
+      <div class="issue" id="issue-container-number-27"><div role="heading" class="issue-title marker" id="h-issue-19" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/27"><span class="issue-number">Issue 27</span></a><span class="issue-label">: What's the default style?</span></div><p dir="auto">What's the default CSS style for a <code class="notranslate">model</code> element? Should it have a border around it? what about background color? etc.</p></div>
+      <p>
+        Whether a <code><a href="#dfn-model" class="internalDFN" data-link-type="dfn" id="ref-for-dfn-model-5"><code>model</code></a></code> element is <span class="link-me">exposing a user
+        interface</span> is not expected to affect the size of the rendering;
+        controls are expected to be overlaid above the page content without
+        causing any layout changes, and may disappear when the user does not
+        need them.
+      </p>
+      <p>
+        When a <code><a href="#dfn-model" class="internalDFN" data-link-type="dfn" id="ref-for-dfn-model-6"><code>model</code></a></code> element represents a poster frame, the poster frame is
+        expected to be rendered at the largest size that maintains the aspect
+        ratio of that poster frame without being taller or wider than the
+        <code><a href="#dfn-model" class="internalDFN" data-link-type="dfn" id="ref-for-dfn-model-7"><code>model</code></a></code> element itself, and is expected to be centered in the
+        <code><a href="#dfn-model" class="internalDFN" data-link-type="dfn" id="ref-for-dfn-model-8"><code>model</code></a></code> element.
+      </p>
+    </section></section>
+    <section id="events"><div class="header-wrapper"><h2 id="x8-events"><bdi class="secno">8. </bdi>
+        Events
+      </h2><a class="self-link" href="#events" aria-label="Permalink for Section 8."></a></div>
+      
+      <div class="issue" id="issue-container-number-26"><div role="heading" class="issue-title marker" id="h-issue-20" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/26"><span class="issue-number">Issue 26</span></a><span class="issue-label">: Need to specify the eventing model</span></div><p dir="auto">Like other media and resources, model could emit events. An obvious one being a network error if a resource can't load. We should figure out what these events might be, and if <code class="notranslate">model</code> is a media element (<a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1326697046" data-permission-text="Title is private" data-url="https://github.com/immersive-web/model-element/issues/13" data-hovercard-type="issue" data-hovercard-url="/immersive-web/model-element/issues/13/hovercard" href="https://github.com/immersive-web/model-element/issues/13">#13</a>), then we should see what applies in general for media elements.</p></div>
+    </section>
+    <section id="formats"><div class="header-wrapper"><h2 id="x9-formats"><bdi class="secno">9. </bdi>
+        Formats
+      </h2><a class="self-link" href="#formats" aria-label="Permalink for Section 9."></a></div>
+      
+      <div class="issue" id="issue-container-number-18"><div role="heading" class="issue-title marker" id="h-issue-21" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/18"><span class="issue-number">Issue 18</span></a><span class="issue-label">: Which formats?</span></div><p dir="auto">Need to investigate what formats are suitable for <code class="notranslate">model</code>. We might need some kind of evaluation matrix. Model can support multiple formats out of the box, but it might be good to evaluate what is best of users and developers and why.</p></div>
+    </section>
+    <section id="overlap-with-media-elements"><div class="header-wrapper"><h2 id="x10-overlap-with-media-elements"><bdi class="secno">10. </bdi>
+        Overlap with "media elements"
+      </h2><a class="self-link" href="#overlap-with-media-elements" aria-label="Permalink for Section 10."></a></div>
+      
+      <div class="issue" id="issue-container-number-13"><div role="heading" class="issue-title marker" id="h-issue-22" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/13"><span class="issue-number">Issue 13</span></a><span class="issue-label">: Is model a "media element"? <a class="respec-gh-label" href="https://github.com/immersive-web/model-element/issues/?q=is%3Aissue+is%3Aopen+label%3A%22TPAC%22" style="background-color: rgb(83, 25, 231); color: rgb(255, 255, 255);" aria-label="GitHub label: TPAC">TPAC</a></span></div><p dir="auto">The <code class="notranslate">&lt;model&gt;</code> element shares a lot of similarities with the <code class="notranslate">&lt;audio&gt;</code> and <code class="notranslate">&lt;video&gt;</code> elements, yet it's distinct in some ways (we need to tease these out). It's similar in being potentially temporal multimedia content (i.e., it has audio, it potentially animates over time). We need to figure out if model sufficiently different to warrant being its own element class, or if it can reuse much of "media element"'s infrastructure.</p></div>
+    </section>
+    <section id="html-integrations"><div class="header-wrapper"><h2 id="x11-html-integrations"><bdi class="secno">11. </bdi>
+        HTML Integrations
+      </h2><a class="self-link" href="#html-integrations" aria-label="Permalink for Section 11."></a></div>
+      
+      <p>
+        Additional integrations into HTML:
+      </p>
+      <div class="issue" id="issue-container-number-28"><div role="heading" class="issue-title marker" id="h-issue-23" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/28"><span class="issue-number">Issue 28</span></a><span class="issue-label">: HTML parser integration </span></div><p dir="auto">Need same behavior as <code class="notranslate">audio</code> and <code class="notranslate">video</code> when including into a <code class="notranslate">p</code> element with no end tag.</p></div>
+      <div class="issue" id="issue-container-number-29"><div role="heading" class="issue-title marker" id="h-issue-24" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/29"><span class="issue-number">Issue 29</span></a><span class="issue-label">: model is an appropriate child of figure</span></div><p dir="auto">Need to specify that model is an appropriate child of <code class="notranslate">&lt;figure&gt;</code>.</p></div>
+      <section id="preload-link-relationship"><div class="header-wrapper"><h3 id="x11-1-preload-link-relationship"><bdi class="secno">11.1 </bdi>
+        Preload link relationship
+      </h3><a class="self-link" href="#preload-link-relationship" aria-label="Permalink for Section 11.1"></a></div>
+      <div class="issue" id="issue-container-number-30"><div role="heading" class="issue-title marker" id="h-issue-25" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/30"><span class="issue-number">Issue 30</span></a><span class="issue-label">: Integration with `preload`</span></div><p dir="auto">Need to specify Integration with <a href="https://html.spec.whatwg.org/multipage/links.html#link-type-preload" rel="nofollow">preload</a> link relationships.</p></div>
+      </section><section id="integrations-with-source-element"><div class="header-wrapper"><h3 id="x11-2-integrations-with-source-element"><bdi class="secno">11.2 </bdi>
+        Integrations with <code>source</code> element
+      </h3><a class="self-link" href="#integrations-with-source-element" aria-label="Permalink for Section 11.2"></a></div>
+      <div class="issue" id="issue-container-generatedID"><div role="heading" class="issue-title marker" id="h-issue-26" aria-level="3"><span>Issue</span></div><aside class="">
+        <p>
+          Some attributes on <code>source</code> are currently restricted to <code><a data-type="element" href="https://html.spec.whatwg.org/multipage/embedded-content.html#the-picture-element" id="ref-for-index-term-picture-element-2">picture</a></code>.
+          We need to figure out which apply to <code><a href="#dfn-model" class="internalDFN" data-link-type="dfn" id="ref-for-dfn-model-9"><code>model</code></a></code>.
+        </p>
+      </aside></div>
+      </section><section id="link-rel-ar"><div class="header-wrapper"><h3 id="x11-3-link-rel-ar"><bdi class="secno">11.3 </bdi>
+        Link rel="ar"
+      </h3><a class="self-link" href="#link-rel-ar" aria-label="Permalink for Section 11.3"></a></div>
+      <div class="issue" id="issue-container-number-45"><div role="heading" class="issue-title marker" id="h-issue-27" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/45"><span class="issue-number">Issue 45</span></a><span class="issue-label">: An "ar" link relationship?</span></div><p dir="auto">I was looking at <a href="https://webkit.org/blog/8421/viewing-augmented-reality-assets-in-safari-for-ios/" rel="nofollow">Vieweing Augment Reality Assets in Safari for iOS</a> and it describes an "ar" link relationship that applies to anchors. I don't think that's been standardized though.</p>
+<p dir="auto">On iOS, adding "ar" link relation adds a AR overlap button inside the context of the anchor:</p>
+<p dir="auto"><a target="_blank" rel="noopener noreferrer" href="downloaded-assets/user-images.githubusercontent.com/870154/183340967-cd54ed50-7e86-42e1-a212-dfad02fac03e.png"><img src="downloaded-assets/user-images.githubusercontent.com/870154/183340967-cd54ed50-7e86-42e1-a212-dfad02fac03e.png" alt="Screen Shot 2022-08-08 at 2 44 05 pm" style="max-width: 100%;"></a></p>
+<p dir="auto">Can be seen here (on an iOS device):<br>
+<a href="https://jsfiddle.net/61g0m2ky/1/" rel="nofollow">https://jsfiddle.net/61g0m2ky/1/</a></p>
+<p dir="auto">I wonder if we should standardize that too?</p></div>
+    </section></section>
+    <section id="css-integrations"><div class="header-wrapper"><h2 id="x12-css-integrations"><bdi class="secno">12. </bdi>
+        CSS integrations
+      </h2><a class="self-link" href="#css-integrations" aria-label="Permalink for Section 12."></a></div>
+      
+      <section id="media-playback-states-playing-paused-seeking"><div class="header-wrapper"><h3 id="x12-1-media-playback-states-playing-paused-seeking"><bdi class="secno">12.1 </bdi>
+        Media Playback States (<code>:playing</code>, <code>:paused</code>, <code>:seeking</code>)
+      </h3><a class="self-link" href="#media-playback-states-playing-paused-seeking" aria-label="Permalink for Section 12.1"></a></div>
+      <div class="issue" id="issue-container-number-31"><div role="heading" class="issue-title marker" id="h-issue-28" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/31"><span class="issue-number">Issue 31</span></a><span class="issue-label">: CSS integrations: Media Playback States</span></div><p dir="auto">If <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1326697046" data-permission-text="Title is private" data-url="https://github.com/immersive-web/model-element/issues/13" data-hovercard-type="issue" data-hovercard-url="/immersive-web/model-element/issues/13/hovercard" href="https://github.com/immersive-web/model-element/issues/13">#13</a>  holds, how does the <code class="notranslate">&lt;model&gt;</code> work with Media Playback States <code class="notranslate">:playing</code>, <code class="notranslate">:paused</code>?</p></div>
+      </section><section id="the-muted-and-volume-locked-pseudo-classes"><div class="header-wrapper"><h3 id="x12-2-the-muted-and-volume-locked-pseudo-classes"><bdi class="secno">12.2 </bdi>
+        The <code>:muted</code> and <code>:volume-locked</code> pseudo-classes
+      </h3><a class="self-link" href="#the-muted-and-volume-locked-pseudo-classes" aria-label="Permalink for Section 12.2"></a></div>
+      </section><section id="fullscreen-presentation-state-the-fullscreen-pseudo-class"><div class="header-wrapper"><h3 id="x12-3-fullscreen-presentation-state-the-fullscreen-pseudo-class"><bdi class="secno">12.3 </bdi>
+        Fullscreen Presentation State: the <code>:fullscreen</code> pseudo-class
+      </h3><a class="self-link" href="#fullscreen-presentation-state-the-fullscreen-pseudo-class" aria-label="Permalink for Section 12.3"></a></div>
+    </section></section>
+    <section id="fullscreen-integration"><div class="header-wrapper"><h2 id="x13-fullscreen-integration"><bdi class="secno">13. </bdi>
+        Fullscreen integration
+      </h2><a class="self-link" href="#fullscreen-integration" aria-label="Permalink for Section 13."></a></div>
+      
+      <div class="issue" id="issue-container-number-31-0"><div role="heading" class="issue-title marker" id="h-issue-29" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/31"><span class="issue-number">Issue 31</span></a><span class="issue-label">: CSS integrations: Media Playback States</span></div><p dir="auto">If <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1326697046" data-permission-text="Title is private" data-url="https://github.com/immersive-web/model-element/issues/13" data-hovercard-type="issue" data-hovercard-url="/immersive-web/model-element/issues/13/hovercard" href="https://github.com/immersive-web/model-element/issues/13">#13</a>  holds, how does the <code class="notranslate">&lt;model&gt;</code> work with Media Playback States <code class="notranslate">:playing</code>, <code class="notranslate">:paused</code>?</p></div>
+    </section>
+    <section id="fetch-integration"><div class="header-wrapper"><h2 id="x14-fetch-integration"><bdi class="secno">14. </bdi>
+        Fetch integration
+      </h2><a class="self-link" href="#fetch-integration" aria-label="Permalink for Section 14."></a></div>
+      
+      <section id="model-destination"><div class="header-wrapper"><h3 id="x14-1-model-destination"><bdi class="secno">14.1 </bdi>
+        <code>"model"</code> destination
+      </h3><a class="self-link" href="#model-destination" aria-label="Permalink for Section 14.1"></a></div>
+      <div class="issue" id="issue-container-number-35"><div role="heading" class="issue-title marker" id="h-issue-30" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/35"><span class="issue-number">Issue 35</span></a><span class="issue-label">: Fetch integration: new destination?</span></div><p dir="auto">The formats that model support can fetch a lot of other resources. We probably need a new fetch destination ("model").</p></div>
+    </section></section>
+    <section id="privacy-considerations"><div class="header-wrapper"><h2 id="x15-privacy-considerations"><bdi class="secno">15. </bdi>
+        Privacy considerations
+      </h2><a class="self-link" href="#privacy-considerations" aria-label="Permalink for Section 15."></a></div>
+      
+      <div class="issue" id="issue-container-number-36"><div role="heading" class="issue-title marker" id="h-issue-31" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/36"><span class="issue-number">Issue 36</span></a><span class="issue-label">: Formats: privacy considerations</span></div><p dir="auto">We need to investigate what the privacy implications are of each model format we will recommend. The model formats themselves can fetch resources, so we need to put a privacy and security framework around what schemes they can fetch (https only, for instance). We also need to say what all the fetch policies are. Need to investigate if the formats provide any guidance here, or if they leave it up to the implementation. If they do, we need to specify it (i.e., don't send cookies, don't leak the referrer, etc.).</p></div>
+    </section>
+    <section id="security-considerations"><div class="header-wrapper"><h2 id="x16-security-considerations"><bdi class="secno">16. </bdi>
+        Security considerations
+      </h2><a class="self-link" href="#security-considerations" aria-label="Permalink for Section 16."></a></div>
+      
+      <section id="cors"><div class="header-wrapper"><h3 id="x16-1-cors"><bdi class="secno">16.1 </bdi>
+        CORS
+      </h3><a class="self-link" href="#cors" aria-label="Permalink for Section 16.1"></a></div>
+      </section><section id="formats-and-cors"><div class="header-wrapper"><h3 id="x16-2-formats-and-cors"><bdi class="secno">16.2 </bdi>
+        Formats and CORS
+      </h3><a class="self-link" href="#formats-and-cors" aria-label="Permalink for Section 16.2"></a></div>
+      <div class="issue" id="issue-container-number-15"><div role="heading" class="issue-title marker" id="h-issue-32" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/15"><span class="issue-number">Issue 15</span></a><span class="issue-label">: Formats and CORS</span></div><p dir="auto">Need to clarify that 3D resources can fetch resources, and as such need to be subject the document's CORS policy (probably "media-src"). However, we need to clarify what this means in relation to, say, "img-src", for example... as models can load png/jpg textures.</p></div>
+      </section><section id="content-security-policy"><div class="header-wrapper"><h3 id="x16-3-content-security-policy"><bdi class="secno">16.3 </bdi>
+        Content Security Policy
+      </h3><a class="self-link" href="#content-security-policy" aria-label="Permalink for Section 16.3"></a></div>
+      <div class="issue" id="issue-container-number-16"><div role="heading" class="issue-title marker" id="h-issue-33" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/16"><span class="issue-number">Issue 16</span></a><span class="issue-label">: Reuse media-src?</span></div><p dir="auto">Given the close relationship to media elements, and given the reliance on <code class="notranslate">&lt;source&gt;</code> elements, we could just say that <code class="notranslate">media-src</code> applies to <code class="notranslate">&lt;model&gt;</code> too.</p></div>
+      </section><section id="format-concerns"><div class="header-wrapper"><h3 id="x16-4-format-concerns"><bdi class="secno">16.4 </bdi>
+        Format concerns
+      </h3><a class="self-link" href="#format-concerns" aria-label="Permalink for Section 16.4"></a></div>
+      <div class="issue" id="issue-container-number-17"><div role="heading" class="issue-title marker" id="h-issue-34" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/17"><span class="issue-number">Issue 17</span></a><span class="issue-label">: Format security concerns</span></div><p dir="auto">Need to describe that each format will come with its own security considerations (and link to the appropriate security considerations in their respective specs).</p></div>
+    </section></section>
+    <section id="accessibility-considerations"><div class="header-wrapper"><h2 id="x17-accessibility-considerations"><bdi class="secno">17. </bdi>
+        Accessibility considerations
+      </h2><a class="self-link" href="#accessibility-considerations" aria-label="Permalink for Section 17."></a></div>
+      
+      <div class="issue" id="issue-container-number-39"><div role="heading" class="issue-title marker" id="h-issue-35" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/39"><span class="issue-number">Issue 39</span></a><span class="issue-label">: Accessibility: ARIA integration and HTML Accessibility API Mappings</span></div><p dir="auto">We need to define how what the ARIA semantics are and what is exposed (application probably). We need to coordinate with the accessibility folks + get this added to the HTML Accessibility API Mappings.</p></div>
+      <section id="requirements-for-providing-text-to-act-as-an-alternative-for-3d-content"><div class="header-wrapper"><h3 id="x17-1-requirements-for-providing-text-to-act-as-an-alternative-for-3d-content"><bdi class="secno">17.1 </bdi>
+        Requirements for providing text to act as an alternative for 3D content
+      </h3><a class="self-link" href="#requirements-for-providing-text-to-act-as-an-alternative-for-3d-content" aria-label="Permalink for Section 17.1"></a></div>
+      <p>
+        The <code>alt</code> attribute is used to provide text to act as an
+        alternative for 3D content.
+      </p>
+      </section><section id="for-authors"><div class="header-wrapper"><h3 id="x17-2-for-authors"><bdi class="secno">17.2 </bdi>
+        For authors
+      </h3><a class="self-link" href="#for-authors" aria-label="Permalink for Section 17.2"></a></div>
+      <div class="note" role="note" id="issue-container-generatedID-0"><div role="heading" class="note-title marker" id="h-note" aria-level="3"><span>Note</span></div><aside class="">
+        <p>
+          This section would eventually be moved to [<cite><a class="bibref" data-link-type="biblio" href="#bib-html-aria" title="ARIA in HTML">HTML-ARIA</a></cite>].
+        </p>
+      </aside></div>
+      <table class="complex data">
+        <caption>
+          Rules of ARIA attribute usage by HTML element ([<cite><a class="bibref" data-link-type="biblio" href="#bib-html-aria" title="ARIA in HTML">HTML-ARIA</a></cite>])
+        </caption>
+        <thead>
+          <tr>
+            <th>
+              HTML element
+            </th>
+            <th>
+              Implicit ARIA semantics
+            </th>
+            <th>
+              ARIA roles, states and properties which <em class="rfc2119">MAY</em> be used
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <code><a href="#dfn-model" class="internalDFN" data-link-type="dfn" id="ref-for-dfn-model-10"><code>model</code></a></code>
+            </td>
+            <td>
+              TBD
+            </td>
+            <td>
+              TBD
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      </section><section id="for-implementers"><div class="header-wrapper"><h3 id="x17-3-for-implementers"><bdi class="secno">17.3 </bdi>
+        For implementers
+      </h3><a class="self-link" href="#for-implementers" aria-label="Permalink for Section 17.3"></a></div>
+      <div class="note" role="note" id="issue-container-generatedID-1"><div role="heading" class="note-title marker" id="h-note-0" aria-level="3"><span>Note</span></div><aside class="">
+        <p>
+          This section would eventually move to [<cite><a class="bibref" data-link-type="biblio" href="#bib-html-aam-1.0" title="HTML Accessibility API Mappings 1.0">HTML-AAM-1.0</a></cite>].
+        </p>
+      </aside></div>
+      <table class="complex data">
+        <caption>
+          <code><a href="#dfn-model" class="internalDFN" data-link-type="dfn" id="ref-for-dfn-model-11"><code>model</code></a></code>
+        </caption>
+        <tbody>
+          <tr>
+            <th>
+              [<cite><a class="bibref" data-link-type="biblio" href="#bib-wai-aria-1.2" title="Accessible Rich Internet Applications (WAI-ARIA) 1.2">wai-aria-1.2</a></cite>]
+            </th>
+            <td>
+              No corresponding role
+            </td>
+          </tr>
+          <tr>
+            <th>
+              <a href="https://msdn.microsoft.com/en-us/library/dd373608%28v=VS.85%29.aspx">
+              MSAA</a> + <a href="http://accessibility.linuxfoundation.org/a11yspecs/ia2/docs/html/">
+              IAccessible2</a>
+            </th>
+            <td>
+              <div class="general">
+                Not mapped
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <th>
+              <a href="https://msdn.microsoft.com/en-us/library/ms726297%28v=VS.85%29.aspx">
+              UIA</a>
+            </th>
+            <td>
+              <div class="general">
+                Not mapped
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <th>
+              <a href="https://gnome.pages.gitlab.gnome.org/atk/">ATK</a>
+            </th>
+            <td>
+              <div class="general">
+                Not mapped
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <th>
+              <a href="https://developer.apple.com/reference/appkit/nsaccessibility">AX</a>
+            </th>
+            <td>
+              <div class="general">
+                Not mapped
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <th>
+              Comments
+            </th>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </section></section>
+    <section id="mime"><div class="header-wrapper"><h2 id="x18-mime"><bdi class="secno">18. </bdi>
+        MIME
+      </h2><a class="self-link" href="#mime" aria-label="Permalink for Section 18."></a></div>
+      
+      <div class="issue" id="issue-container-number-37"><div role="heading" class="issue-title marker" id="h-issue-36" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/37"><span class="issue-number">Issue 37</span></a><span class="issue-label">: MIME integration</span></div><p dir="auto">We need to check if there are any relevant MIME parameters for <code class="notranslate">model/*</code> content (if any).</p></div>
+      <section id="mime-sniffing"><div class="header-wrapper"><h3 id="x18-1-mime-sniffing"><bdi class="secno">18.1 </bdi>
+        MIME Sniffing
+      </h3><a class="self-link" href="#mime-sniffing" aria-label="Permalink for Section 18.1"></a></div>
+      <div class="issue" id="issue-container-number-38"><div role="heading" class="issue-title marker" id="h-issue-37" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/38"><span class="issue-number">Issue 38</span></a><span class="issue-label">: MIME Sniffing</span></div><p dir="auto">Need to describe how we sniff for MIME types in [MIMESNIFF]. See also IANA "<a href="https://www.iana.org/assignments/media-types/media-types.xhtml#model" rel="nofollow">model</a>" types. We might need specific rules for sniffing.</p></div>
+    </section></section>
+    <section id="conformance"><div class="header-wrapper"><h2 id="x19-conformance"><bdi class="secno">19. </bdi>Conformance</h2><a class="self-link" href="#conformance" aria-label="Permalink for Section 19."></a></div><p>As well as sections marked as non-normative, all authoring guidelines, diagrams, examples, and notes in this specification are non-normative. Everything else in this specification is normative.</p><p>
+        The key word <em class="rfc2119">MAY</em> in this document
+        is to be interpreted as described in
+        <a href="https://datatracker.ietf.org/doc/html/bcp14">BCP 14</a>
+        [<cite><a class="bibref" data-link-type="biblio" href="#bib-rfc2119" title="Key words for use in RFCs to Indicate Requirement Levels">RFC2119</a></cite>] [<cite><a class="bibref" data-link-type="biblio" href="#bib-rfc8174" title="Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words">RFC8174</a></cite>]
+        when, and only when, they appear in all capitals, as shown here.
+      </p></section>
+    <section id="issue-summary"><div class="header-wrapper"><h2 id="x20-issue-summary"><bdi class="secno">20. </bdi>Issue summary</h2><a class="self-link" href="#issue-summary" aria-label="Permalink for Section 20."></a></div><ul><li><a href="#issue-container-number-19">Issue 19</a><span style="text-transform: none">: Add example for adding a model to a page</span></li><li><a href="#issue-container-number-20">Issue 20</a><span style="text-transform: none">: Add example showing enabling interactivity</span></li><li><a href="#issue-container-number-21">Issue 21</a><span style="text-transform: none">: Add example showing how to support multiple formats</span></li><li><a href="#issue-container-number-22">Issue 22</a><span style="text-transform: none">: Add example for providing fallback content for legacy user agents</span></li><li><a href="#issue-container-number-23">Issue 23</a><span style="text-transform: none">: Add example for making model accessible</span></li><li><a href="#issue-container-number-14">Issue 14</a><span style="text-transform: none">: Update poster algorithm for model?</span></li><li><a href="#issue-container-number-44">Issue 44</a><span style="text-transform: none">: Lazy loading</span></li><li><a href="#issue-container-number-12">Issue 12</a><span style="text-transform: none">: Almost everything is `promise` based</span></li><li><a href="#issue-container-number-42">Issue 42</a><span style="text-transform: none">: Reseting the camera?</span></li><li><a href="#issue-container-number-24">Issue 24</a><span style="text-transform: none">: Specify the behavior for when a &lt;source&gt; element's parent is a &lt;model&gt; element</span></li><li><a href="#issue-container-number-2">Issue 2</a><span style="text-transform: none">: Dealing with format specific animations and Interaction</span></li><li><a href="#issue-container-number-46">Issue 46</a><span style="text-transform: none">: Exit interaction event (with data?)</span></li><li><a href="#issue-container-number-25">Issue 25</a><span style="text-transform: none">: Define interactivity</span></li><li><a href="#issue-container-number-43">Issue 43</a><span style="text-transform: none">: Adding "controls" </span></li><li><a href="#issue-container-number-1">Issue 1</a><span style="text-transform: none">: Consistent presentation/rendering of model resources</span></li><li><a href="#issue-container-number-5">Issue 5</a><span style="text-transform: none">: How would the model display on curved screens?</span></li><li><a href="#issue-container-number-48">Issue 48</a><span style="text-transform: none">: Means of controlling the shadow</span></li><li><a href="#issue-container-number-47">Issue 47</a><span style="text-transform: none">: Setting the image-based lighting (IBL) </span></li><li><a href="#issue-container-number-42-0">Issue 42</a><span style="text-transform: none">: Reseting the camera?</span></li><li><a href="#issue-container-number-41">Issue 41</a><span style="text-transform: none">: Camera controls and requestAnimationFrame()</span></li><li><a href="#issue-container-number-27">Issue 27</a><span style="text-transform: none">: What's the default style?</span></li><li><a href="#issue-container-number-26">Issue 26</a><span style="text-transform: none">: Need to specify the eventing model</span></li><li><a href="#issue-container-number-18">Issue 18</a><span style="text-transform: none">: Which formats?</span></li><li><a href="#issue-container-number-13">Issue 13</a><span style="text-transform: none">: Is model a "media element"?</span></li><li><a href="#issue-container-number-28">Issue 28</a><span style="text-transform: none">: HTML parser integration </span></li><li><a href="#issue-container-number-29">Issue 29</a><span style="text-transform: none">: model is an appropriate child of figure</span></li><li><a href="#issue-container-number-30">Issue 30</a><span style="text-transform: none">: Integration with `preload`</span></li><li><a href="#issue-container-generatedID">Issue</a></li><li><a href="#issue-container-number-45">Issue 45</a><span style="text-transform: none">: An "ar" link relationship?</span></li><li><a href="#issue-container-number-31">Issue 31</a><span style="text-transform: none">: CSS integrations: Media Playback States</span></li><li><a href="#issue-container-number-31-0">Issue 31</a><span style="text-transform: none">: CSS integrations: Media Playback States</span></li><li><a href="#issue-container-number-35">Issue 35</a><span style="text-transform: none">: Fetch integration: new destination?</span></li><li><a href="#issue-container-number-36">Issue 36</a><span style="text-transform: none">: Formats: privacy considerations</span></li><li><a href="#issue-container-number-15">Issue 15</a><span style="text-transform: none">: Formats and CORS</span></li><li><a href="#issue-container-number-16">Issue 16</a><span style="text-transform: none">: Reuse media-src?</span></li><li><a href="#issue-container-number-17">Issue 17</a><span style="text-transform: none">: Format security concerns</span></li><li><a href="#issue-container-number-39">Issue 39</a><span style="text-transform: none">: Accessibility: ARIA integration and HTML Accessibility API Mappings</span></li><li><a href="#issue-container-number-37">Issue 37</a><span style="text-transform: none">: MIME integration</span></li><li><a href="#issue-container-number-38">Issue 38</a><span style="text-transform: none">: MIME Sniffing</span></li></ul></section>
+    <section class="informative" id="change-log"><div class="header-wrapper"><h2 id="x21-change-log"><bdi class="secno">21. </bdi>
+        Change log
+      </h2><a class="self-link" href="#change-log" aria-label="Permalink for Section 21."></a></div><p><em>This section is non-normative.</em></p>
+      
+      <p>
+        The following are some significant changes that were made since the
+        initial proposal:
+      </p>
+       <rs-changelog from="initial" filter="removeCommits"><ul>
+      
+      </ul></rs-changelog>
+    </section>
+    <section id="index" class="appendix"><div class="header-wrapper"><h2 id="a-index"><bdi class="secno">A. </bdi>Index</h2><a class="self-link" href="#index" aria-label="Permalink for Appendix A."></a></div><section id="index-defined-here"><div class="header-wrapper"><h3 id="a-1-terms-defined-by-this-specification"><bdi class="secno">A.1 </bdi>Terms defined by this specification</h3><a class="self-link" href="#index-defined-here" aria-label="Permalink for Appendix A.1"></a></div>
+    
+    <ul class="index">
+    <li>
+      <a class="index-term" href="#dfn-alt"><code>alt</code></a> 
+    <span class="print-only">§2.1</span></li><li>
+      <a class="index-term" href="#dfn-autoplay"><code>autoplay</code></a> 
+    <span class="print-only">§2.2</span></li><li>
+      <a class="index-term" href="#dfn-controls"><code>controls</code></a> 
+    <span class="print-only">§2.4</span></li><li>
+      <a class="index-term" href="#dfn-crossorigin"><code>crossorigin</code></a> 
+    <span class="print-only">§2.5</span></li><li>
+      <a class="index-term" href="#dfn-height"><code>height</code></a> 
+    <span class="print-only">§2.6</span></li><li>
+      <a class="index-term" href="#dom-htmlmodelelement"><code>HTMLModelElement</code></a> interface
+    <span class="print-only">§3.</span></li><li>
+      <a class="index-term" href="#dfn-interactive"><code>interactive</code></a> 
+    <span class="print-only">§2.3</span></li><li>
+      <a class="index-term" href="#dfn-loading"><code>loading</code></a> 
+    <span class="print-only">§2.7</span></li><li>
+      <a class="index-term" href="#dfn-loop"><code>loop</code></a> 
+    <span class="print-only">§2.8</span></li><li>
+      <a class="index-term" href="#dfn-model"><code>model</code></a> 
+    <span class="print-only">§2.</span></li><li>
+      <a class="index-term" href="#dfn-muted"><code>muted</code></a> 
+    <span class="print-only">§2.9</span></li><li>
+      <a class="index-term" href="#dfn-poster"><code>poster</code></a> 
+    <span class="print-only">§2.10</span></li><li>
+      <a class="index-term" href="#dfn-src"><code>src</code></a> 
+    <span class="print-only">§2.11</span></li><li>
+      <a class="index-term" href="#dfn-width"><code>width</code></a> 
+    <span class="print-only">§2.12</span></li>
+  </ul>
+  </section><section id="index-defined-elsewhere"><div class="header-wrapper"><h3 id="a-2-terms-defined-by-reference"><bdi class="secno">A.2 </bdi>Terms defined by reference</h3><a class="self-link" href="#index-defined-elsewhere" aria-label="Permalink for Appendix A.2"></a></div>
+    
+    <ul class="index">
+    <li>
+        [<cite><a class="bibref" data-link-type="biblio" href="#bib-fetch">FETCH</a></cite>] defines the following:
+        <ul>
+          <li>
+    <span class="index-term" data-href="https://fetch.spec.whatwg.org/#http-access-control-request-method" id="index-term-access-control-request-method" tabindex="0" aria-haspopup="dialog">Access-Control-Request-Method</span>
+  </li>
+        </ul>
+      </li><li>
+        [<cite><a class="bibref" data-link-type="biblio" href="#bib-html">HTML</a></cite>] defines the following:
+        <ul>
+          <li>
+    <span class="index-term" data-href="https://html.spec.whatwg.org/multipage/dom.html#embedded-content-category" id="index-term-embedded-content" tabindex="0" aria-haspopup="dialog">Embedded content</span>
+  </li><li>
+    <span class="index-term" data-href="https://html.spec.whatwg.org/multipage/dom.html#flow-content-2" id="index-term-flow-content" tabindex="0" aria-haspopup="dialog">Flow content</span>
+  </li><li>
+    <span class="index-term" data-href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement" id="index-term-htmlelement-interface" tabindex="0" aria-haspopup="dialog"><code>HTMLElement</code> interface</span>
+  </li><li>
+    <span class="index-term" data-href="https://html.spec.whatwg.org/multipage/embedded-content.html#the-img-element" id="index-term-img-element" tabindex="0" aria-haspopup="dialog"><code>img</code> element</span>
+  </li><li>
+    <span class="index-term" data-href="https://html.spec.whatwg.org/multipage/dom.html#interactive-content-2" id="index-term-interactive-content" tabindex="0" aria-haspopup="dialog">interactive content</span>
+  </li><li>
+    <span class="index-term" data-href="https://html.spec.whatwg.org/multipage/dom.html#palpable-content-2" id="index-term-palpable-content" tabindex="0" aria-haspopup="dialog">Palpable content</span>
+  </li><li>
+    <span class="index-term" data-href="https://html.spec.whatwg.org/multipage/dom.html#phrasing-content-2" id="index-term-phrasing-content" tabindex="0" aria-haspopup="dialog">Phrasing content</span>
+  </li><li>
+    <span class="index-term" data-href="https://html.spec.whatwg.org/multipage/embedded-content.html#the-picture-element" id="index-term-picture-element" tabindex="0" aria-haspopup="dialog"><code>picture</code> element</span>
+  </li>
+        </ul>
+      </li><li>
+        [<cite><a class="bibref" data-link-type="biblio" href="#bib-webidl">WEBIDL</a></cite>] defines the following:
+        <ul>
+          <li>
+    <span class="index-term" data-href="https://webidl.spec.whatwg.org/#Exposed" id="index-term-exposed-extended-attribute" tabindex="0" aria-haspopup="dialog"><code>[Exposed]</code> extended attribute</span>
+  </li>
+        </ul>
+      </li>
+  </ul>
+  </section></section>
+  
+
+<section id="references" class="appendix"><div class="header-wrapper"><h2 id="b-references"><bdi class="secno">B. </bdi>References</h2><a class="self-link" href="#references" aria-label="Permalink for Appendix B."></a></div><section id="normative-references"><div class="header-wrapper"><h3 id="b-1-normative-references"><bdi class="secno">B.1 </bdi>Normative references</h3><a class="self-link" href="#normative-references" aria-label="Permalink for Appendix B.1"></a></div>
+    
+    <dl class="bibliography"><dt id="bib-html">[HTML]</dt><dd>
+      <a href="https://html.spec.whatwg.org/multipage/"><cite>HTML Standard</cite></a>. Anne van Kesteren; Domenic Denicola; Ian Hickson; Philip Jägenstedt; Simon Pieters.  WHATWG. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
+    </dd><dt id="bib-html-aria">[HTML-ARIA]</dt><dd>
+      <a href="https://www.w3.org/TR/html-aria/"><cite>ARIA in HTML</cite></a>. Steve Faulkner; Scott O'Hara; Patrick Lauke.  W3C. 9 December 2021. W3C Recommendation. URL: <a href="https://www.w3.org/TR/html-aria/">https://www.w3.org/TR/html-aria/</a>
+    </dd><dt id="bib-rfc2119">[RFC2119]</dt><dd>
+      <a href="https://www.rfc-editor.org/rfc/rfc2119"><cite>Key words for use in RFCs to Indicate Requirement Levels</cite></a>. S. Bradner.  IETF. March 1997. Best Current Practice. URL: <a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>
+    </dd><dt id="bib-rfc8174">[RFC8174]</dt><dd>
+      <a href="https://www.rfc-editor.org/rfc/rfc8174"><cite>Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words</cite></a>. B. Leiba.  IETF. May 2017. Best Current Practice. URL: <a href="https://www.rfc-editor.org/rfc/rfc8174">https://www.rfc-editor.org/rfc/rfc8174</a>
+    </dd><dt id="bib-wai-aria-1.2">[wai-aria-1.2]</dt><dd>
+      <a href="https://www.w3.org/TR/wai-aria-1.2/"><cite>Accessible Rich Internet Applications (WAI-ARIA) 1.2</cite></a>. Joanmarie Diggs; James Nurthen; Michael Cooper.  W3C. 8 December 2021. W3C Candidate Recommendation. URL: <a href="https://www.w3.org/TR/wai-aria-1.2/">https://www.w3.org/TR/wai-aria-1.2/</a>
+    </dd><dt id="bib-webidl">[webidl]</dt><dd>
+      <a href="https://webidl.spec.whatwg.org/"><cite>Web IDL Standard</cite></a>. Edgar Chen; Timothy Gu.  WHATWG. Living Standard. URL: <a href="https://webidl.spec.whatwg.org/">https://webidl.spec.whatwg.org/</a>
+    </dd></dl>
+  </section><section id="informative-references"><div class="header-wrapper"><h3 id="b-2-informative-references"><bdi class="secno">B.2 </bdi>Informative references</h3><a class="self-link" href="#informative-references" aria-label="Permalink for Appendix B.2"></a></div>
+    
+    <dl class="bibliography"><dt id="bib-fetch">[fetch]</dt><dd>
+      <a href="https://fetch.spec.whatwg.org/"><cite>Fetch Standard</cite></a>. Anne van Kesteren.  WHATWG. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
+    </dd><dt id="bib-html-aam-1.0">[HTML-AAM-1.0]</dt><dd>
+      <a href="https://www.w3.org/TR/html-aam-1.0/"><cite>HTML Accessibility API Mappings 1.0</cite></a>. Steve Faulkner; Scott O'Hara.  W3C. 19 July 2022. W3C Working Draft. URL: <a href="https://www.w3.org/TR/html-aam-1.0/">https://www.w3.org/TR/html-aam-1.0/</a>
+    </dd></dl>
+  </section></section><p role="navigation" id="back-to-top">
+    <a href="#title"><abbr title="Back to Top">↑</abbr></a>
+  </p><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-model" aria-label="Links in this document to definition: model">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-model" aria-label="Permalink for definition: model. Activate to close this dialog.">Permalink</a>
+         
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+    <a href="#ref-for-dfn-model-1" title="§ 2. The model element">§ 2. The model element</a> <a href="#ref-for-dfn-model-2" title="Reference 2">(2)</a> <a href="#ref-for-dfn-model-3" title="Reference 3">(3)</a> 
+  </li><li>
+    <a href="#ref-for-dfn-model-4" title="§ 4.1 The source element's parent is a model element">§ 4.1 The source element's parent is a model element</a> 
+  </li><li>
+    <a href="#ref-for-dfn-model-5" title="§ 7.2 Embedded content">§ 7.2 Embedded content</a> <a href="#ref-for-dfn-model-6" title="Reference 2">(2)</a> <a href="#ref-for-dfn-model-7" title="Reference 3">(3)</a> <a href="#ref-for-dfn-model-8" title="Reference 4">(4)</a> 
+  </li><li>
+    <a href="#ref-for-dfn-model-9" title="§ 11.2 Integrations with source element">§ 11.2 Integrations with source element</a> 
+  </li><li>
+    <a href="#ref-for-dfn-model-10" title="§ 17.2 For authors">§ 17.2 For authors</a> 
+  </li><li>
+    <a href="#ref-for-dfn-model-11" title="§ 17.3 For implementers">§ 17.3 For implementers</a> 
+  </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-alt" aria-label="Links in this document to definition: alt">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-alt" aria-label="Permalink for definition: alt. Activate to close this dialog.">Permalink</a>
+         
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+    <a href="#ref-for-dfn-alt-1" title="§ 2. The model element">§ 2. The model element</a> 
+  </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-autoplay" aria-label="Links in this document to definition: autoplay">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-autoplay" aria-label="Permalink for definition: autoplay. Activate to close this dialog.">Permalink</a>
+         
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+    <a href="#ref-for-dfn-autoplay-1" title="§ 2. The model element">§ 2. The model element</a> 
+  </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-interactive" aria-label="Links in this document to definition: interactive">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-interactive" aria-label="Permalink for definition: interactive. Activate to close this dialog.">Permalink</a>
+         
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+    <a href="#ref-for-dfn-interactive-1" title="§ 2. The model element">§ 2. The model element</a> 
+  </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-controls" aria-label="Links in this document to definition: controls">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-controls" aria-label="Permalink for definition: controls. Activate to close this dialog.">Permalink</a>
+         
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+      <li>Not referenced in this document.</li>
+    </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-crossorigin" aria-label="Links in this document to definition: crossorigin">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-crossorigin" aria-label="Permalink for definition: crossorigin. Activate to close this dialog.">Permalink</a>
+         
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+    <a href="#ref-for-dfn-crossorigin-1" title="§ 2. The model element">§ 2. The model element</a> 
+  </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-height" aria-label="Links in this document to definition: height">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-height" aria-label="Permalink for definition: height. Activate to close this dialog.">Permalink</a>
+         
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+    <a href="#ref-for-dfn-height-1" title="§ 2. The model element">§ 2. The model element</a> 
+  </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-loading" aria-label="Links in this document to definition: loading">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-loading" aria-label="Permalink for definition: loading. Activate to close this dialog.">Permalink</a>
+         
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+    <a href="#ref-for-dfn-loading-1" title="§ 2. The model element">§ 2. The model element</a> 
+  </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-loop" aria-label="Links in this document to definition: loop">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-loop" aria-label="Permalink for definition: loop. Activate to close this dialog.">Permalink</a>
+         
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+    <a href="#ref-for-dfn-loop-1" title="§ 2. The model element">§ 2. The model element</a> 
+  </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-muted" aria-label="Links in this document to definition: muted">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-muted" aria-label="Permalink for definition: muted. Activate to close this dialog.">Permalink</a>
+         
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+    <a href="#ref-for-dfn-muted-1" title="§ 2. The model element">§ 2. The model element</a> 
+  </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-poster" aria-label="Links in this document to definition: poster">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-poster" aria-label="Permalink for definition: poster. Activate to close this dialog.">Permalink</a>
+         
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+    <a href="#ref-for-dfn-poster-1" title="§ 2. The model element">§ 2. The model element</a> 
+  </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-src" aria-label="Links in this document to definition: src">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-src" aria-label="Permalink for definition: src. Activate to close this dialog.">Permalink</a>
+         
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+    <a href="#ref-for-dfn-src-1" title="§ 2. The model element">§ 2. The model element</a> 
+  </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-width" aria-label="Links in this document to definition: width">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-width" aria-label="Permalink for definition: width. Activate to close this dialog.">Permalink</a>
+         
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+    <a href="#ref-for-dfn-width-1" title="§ 2. The model element">§ 2. The model element</a> 
+  </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dom-htmlmodelelement" aria-label="Links in this document to definition: HTMLModelElement">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dom-htmlmodelelement" aria-label="Permalink for definition: HTMLModelElement. Activate to close this dialog.">Permalink</a>
+        <span class="marker dfn-exported" title="Definition can be referenced by other specifications">exported</span> 
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+    <a href="#ref-for-dom-htmlmodelelement-1" title="§ 2. The model element">§ 2. The model element</a> 
+  </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-index-term-access-control-request-method" aria-label="Links in this document to definition: Access-Control-Request-Method">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="https://fetch.spec.whatwg.org/#http-access-control-request-method" aria-label="Permalink for definition: Access-Control-Request-Method. Activate to close this dialog.">Permalink</a>
+         
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+    <a href="#ref-for-index-term-access-control-request-method-1" title="§ Abstract">§ Abstract</a> 
+  </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-index-term-embedded-content" aria-label="Links in this document to definition: Embedded content">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="https://html.spec.whatwg.org/multipage/dom.html#embedded-content-category" aria-label="Permalink for definition: Embedded content. Activate to close this dialog.">Permalink</a>
+         
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+    <a href="#ref-for-index-term-embedded-content-1" title="§ 2. The model element">§ 2. The model element</a> <a href="#ref-for-index-term-embedded-content-2" title="Reference 2">(2)</a> 
+  </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-index-term-flow-content" aria-label="Links in this document to definition: Flow content">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="https://html.spec.whatwg.org/multipage/dom.html#flow-content-2" aria-label="Permalink for definition: Flow content. Activate to close this dialog.">Permalink</a>
+         
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+    <a href="#ref-for-index-term-flow-content-1" title="§ 2. The model element">§ 2. The model element</a> 
+  </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-index-term-htmlelement-interface" aria-label="Links in this document to definition: HTMLElement interface">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement" aria-label="Permalink for definition: HTMLElement interface. Activate to close this dialog.">Permalink</a>
+         
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+    <a href="#ref-for-index-term-htmlelement-interface-1" title="§ 3. The HTMLModelElement interface">§ 3. The HTMLModelElement interface</a> 
+  </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-index-term-img-element" aria-label="Links in this document to definition: img element">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="https://html.spec.whatwg.org/multipage/embedded-content.html#the-img-element" aria-label="Permalink for definition: img element. Activate to close this dialog.">Permalink</a>
+         
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+    <a href="#ref-for-index-term-img-element-1" title="§ 2. The model element">§ 2. The model element</a> 
+  </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-index-term-interactive-content" aria-label="Links in this document to definition: interactive content">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="https://html.spec.whatwg.org/multipage/dom.html#interactive-content-2" aria-label="Permalink for definition: interactive content. Activate to close this dialog.">Permalink</a>
+         
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+    <a href="#ref-for-index-term-interactive-content-1" title="§ 2. The model element">§ 2. The model element</a> 
+  </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-index-term-palpable-content" aria-label="Links in this document to definition: Palpable content">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="https://html.spec.whatwg.org/multipage/dom.html#palpable-content-2" aria-label="Permalink for definition: Palpable content. Activate to close this dialog.">Permalink</a>
+         
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+    <a href="#ref-for-index-term-palpable-content-1" title="§ 2. The model element">§ 2. The model element</a> 
+  </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-index-term-phrasing-content" aria-label="Links in this document to definition: Phrasing content">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="https://html.spec.whatwg.org/multipage/dom.html#phrasing-content-2" aria-label="Permalink for definition: Phrasing content. Activate to close this dialog.">Permalink</a>
+         
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+    <a href="#ref-for-index-term-phrasing-content-1" title="§ 2. The model element">§ 2. The model element</a> 
+  </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-index-term-picture-element" aria-label="Links in this document to definition: picture element">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="https://html.spec.whatwg.org/multipage/embedded-content.html#the-picture-element" aria-label="Permalink for definition: picture element. Activate to close this dialog.">Permalink</a>
+         
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+    <a href="#ref-for-index-term-picture-element-1" title="§ 2. The model element">§ 2. The model element</a> 
+  </li><li>
+    <a href="#ref-for-index-term-picture-element-2" title="§ 11.2 Integrations with source element">§ 11.2 Integrations with source element</a> 
+  </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-index-term-exposed-extended-attribute" aria-label="Links in this document to definition: [Exposed] extended attribute">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="https://webidl.spec.whatwg.org/#Exposed" aria-label="Permalink for definition: [Exposed] extended attribute. Activate to close this dialog.">Permalink</a>
+         
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+    <a href="#ref-for-index-term-exposed-extended-attribute-1" title="§ 3. The HTMLModelElement interface">§ 3. The HTMLModelElement interface</a> 
+  </li>
+  </ul>
+    </div><script id="respec-dfn-panel">(() => {
+// @ts-check
+if (document.respec) {
+  document.respec.ready.then(setupPanel);
+} else {
+  setupPanel();
+}
+
+function setupPanel() {
+  const listener = panelListener();
+  document.body.addEventListener("keydown", listener);
+  document.body.addEventListener("click", listener);
+}
+
+function panelListener() {
+  /** @type {HTMLElement} */
+  let panel = null;
+  return event => {
+    const { target, type } = event;
+
+    if (!(target instanceof HTMLElement)) return;
+
+    // For keys, we only care about Enter key to activate the panel
+    // otherwise it's activated via a click.
+    if (type === "keydown" && event.key !== "Enter") return;
+
+    const action = deriveAction(event);
+
+    switch (action) {
+      case "show": {
+        hidePanel(panel);
+        /** @type {HTMLElement} */
+        const dfn = target.closest("dfn, .index-term");
+        panel = document.getElementById(`dfn-panel-for-${dfn.id}`);
+        const coords = deriveCoordinates(event);
+        displayPanel(dfn, panel, coords);
+        break;
+      }
+      case "dock": {
+        panel.style.left = null;
+        panel.style.top = null;
+        panel.classList.add("docked");
+        break;
+      }
+      case "hide": {
+        hidePanel(panel);
+        panel = null;
+        break;
+      }
+    }
+  };
+}
+
+/**
+ * @param {MouseEvent|KeyboardEvent} event
+ */
+function deriveCoordinates(event) {
+  const target = /** @type HTMLElement */ (event.target);
+
+  // We prevent synthetic AT clicks from putting
+  // the dialog in a weird place. The AT events sometimes
+  // lack coordinates, so they have clientX/Y = 0
+  const rect = target.getBoundingClientRect();
+  if (
+    event instanceof MouseEvent &&
+    event.clientX >= rect.left &&
+    event.clientY >= rect.top
+  ) {
+    // The event probably happened inside the bounding rect...
+    return { x: event.clientX, y: event.clientY };
+  }
+
+  // Offset to the middle of the element
+  const x = rect.x + rect.width / 2;
+  // Placed at the bottom of the element
+  const y = rect.y + rect.height;
+  return { x, y };
+}
+
+/**
+ * @param {Event} event
+ */
+function deriveAction(event) {
+  const target = /** @type {HTMLElement} */ (event.target);
+  const hitALink = !!target.closest("a");
+  if (target.closest("dfn:not([data-cite]), .index-term")) {
+    return hitALink ? "none" : "show";
+  }
+  if (target.closest(".dfn-panel")) {
+    if (hitALink) {
+      return target.classList.contains("self-link") ? "hide" : "dock";
+    }
+    const panel = target.closest(".dfn-panel");
+    return panel.classList.contains("docked") ? "hide" : "none";
+  }
+  if (document.querySelector(".dfn-panel:not([hidden])")) {
+    return "hide";
+  }
+  return "none";
+}
+
+/**
+ * @param {HTMLElement} dfn
+ * @param {HTMLElement} panel
+ * @param {{ x: number, y: number }} clickPosition
+ */
+function displayPanel(dfn, panel, { x, y }) {
+  panel.hidden = false;
+  // distance (px) between edge of panel and the pointing triangle (caret)
+  const MARGIN = 20;
+
+  const dfnRects = dfn.getClientRects();
+  // Find the `top` offset when the `dfn` can be spread across multiple lines
+  let closestTop = 0;
+  let minDiff = Infinity;
+  for (const rect of dfnRects) {
+    const { top, bottom } = rect;
+    const diffFromClickY = Math.abs((top + bottom) / 2 - y);
+    if (diffFromClickY < minDiff) {
+      minDiff = diffFromClickY;
+      closestTop = top;
+    }
+  }
+
+  const top = window.scrollY + closestTop + dfnRects[0].height;
+  const left = x - MARGIN;
+  panel.style.left = `${left}px`;
+  panel.style.top = `${top}px`;
+
+  // Find if the panel is flowing out of the window
+  const panelRect = panel.getBoundingClientRect();
+  const SCREEN_WIDTH = Math.min(window.innerWidth, window.screen.width);
+  if (panelRect.right > SCREEN_WIDTH) {
+    const newLeft = Math.max(MARGIN, x + MARGIN - panelRect.width);
+    const newCaretOffset = left - newLeft;
+    panel.style.left = `${newLeft}px`;
+    /** @type {HTMLElement} */
+    const caret = panel.querySelector(".caret");
+    caret.style.left = `${newCaretOffset}px`;
+  }
+
+  // As it's a dialog, we trap focus.
+  // TODO: when <dialog> becomes a implemented, we should really
+  // use that.
+  trapFocus(panel, dfn);
+}
+
+/**
+ * @param {HTMLElement} panel
+ * @param {HTMLElement} dfn
+ * @returns
+ */
+function trapFocus(panel, dfn) {
+  /** @type NodeListOf<HTMLAnchorElement> elements */
+  const anchors = panel.querySelectorAll("a[href]");
+  // No need to trap focus
+  if (!anchors.length) return;
+
+  // Move focus to first anchor element
+  const first = anchors.item(0);
+  first.focus();
+
+  const trapListener = createTrapListener(anchors, panel, dfn);
+  panel.addEventListener("keydown", trapListener);
+
+  // Hiding the panel releases the trap
+  const mo = new MutationObserver(records => {
+    const [record] = records;
+    const target = /** @type HTMLElement */ (record.target);
+    if (target.hidden) {
+      panel.removeEventListener("keydown", trapListener);
+      mo.disconnect();
+    }
+  });
+  mo.observe(panel, { attributes: true, attributeFilter: ["hidden"] });
+}
+
+/**
+ *
+ * @param {NodeListOf<HTMLAnchorElement>} anchors
+ * @param {HTMLElement} panel
+ * @param {HTMLElement} dfn
+ * @returns
+ */
+function createTrapListener(anchors, panel, dfn) {
+  const lastIndex = anchors.length - 1;
+  let currentIndex = 0;
+  return event => {
+    switch (event.key) {
+      // Hitting "Tab" traps us in a nice loop around elements.
+      case "Tab": {
+        event.preventDefault();
+        currentIndex += event.shiftKey ? -1 : +1;
+        if (currentIndex < 0) {
+          currentIndex = lastIndex;
+        } else if (currentIndex > lastIndex) {
+          currentIndex = 0;
+        }
+        anchors.item(currentIndex).focus();
+        break;
+      }
+
+      // Hitting "Enter" on an anchor releases the trap.
+      case "Enter":
+        hidePanel(panel);
+        break;
+
+      // Hitting "Escape" returns focus to dfn.
+      case "Escape":
+        hidePanel(panel);
+        dfn.focus();
+        return;
+    }
+  };
+}
+
+/** @param {HTMLElement} panel */
+function hidePanel(panel) {
+  if (!panel) return;
+  panel.hidden = true;
+  panel.classList.remove("docked");
+}
+})()</script><script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script></body></html>
