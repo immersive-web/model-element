@@ -6,18 +6,21 @@
     <title>Example HTMLModelElement</title>
     <style>
       body {
-        margin: 0;
         display: grid;
         place-items: center;
-        height: 100vh;
+        overflow: hidden;
       }
 
-      model {
-        width: 100%;
-        height: 100%;
-        max-width: 100vw;
-        max-height: 100vh;
-        border: 1px solid black;
+      model,
+      picture,
+      img {
+        width: 95%;
+        height: 95%;
+        max-width: 90vw;
+        max-height: 90vh;
+        display: grid;
+        place-items: center;
+        object-fit: contain;
       }
     </style>
   </head>
@@ -28,7 +31,7 @@
       <source src="../assets/FlightHelmet.usdz" type="model/vnd.usdz+zip" />
       <source src="../assets/FlightHelmet.glb" type="model/gltf-binary" />
       <picture>
-        <img src="../assets/FlightHealmet.png" width="300" height="300">
+        <img src="../assets/FlightHelmet.png" width="524" height="610" />
       </picture>
     </model>
   </body>
