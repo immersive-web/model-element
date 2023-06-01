@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width" />
     <title>Example HTMLModelElement</title>
     <style>
+      model {
+        border: 1px solid black;
+      }
     </style>
   </head>
 
@@ -13,7 +16,9 @@
     <model interactive width="300" height="300">
       <source src="../assets/haha.usdz" type="model/vnd.usdz+zip" />
       <source src="../assets/haha.glb" type="model/gltf-binary" />
-      <img src="../assets/haha.png">
+      <picture>
+        <img src="../assets/haha.png">
+      </picture>
     </model>
   </body>
 </html>
