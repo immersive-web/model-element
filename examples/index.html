@@ -27,6 +27,10 @@
         height: auto;
         display: grid;
         place-items: center;
+        max-height: 90vh;
+      }
+
+      img {
         object-fit: contain;
       }
 
@@ -40,7 +44,7 @@
 
   <body>
     <h1>An example <code>model</code> Element</h1>
-    <model interactive width="300" height="300">
+    <model interactive width="600" height="600">
       <source src="../assets/FlightHelmet.usdz" type="model/vnd.usdz+zip" />
       <source src="../assets/FlightHelmet.glb" type="model/gltf-binary" />
       <picture>
