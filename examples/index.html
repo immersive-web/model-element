@@ -5,22 +5,35 @@
     <meta name="viewport" content="width=device-width" />
     <title>Example HTMLModelElement</title>
     <style>
+      html,
       body {
         display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
         place-items: center;
         overflow: hidden;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        width: 95%;
+        max-width: 90vw;
+        max-height: 90vh;
       }
 
       model,
       picture,
       img {
-        width: 95%;
-        height: 95%;
-        max-width: 90vw;
-        max-height: 90vh;
+        width: 100%;
+        height: auto;
         display: grid;
         place-items: center;
         object-fit: contain;
+      }
+
+      @media (orientation: landscape) {
+        body {
+          grid-template-columns: 1fr 2fr;
+        }
       }
     </style>
   </head>
