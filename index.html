@@ -1,15 +1,13 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head>
 <meta charset="utf-8">
-<meta name="generator" content="ReSpec 34.1.1">
+<meta name="generator" content="ReSpec 35.0.0">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <style>
 span.example-title{text-transform:none}
 :is(aside,div).example,div.illegal-example{padding:.5em;margin:1em 0;position:relative;clear:both}
 div.illegal-example{color:red}
 div.illegal-example p{color:#000}
-:is(aside,div).example{border-left-width:.5em;border-left-style:solid;border-color:#e0cb52;background:#fcfaee}
 aside.example div.example{border-left-width:.1em;border-color:#999;background:#fff}
-.example pre{background-color:rgba(0,0,0,.03)}
 </style>
 <style>
 .issue-label{text-transform:initial}
@@ -18,7 +16,7 @@ aside.example div.example{border-left-width:.1em;border-color:#999;background:#f
 span.warning{padding:.1em .5em .15em}
 .issue.closed span.issue-number{text-decoration:line-through}
 .issue.closed span.issue-number::after{content:" (Closed)";font-size:smaller}
-.warning{border-color:#f11;border-width:.2em;border-style:solid;background:#fbe9e9}
+.warning{border-color:#f11;border-color:var(--warning-border,#f11);border-width:.2em;border-style:solid;background:#fbe9e9;background:var(--warning-bg,#fbe9e9);color:#000;color:var(--text,#000)}
 .warning-title:before{content:"⚠";font-size:1.3em;float:left;padding-right:.3em;margin-top:-.3em}
 li.task-list-item{list-style:none}
 input.task-list-item-checkbox{margin:0 .35em .25em -1.6em;vertical-align:middle}
@@ -26,12 +24,12 @@ input.task-list-item-checkbox{margin:0 .35em .25em -1.6em;vertical-align:middle}
 </style>
 <style>
 pre.idl{padding:1em;position:relative}
-pre.idl>code{color:#000}
+pre.idl>code{color:#000;color:var(--text,#000)}
 @media print{
 pre.idl{white-space:pre-wrap}
 }
-.idlHeader{display:block;width:150px;background:#8ccbf2;color:#fff;font-family:sans-serif;font-weight:700;margin:-1em 0 1em -1em;height:28px;line-height:28px}
-.idlHeader a.self-link{margin-left:.3cm;text-decoration:none;border-bottom:none}
+.idlHeader{display:block;width:150px;background:#8ccbf2;background:var(--def-border,#8ccbf2);color:#fff;color:var(--defrow-border,#fff);font-family:sans-serif;font-weight:700;margin:-1em 0 1em -1em;height:28px;line-height:28px}
+.idlHeader a.self-link{margin-left:.3cm;text-decoration:none;border-bottom:none;color:inherit}
 .idlID{font-weight:700;color:#005a9c}
 .idlType{color:#005a9c}
 .idlName{color:#ff4500}
@@ -54,13 +52,13 @@ a.idlEnumItem{color:#000;border-bottom:1px dotted #ccc;text-decoration:none}
 </style>
 <style>
 dfn{cursor:pointer}
-.dfn-panel{position:absolute;z-index:35;min-width:300px;max-width:500px;padding:.5em .75em;margin-top:.6em;font-family:"Helvetica Neue",sans-serif;font-size:small;background:#fff;color:#000;box-shadow:0 1em 3em -.4em rgba(0,0,0,.3),0 0 1px 1px rgba(0,0,0,.05);border-radius:2px}
+.dfn-panel{position:absolute;z-index:35;min-width:300px;max-width:500px;padding:.5em .75em;margin-top:.6em;font-family:"Helvetica Neue",sans-serif;font-size:small;background:#fff;background:var(--indextable-hover-bg,#fff);color:#000;color:var(--text,#000);box-shadow:0 1em 3em -.4em rgba(0,0,0,.3),0 0 1px 1px rgba(0,0,0,.05);box-shadow:0 1em 3em -.4em var(--tocsidebar-shadow,rgba(0,0,0,.3)),0 0 1px 1px var(--tocsidebar-shadow,rgba(0,0,0,.05));border-radius:2px}
 .dfn-panel:not(.docked)>.caret{position:absolute;top:-9px}
-.dfn-panel:not(.docked)>.caret::after,.dfn-panel:not(.docked)>.caret::before{content:"";position:absolute;border:10px solid transparent;border-top:0;border-bottom:10px solid #fff;top:0}
-.dfn-panel:not(.docked)>.caret::before{border-bottom:9px solid #a2a9b1}
+.dfn-panel:not(.docked)>.caret::after,.dfn-panel:not(.docked)>.caret::before{content:"";position:absolute;border:10px solid transparent;border-top:0;border-bottom:10px solid #fff;border-bottom-color:var(--indextable-hover-bg,#fff);top:0}
+.dfn-panel:not(.docked)>.caret::before{border-bottom:9px solid #a2a9b1;border-bottom-color:var(--indextable-hover-bg,#a2a9b1)}
 .dfn-panel *{margin:0}
-.dfn-panel b{display:block;color:#000;margin-top:.25em}
-.dfn-panel ul a[href]{color:#333}
+.dfn-panel b{display:block;color:#000;color:var(--text,#000);margin-top:.25em}
+.dfn-panel ul a[href]{color:#333;color:var(--text,#333)}
 .dfn-panel>div{display:flex}
 .dfn-panel a.self-link{font-weight:700;margin-right:auto}
 .dfn-panel .marker{padding:.1em;margin-left:.5em;border-radius:.2em;text-align:center;white-space:nowrap;font-size:90%;color:#040b1c}
@@ -84,8 +82,6 @@ dfn{cursor:pointer}
 25%{transform:scale(1.25,1.25);opacity:.75}
 100%{transform:scale(1,1)}
 }
-:is(h1,h2,h3,h4,h5,h6,a) abbr{border:none}
-dfn{font-weight:700}
 a.internalDFN{color:inherit;border-bottom:1px solid #99c;text-decoration:none}
 a.externalDFN{color:inherit;border-bottom:1px dotted #ccc;text-decoration:none}
 a.bibref{text-decoration:none}
@@ -99,20 +95,8 @@ a.bibref{text-decoration:none}
 cite .bibref{font-style:normal}
 a[href].orcid{padding-left:4px;padding-right:4px}
 a[href].orcid>svg{margin-bottom:-2px}
-.toc a,.tof a{text-decoration:none}
-a .figno,a .secno{color:#000}
 ol.tof,ul.tof{list-style:none outside none}
 .caption{margin-top:.5em;font-style:italic}
-table.simple{border-spacing:0;border-collapse:collapse;border-bottom:3px solid #005a9c}
-.simple th{background:#005a9c;color:#fff;padding:3px 5px;text-align:left}
-.simple th a{color:#fff;padding:3px 5px;text-align:left}
-.simple th[scope=row]{background:inherit;color:inherit;border-top:1px solid #ddd}
-.simple td{padding:3px 10px;border-top:1px solid #ddd}
-.simple tr:nth-child(even){background:#f0f6ff}
-.section dd>p:first-child{margin-top:0}
-.section dd>p:last-child{margin-bottom:0}
-.section dd{margin-bottom:1em}
-.section dl.attrs dd,.section dl.eldef dd{margin-bottom:0}
 #issue-summary>ul{column-count:2}
 #issue-summary li{list-style:none;display:inline-block}
 details.respec-tests-details{margin-left:1em;display:inline-block;vertical-align:top}
@@ -151,15 +135,19 @@ ul.index code{color:inherit}
         [HTML] document. The HTMLModelElement interface then provides a
         means to interface with the embedded resource. Access-Control-Request-Method">
 <style>
-.hljs{display:block;overflow-x:auto;padding:.5em;color:#383a42;background:#fafafa}
-.hljs-comment,.hljs-quote{color:#717277;font-style:italic}
-.hljs-doctag,.hljs-formula,.hljs-keyword{color:#a626a4}
-.hljs-deletion,.hljs-name,.hljs-section,.hljs-selector-tag,.hljs-subst{color:#ca4706;font-weight:700}
-.hljs-literal{color:#0b76c5}
-.hljs-addition,.hljs-attribute,.hljs-meta-string,.hljs-regexp,.hljs-string{color:#42803c}
-.hljs-built_in,.hljs-class .hljs-title{color:#9a6a01}
-.hljs-attr,.hljs-number,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-pseudo,.hljs-template-variable,.hljs-type,.hljs-variable{color:#986801}
-.hljs-bullet,.hljs-link,.hljs-meta,.hljs-selector-id,.hljs-symbol,.hljs-title{color:#336ae3}
+.hljs{--base:#fafafa;--mono-1:#383a42;--mono-2:#686b77;--mono-3:#717277;--hue-1:#0b76c5;--hue-2:#336ae3;--hue-3:#a626a4;--hue-4:#42803c;--hue-5:#ca4706;--hue-5-2:#c91243;--hue-6:#986801;--hue-6-2:#9a6a01}
+@media (prefers-color-scheme:dark){
+.hljs{--base:#282c34;--mono-1:#abb2bf;--mono-2:#818896;--mono-3:#5c6370;--hue-1:#56b6c2;--hue-2:#61aeee;--hue-3:#c678dd;--hue-4:#98c379;--hue-5:#e06c75;--hue-5-2:#be5046;--hue-6:#d19a66;--hue-6-2:#e6c07b}
+}
+.hljs{display:block;overflow-x:auto;padding:.5em;color:#383a42;color:var(--mono-1,#383a42);background:#fafafa;background:var(--base,#fafafa)}
+.hljs-comment,.hljs-quote{color:#717277;color:var(--mono-3,#717277);font-style:italic}
+.hljs-doctag,.hljs-formula,.hljs-keyword{color:#a626a4;color:var(--hue-3,#a626a4)}
+.hljs-deletion,.hljs-name,.hljs-section,.hljs-selector-tag,.hljs-subst{color:#ca4706;color:var(--hue-5,#ca4706);font-weight:700}
+.hljs-literal{color:#0b76c5;color:var(--hue-1,#0b76c5)}
+.hljs-addition,.hljs-attribute,.hljs-meta-string,.hljs-regexp,.hljs-string{color:#42803c;color:var(--hue-4,#42803c)}
+.hljs-built_in,.hljs-class .hljs-title{color:#9a6a01;color:var(--hue-6-2,#9a6a01)}
+.hljs-attr,.hljs-number,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-pseudo,.hljs-template-variable,.hljs-type,.hljs-variable{color:#986801;color:var(--hue-6,#986801)}
+.hljs-bullet,.hljs-link,.hljs-meta,.hljs-selector-id,.hljs-symbol,.hljs-title{color:#336ae3;color:var(--hue-2,#336ae3)}
 .hljs-emphasis{font-style:italic}
 .hljs-strong{font-weight:700}
 .hljs-link{text-decoration:underline}
@@ -167,8 +155,8 @@ ul.index code{color:inherit}
 <style>
 var{position:relative;cursor:pointer}
 var[data-type]::after,var[data-type]::before{position:absolute;left:50%;top:-6px;opacity:0;transition:opacity .4s;pointer-events:none}
-var[data-type]::before{content:"";transform:translateX(-50%);border-width:4px 6px 0 6px;border-style:solid;border-color:transparent;border-top-color:#000}
-var[data-type]::after{content:attr(data-type);transform:translateX(-50%) translateY(-100%);background:#000;text-align:center;font-family:"Dank Mono","Fira Code",monospace;font-style:normal;padding:6px;border-radius:3px;color:#daca88;text-indent:0;font-weight:400}
+var[data-type]::before{content:"";transform:translateX(-50%);border-width:4px 6px 0 6px;border-style:solid;border-color:transparent;border-top-color:#222}
+var[data-type]::after{content:attr(data-type);transform:translateX(-50%) translateY(-100%);background:#222;text-align:center;font-family:"Dank Mono","Fira Code",monospace;font-style:normal;padding:6px;border-radius:3px;color:#daca88;text-indent:0;font-weight:400}
 var[data-type]:hover::after,var[data-type]:hover::before{opacity:1}
 </style>
 <script id="initialUserConfig" type="application/json">{
@@ -176,7 +164,7 @@ var[data-type]:hover::after,var[data-type]:hover::before{opacity:1}
   "specStatus": "CG-DRAFT",
   "editors": [
     {
-      "name": "Marcos Cáceres",
+      "name": "Brandel Zachernuk",
       "company": "Apple Inc.",
       "companyURL": "https://apple.com/"
     }
@@ -187,8 +175,15 @@ var[data-type]:hover::after,var[data-type]:hover::before{opacity:1}
     "branch": "main"
   },
   "xref": "web-platform",
-  "publishISODate": "2023-06-05T00:00:00.000Z",
-  "generatedSubtitle": "Draft Community Group Report 05 June 2023"
+  "localBiblio": {
+    "AOUSD": {
+      "title": "OpenUSD",
+      "href": "https://aousd.org",
+      "publisher": "Alliance of OpenUSD"
+    }
+  },
+  "publishISODate": "2024-04-19T00:00:00.000Z",
+  "generatedSubtitle": "Draft Community Group Report 19 April 2024"
 }</script>
 <link rel="stylesheet" href="https://www.w3.org/StyleSheets/TR/2021/cg-draft"></head>
   <body class="h-entry" data-cite="WEBIDL HTML INFRA URL WEBIDL DOM FETCH"><div class="head">
@@ -198,7 +193,7 @@ var[data-type]:hover::after,var[data-type]:hover::before{opacity:1}
     </h1> 
     <p id="w3c-state">
       <a href="https://www.w3.org/standards/types#reports">Draft Community Group Report</a>
-      <time class="dt-published" datetime="2023-06-05">05 June 2023</time>
+      <time class="dt-published" datetime="2024-04-19">19 April 2024</time>
     </p>
     <dl>
       
@@ -211,9 +206,13 @@ var[data-type]:hover::after,var[data-type]:hover::before{opacity:1}
       
       
       <dt>Editor:</dt><dd class="editor p-author h-card vcard">
-    <span class="p-name fn">Marcos Cáceres</span> (<a class="p-org org h-org" href="https://apple.com/">Apple Inc.</a>)
+    <span class="p-name fn">Brandel Zachernuk</span> (<a class="p-org org h-org" href="https://apple.com/">Apple Inc.</a>)
   </dd>
-      
+      <dt>
+              Former editor:
+            </dt><dd class="editor p-author h-card vcard">
+    <span class="p-name fn">Marcos Cáceres</span> (<a class="p-org org h-org" href="https://apple.com/">Apple Inc.</a>) -  Until <time datetime="2024-04-01">01 April 2024</time>
+  </dd>
       
       <dt>Feedback:</dt><dd>
         <a href="https://github.com/immersive-web/model-element/">GitHub immersive-web/model-element</a>
@@ -221,12 +220,13 @@ var[data-type]:hover::after,var[data-type]:hover::before{opacity:1}
         <a href="https://github.com/immersive-web/model-element/issues/new/choose">new issue</a>,
         <a href="https://github.com/immersive-web/model-element/issues/">open issues</a>)
       </dd>
+      
     </dl>
     
     <p class="copyright">
-          <a href="https://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a>
+          <a href="https://www.w3.org/policies/#copyright">Copyright</a>
           ©
-          2023
+          2024
           
           the Contributors to the 
       The <code>&lt;model&gt;</code> element
@@ -521,7 +521,7 @@ var[data-type]:hover::after,var[data-type]:hover::before{opacity:1}
         <code><dfn class="element-attr" data-dfn-type="element-attr" id="dfn-interactive" tabindex="0" aria-haspopup="dialog" data-export="">interactive</dfn></code> attribute
       </h3><a class="self-link" href="#interactive-attribute" aria-label="Permalink for Section 2.2"></a></div>
       </section><section id="controls-attribute"><div class="header-wrapper"><h3 id="x2-3-controls-attribute"><bdi class="secno">2.3 </bdi>
-        <code><dfn class="element-attr respec-offending-element" data-dfn-type="element-attr" id="dfn-controls" tabindex="0" aria-haspopup="dialog" title="Found definition for &quot;controls&quot;, but nothing links to it. This is usually a spec bug!" data-export="">controls</dfn></code> attribute
+        <code><dfn class="element-attr" data-dfn-type="element-attr" id="dfn-controls" tabindex="0" aria-haspopup="dialog" data-export="">controls</dfn></code> attribute
       </h3><a class="self-link" href="#controls-attribute" aria-label="Permalink for Section 2.3"></a></div>
       </section><section id="crossorigin-attribute"><div class="header-wrapper"><h3 id="x2-4-crossorigin-attribute"><bdi class="secno">2.4 </bdi>
         <code><dfn class="element-attr" data-dfn-type="element-attr" id="dfn-crossorigin" tabindex="0" aria-haspopup="dialog" data-export="">crossorigin</dfn></code> attribute
@@ -663,7 +663,7 @@ How we envision the display of multiple models? Would we allow them to bump into
         Formats
       </h2><a class="self-link" href="#formats" aria-label="Permalink for Section 9."></a></div>
       
-      <div class="issue" id="issue-container-number-18"><div role="heading" class="issue-title marker" id="h-issue-20" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/18"><span class="issue-number">Issue 18</span></a><span class="issue-label">: Which formats? <a class="respec-gh-label" href="https://github.com/immersive-web/model-element/issues/?q=is%3Aissue+is%3Aopen+label%3A%22face-to-face%22" style="background-color: rgb(237, 237, 237); color: rgb(0, 0, 0);" aria-label="GitHub label: face-to-face">face-to-face</a></span></div><p dir="auto">Need to investigate what formats are suitable for <code class="notranslate">model</code>. We might need some kind of evaluation matrix. Model can support multiple formats out of the box, but it might be good to evaluate what is best of users and developers and why.</p></div>
+      <div class="issue" id="issue-container-number-18"><div role="heading" class="issue-title marker" id="h-issue-20" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/18"><span class="issue-number">Issue 18</span></a><span class="issue-label">: Which formats?</span></div><p dir="auto">Need to investigate what formats are suitable for <code class="notranslate">model</code>. We might need some kind of evaluation matrix. Model can support multiple formats out of the box, but it might be good to evaluate what is best of users and developers and why.</p></div>
     </section>
     <section id="overlap-with-media-elements"><div class="header-wrapper"><h2 id="x10-overlap-with-media-elements"><bdi class="secno">10. </bdi>
         Overlap with "media elements"
@@ -771,7 +771,7 @@ How we envision the display of multiple models? Would we allow them to bump into
 </ul>
 <p dir="auto">Usually, this would be provide by the embedded format... however, it appears that both glTF and USDZ are quite limited when it comes to accessibility.</p>
 <p dir="auto">As such, it may be that we need to leverage what we can from HTML + ARIA to overcome the shortcomings of these formats. We have quite a bit of precedent (e.g., from the humble, yet limited, <code class="notranslate">alt</code> attribute, to how <code class="notranslate">&lt;canvas&gt;</code> can be made accessibly, to the potential inclusion of <code class="notranslate">&lt;track&gt;</code> elements, and so on).</p></div>
-      <div class="issue" id="issue-container-number-39"><div role="heading" class="issue-title marker" id="h-issue-35" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/39"><span class="issue-number">Issue 39</span></a><span class="issue-label">: Accessibility: ARIA integration and HTML Accessibility API Mappings</span></div><p dir="auto">We need to define how what the ARIA semantics are and what is exposed (application probably). We need to coordinate with the accessibility folks + get this added to the HTML Accessibility API Mappings.</p></div>
+      <div class="issue" id="issue-container-number-39"><div role="heading" class="issue-title marker" id="h-issue-35" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/39"><span class="issue-number">Issue 39</span></a><span class="issue-label">: Accessibility: ARIA integration and HTML Accessibility API Mappings <a class="respec-gh-label" href="https://github.com/immersive-web/model-element/issues/?q=is%3Aissue+is%3Aopen+label%3A%22a11y-tracker%22" style="background-color: rgb(234, 116, 114); color: rgb(0, 0, 0);" aria-label="GitHub label: a11y-tracker">a11y-tracker</a></span></div><p dir="auto">We need to define how what the ARIA semantics are and what is exposed (application probably). We need to coordinate with the accessibility folks + get this added to the HTML Accessibility API Mappings.</p></div>
       <section id="requirements-for-providing-text-to-act-as-an-alternative-for-3d-content"><div class="header-wrapper"><h3 id="x17-1-requirements-for-providing-text-to-act-as-an-alternative-for-3d-content"><bdi class="secno">17.1 </bdi>
         Requirements for providing text to act as an alternative for 3D content
       </h3><a class="self-link" href="#requirements-for-providing-text-to-act-as-an-alternative-for-3d-content" aria-label="Permalink for Section 17.1"></a></div>
@@ -996,13 +996,13 @@ How we envision the display of multiple models? Would we allow them to bump into
     <dl class="bibliography"><dt id="bib-html">[HTML]</dt><dd>
       <a href="https://html.spec.whatwg.org/multipage/"><cite>HTML Standard</cite></a>. Anne van Kesteren; Domenic Denicola; Ian Hickson; Philip Jägenstedt; Simon Pieters.  WHATWG. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
     </dd><dt id="bib-html-aria">[HTML-ARIA]</dt><dd>
-      <a href="https://www.w3.org/TR/html-aria/"><cite>ARIA in HTML</cite></a>. Steve Faulkner; Scott O'Hara; Patrick Lauke.  W3C. 31 May 2023. W3C Recommendation. URL: <a href="https://www.w3.org/TR/html-aria/">https://www.w3.org/TR/html-aria/</a>
+      <a href="https://www.w3.org/TR/html-aria/"><cite>ARIA in HTML</cite></a>. Scott O'Hara; Patrick Lauke.  W3C. 15 April 2024. W3C Recommendation. URL: <a href="https://www.w3.org/TR/html-aria/">https://www.w3.org/TR/html-aria/</a>
     </dd><dt id="bib-rfc2119">[RFC2119]</dt><dd>
       <a href="https://www.rfc-editor.org/rfc/rfc2119"><cite>Key words for use in RFCs to Indicate Requirement Levels</cite></a>. S. Bradner.  IETF. March 1997. Best Current Practice. URL: <a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>
     </dd><dt id="bib-rfc8174">[RFC8174]</dt><dd>
       <a href="https://www.rfc-editor.org/rfc/rfc8174"><cite>Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words</cite></a>. B. Leiba.  IETF. May 2017. Best Current Practice. URL: <a href="https://www.rfc-editor.org/rfc/rfc8174">https://www.rfc-editor.org/rfc/rfc8174</a>
     </dd><dt id="bib-wai-aria-1.2">[wai-aria-1.2]</dt><dd>
-      <a href="https://www.w3.org/TR/wai-aria-1.2/"><cite>Accessible Rich Internet Applications (WAI-ARIA) 1.2</cite></a>. Michael Cooper; James Nurthen; Joanmarie Diggs; Carolyn MacLeod.  W3C. 28 March 2023. W3C Proposed Recommendation. URL: <a href="https://www.w3.org/TR/wai-aria-1.2/">https://www.w3.org/TR/wai-aria-1.2/</a>
+      <a href="https://www.w3.org/TR/wai-aria-1.2/"><cite>Accessible Rich Internet Applications (WAI-ARIA) 1.2</cite></a>. Joanmarie Diggs; James Nurthen; Michael Cooper; Carolyn MacLeod.  W3C. 6 June 2023. W3C Recommendation. URL: <a href="https://www.w3.org/TR/wai-aria-1.2/">https://www.w3.org/TR/wai-aria-1.2/</a>
     </dd><dt id="bib-webidl">[webidl]</dt><dd>
       <a href="https://webidl.spec.whatwg.org/"><cite>Web IDL Standard</cite></a>. Edgar Chen; Timothy Gu.  WHATWG. Living Standard. URL: <a href="https://webidl.spec.whatwg.org/">https://webidl.spec.whatwg.org/</a>
     </dd></dl>
@@ -1011,7 +1011,7 @@ How we envision the display of multiple models? Would we allow them to bump into
     <dl class="bibliography"><dt id="bib-fetch">[fetch]</dt><dd>
       <a href="https://fetch.spec.whatwg.org/"><cite>Fetch Standard</cite></a>. Anne van Kesteren.  WHATWG. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
     </dd><dt id="bib-html-aam-1.0">[HTML-AAM-1.0]</dt><dd>
-      <a href="https://www.w3.org/TR/html-aam-1.0/"><cite>HTML Accessibility API Mappings 1.0</cite></a>. Scott O'Hara.  W3C. 19 May 2023. W3C Working Draft. URL: <a href="https://www.w3.org/TR/html-aam-1.0/">https://www.w3.org/TR/html-aam-1.0/</a>
+      <a href="https://www.w3.org/TR/html-aam-1.0/"><cite>HTML Accessibility API Mappings 1.0</cite></a>. Scott O'Hara.  W3C. 18 April 2024. W3C Working Draft. URL: <a href="https://www.w3.org/TR/html-aam-1.0/">https://www.w3.org/TR/html-aam-1.0/</a>
     </dd></dl>
   </section></section><p role="navigation" id="back-to-top">
     <a href="#title"><abbr title="Back to Top">↑</abbr></a>
@@ -1024,18 +1024,18 @@ How we envision the display of multiple models? Would we allow them to bump into
       <p><b>Referenced in:</b></p>
       <ul>
     <li>
-    <a href="#ref-for-dfn-model-1" title="§ 2. The model element">§ 2. The model element</a> <a href="#ref-for-dfn-model-2" title="Reference 2">(2)</a> <a href="#ref-for-dfn-model-3" title="Reference 3">(3)</a> 
-  </li><li>
-    <a href="#ref-for-dfn-model-4" title="§ 4.1 The source element's parent is a model element">§ 4.1 The source element's parent is a model element</a> 
-  </li><li>
-    <a href="#ref-for-dfn-model-5" title="§ 7.2 Embedded content">§ 7.2 Embedded content</a> <a href="#ref-for-dfn-model-6" title="Reference 2">(2)</a> <a href="#ref-for-dfn-model-7" title="Reference 3">(3)</a> <a href="#ref-for-dfn-model-8" title="Reference 4">(4)</a> 
-  </li><li>
-    <a href="#ref-for-dfn-model-9" title="§ 11.2 Integrations with source element">§ 11.2 Integrations with source element</a> 
-  </li><li>
-    <a href="#ref-for-dfn-model-10" title="§ 17.2 For authors">§ 17.2 For authors</a> 
-  </li><li>
-    <a href="#ref-for-dfn-model-11" title="§ 17.3 For implementers">§ 17.3 For implementers</a> 
-  </li>
+      <a href="#ref-for-dfn-model-1" title="§ 2. The model element">§ 2. The model element</a> <a href="#ref-for-dfn-model-2" title="Reference 2">(2)</a> <a href="#ref-for-dfn-model-3" title="Reference 3">(3)</a> 
+    </li><li>
+      <a href="#ref-for-dfn-model-4" title="§ 4.1 The source element's parent is a model element">§ 4.1 The source element's parent is a model element</a> 
+    </li><li>
+      <a href="#ref-for-dfn-model-5" title="§ 7.2 Embedded content">§ 7.2 Embedded content</a> <a href="#ref-for-dfn-model-6" title="Reference 2">(2)</a> <a href="#ref-for-dfn-model-7" title="Reference 3">(3)</a> <a href="#ref-for-dfn-model-8" title="Reference 4">(4)</a> 
+    </li><li>
+      <a href="#ref-for-dfn-model-9" title="§ 11.2 Integrations with source element">§ 11.2 Integrations with source element</a> 
+    </li><li>
+      <a href="#ref-for-dfn-model-10" title="§ 17.2 For authors">§ 17.2 For authors</a> 
+    </li><li>
+      <a href="#ref-for-dfn-model-11" title="§ 17.3 For implementers">§ 17.3 For implementers</a> 
+    </li>
   </ul>
     </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-autoplay" aria-label="Links in this document to definition: autoplay">
       <span class="caret"></span>
@@ -1046,8 +1046,8 @@ How we envision the display of multiple models? Would we allow them to bump into
       <p><b>Referenced in:</b></p>
       <ul>
     <li>
-    <a href="#ref-for-dfn-autoplay-1" title="§ 2. The model element">§ 2. The model element</a> 
-  </li>
+      <a href="#ref-for-dfn-autoplay-1" title="§ 2. The model element">§ 2. The model element</a> 
+    </li>
   </ul>
     </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-interactive" aria-label="Links in this document to definition: interactive">
       <span class="caret"></span>
@@ -1058,8 +1058,8 @@ How we envision the display of multiple models? Would we allow them to bump into
       <p><b>Referenced in:</b></p>
       <ul>
     <li>
-    <a href="#ref-for-dfn-interactive-1" title="§ 2. The model element">§ 2. The model element</a> 
-  </li>
+      <a href="#ref-for-dfn-interactive-1" title="§ 2. The model element">§ 2. The model element</a> 
+    </li>
   </ul>
     </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-controls" aria-label="Links in this document to definition: controls">
       <span class="caret"></span>
@@ -1080,8 +1080,8 @@ How we envision the display of multiple models? Would we allow them to bump into
       <p><b>Referenced in:</b></p>
       <ul>
     <li>
-    <a href="#ref-for-dfn-crossorigin-1" title="§ 2. The model element">§ 2. The model element</a> 
-  </li>
+      <a href="#ref-for-dfn-crossorigin-1" title="§ 2. The model element">§ 2. The model element</a> 
+    </li>
   </ul>
     </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-height" aria-label="Links in this document to definition: height">
       <span class="caret"></span>
@@ -1092,8 +1092,8 @@ How we envision the display of multiple models? Would we allow them to bump into
       <p><b>Referenced in:</b></p>
       <ul>
     <li>
-    <a href="#ref-for-dfn-height-1" title="§ 2. The model element">§ 2. The model element</a> 
-  </li>
+      <a href="#ref-for-dfn-height-1" title="§ 2. The model element">§ 2. The model element</a> 
+    </li>
   </ul>
     </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-loading" aria-label="Links in this document to definition: loading">
       <span class="caret"></span>
@@ -1104,8 +1104,8 @@ How we envision the display of multiple models? Would we allow them to bump into
       <p><b>Referenced in:</b></p>
       <ul>
     <li>
-    <a href="#ref-for-dfn-loading-1" title="§ 2. The model element">§ 2. The model element</a> 
-  </li>
+      <a href="#ref-for-dfn-loading-1" title="§ 2. The model element">§ 2. The model element</a> 
+    </li>
   </ul>
     </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-loop" aria-label="Links in this document to definition: loop">
       <span class="caret"></span>
@@ -1116,8 +1116,8 @@ How we envision the display of multiple models? Would we allow them to bump into
       <p><b>Referenced in:</b></p>
       <ul>
     <li>
-    <a href="#ref-for-dfn-loop-1" title="§ 2. The model element">§ 2. The model element</a> 
-  </li>
+      <a href="#ref-for-dfn-loop-1" title="§ 2. The model element">§ 2. The model element</a> 
+    </li>
   </ul>
     </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-muted" aria-label="Links in this document to definition: muted">
       <span class="caret"></span>
@@ -1128,8 +1128,8 @@ How we envision the display of multiple models? Would we allow them to bump into
       <p><b>Referenced in:</b></p>
       <ul>
     <li>
-    <a href="#ref-for-dfn-muted-1" title="§ 2. The model element">§ 2. The model element</a> 
-  </li>
+      <a href="#ref-for-dfn-muted-1" title="§ 2. The model element">§ 2. The model element</a> 
+    </li>
   </ul>
     </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-poster" aria-label="Links in this document to definition: poster">
       <span class="caret"></span>
@@ -1140,10 +1140,10 @@ How we envision the display of multiple models? Would we allow them to bump into
       <p><b>Referenced in:</b></p>
       <ul>
     <li>
-    <a href="#ref-for-dfn-poster-1" title="§ 2. The model element">§ 2. The model element</a> 
-  </li><li>
-    <a href="#ref-for-dfn-poster-2" title="§ 2.9 poster attribute">§ 2.9 poster attribute</a> 
-  </li>
+      <a href="#ref-for-dfn-poster-1" title="§ 2. The model element">§ 2. The model element</a> 
+    </li><li>
+      <a href="#ref-for-dfn-poster-2" title="§ 2.9 poster attribute">§ 2.9 poster attribute</a> 
+    </li>
   </ul>
     </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-src" aria-label="Links in this document to definition: src">
       <span class="caret"></span>
@@ -1154,8 +1154,8 @@ How we envision the display of multiple models? Would we allow them to bump into
       <p><b>Referenced in:</b></p>
       <ul>
     <li>
-    <a href="#ref-for-dfn-src-1" title="§ 2. The model element">§ 2. The model element</a> 
-  </li>
+      <a href="#ref-for-dfn-src-1" title="§ 2. The model element">§ 2. The model element</a> 
+    </li>
   </ul>
     </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-width" aria-label="Links in this document to definition: width">
       <span class="caret"></span>
@@ -1166,8 +1166,8 @@ How we envision the display of multiple models? Would we allow them to bump into
       <p><b>Referenced in:</b></p>
       <ul>
     <li>
-    <a href="#ref-for-dfn-width-1" title="§ 2. The model element">§ 2. The model element</a> 
-  </li>
+      <a href="#ref-for-dfn-width-1" title="§ 2. The model element">§ 2. The model element</a> 
+    </li>
   </ul>
     </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dom-htmlmodelelement" aria-label="Links in this document to definition: HTMLModelElement">
       <span class="caret"></span>
@@ -1178,8 +1178,8 @@ How we envision the display of multiple models? Would we allow them to bump into
       <p><b>Referenced in:</b></p>
       <ul>
     <li>
-    <a href="#ref-for-dom-htmlmodelelement-1" title="§ 2. The model element">§ 2. The model element</a> 
-  </li>
+      <a href="#ref-for-dom-htmlmodelelement-1" title="§ 2. The model element">§ 2. The model element</a> 
+    </li>
   </ul>
     </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-index-term-access-control-request-method" aria-label="Links in this document to definition: Access-Control-Request-Method">
       <span class="caret"></span>
@@ -1190,8 +1190,8 @@ How we envision the display of multiple models? Would we allow them to bump into
       <p><b>Referenced in:</b></p>
       <ul>
     <li>
-    <a href="#ref-for-index-term-access-control-request-method-1" title="§ Abstract">§ Abstract</a> 
-  </li>
+      <a href="#ref-for-index-term-access-control-request-method-1" title="§ Abstract">§ Abstract</a> 
+    </li>
   </ul>
     </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-index-term-embedded-content" aria-label="Links in this document to definition: Embedded content">
       <span class="caret"></span>
@@ -1202,8 +1202,8 @@ How we envision the display of multiple models? Would we allow them to bump into
       <p><b>Referenced in:</b></p>
       <ul>
     <li>
-    <a href="#ref-for-index-term-embedded-content-1" title="§ 2. The model element">§ 2. The model element</a> <a href="#ref-for-index-term-embedded-content-2" title="Reference 2">(2)</a> 
-  </li>
+      <a href="#ref-for-index-term-embedded-content-1" title="§ 2. The model element">§ 2. The model element</a> <a href="#ref-for-index-term-embedded-content-2" title="Reference 2">(2)</a> 
+    </li>
   </ul>
     </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-index-term-flow-content" aria-label="Links in this document to definition: Flow content">
       <span class="caret"></span>
@@ -1214,8 +1214,8 @@ How we envision the display of multiple models? Would we allow them to bump into
       <p><b>Referenced in:</b></p>
       <ul>
     <li>
-    <a href="#ref-for-index-term-flow-content-1" title="§ 2. The model element">§ 2. The model element</a> 
-  </li>
+      <a href="#ref-for-index-term-flow-content-1" title="§ 2. The model element">§ 2. The model element</a> 
+    </li>
   </ul>
     </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-index-term-htmlelement-interface" aria-label="Links in this document to definition: HTMLElement interface">
       <span class="caret"></span>
@@ -1226,8 +1226,8 @@ How we envision the display of multiple models? Would we allow them to bump into
       <p><b>Referenced in:</b></p>
       <ul>
     <li>
-    <a href="#ref-for-index-term-htmlelement-interface-1" title="§ 3. The HTMLModelElement interface">§ 3. The HTMLModelElement interface</a> 
-  </li>
+      <a href="#ref-for-index-term-htmlelement-interface-1" title="§ 3. The HTMLModelElement interface">§ 3. The HTMLModelElement interface</a> 
+    </li>
   </ul>
     </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-index-term-img-element" aria-label="Links in this document to definition: img element">
       <span class="caret"></span>
@@ -1238,8 +1238,8 @@ How we envision the display of multiple models? Would we allow them to bump into
       <p><b>Referenced in:</b></p>
       <ul>
     <li>
-    <a href="#ref-for-index-term-img-element-1" title="§ 2. The model element">§ 2. The model element</a> 
-  </li>
+      <a href="#ref-for-index-term-img-element-1" title="§ 2. The model element">§ 2. The model element</a> 
+    </li>
   </ul>
     </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-index-term-interactive-content" aria-label="Links in this document to definition: interactive content">
       <span class="caret"></span>
@@ -1250,8 +1250,8 @@ How we envision the display of multiple models? Would we allow them to bump into
       <p><b>Referenced in:</b></p>
       <ul>
     <li>
-    <a href="#ref-for-index-term-interactive-content-1" title="§ 2. The model element">§ 2. The model element</a> 
-  </li>
+      <a href="#ref-for-index-term-interactive-content-1" title="§ 2. The model element">§ 2. The model element</a> 
+    </li>
   </ul>
     </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-index-term-palpable-content" aria-label="Links in this document to definition: Palpable content">
       <span class="caret"></span>
@@ -1262,8 +1262,8 @@ How we envision the display of multiple models? Would we allow them to bump into
       <p><b>Referenced in:</b></p>
       <ul>
     <li>
-    <a href="#ref-for-index-term-palpable-content-1" title="§ 2. The model element">§ 2. The model element</a> 
-  </li>
+      <a href="#ref-for-index-term-palpable-content-1" title="§ 2. The model element">§ 2. The model element</a> 
+    </li>
   </ul>
     </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-index-term-phrasing-content" aria-label="Links in this document to definition: Phrasing content">
       <span class="caret"></span>
@@ -1274,8 +1274,8 @@ How we envision the display of multiple models? Would we allow them to bump into
       <p><b>Referenced in:</b></p>
       <ul>
     <li>
-    <a href="#ref-for-index-term-phrasing-content-1" title="§ 2. The model element">§ 2. The model element</a> 
-  </li>
+      <a href="#ref-for-index-term-phrasing-content-1" title="§ 2. The model element">§ 2. The model element</a> 
+    </li>
   </ul>
     </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-index-term-picture-element" aria-label="Links in this document to definition: picture element">
       <span class="caret"></span>
@@ -1286,10 +1286,10 @@ How we envision the display of multiple models? Would we allow them to bump into
       <p><b>Referenced in:</b></p>
       <ul>
     <li>
-    <a href="#ref-for-index-term-picture-element-1" title="§ 2. The model element">§ 2. The model element</a> 
-  </li><li>
-    <a href="#ref-for-index-term-picture-element-2" title="§ 11.2 Integrations with source element">§ 11.2 Integrations with source element</a> 
-  </li>
+      <a href="#ref-for-index-term-picture-element-1" title="§ 2. The model element">§ 2. The model element</a> 
+    </li><li>
+      <a href="#ref-for-index-term-picture-element-2" title="§ 11.2 Integrations with source element">§ 11.2 Integrations with source element</a> 
+    </li>
   </ul>
     </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-index-term-exposed-extended-attribute" aria-label="Links in this document to definition: [Exposed] extended attribute">
       <span class="caret"></span>
@@ -1300,8 +1300,8 @@ How we envision the display of multiple models? Would we allow them to bump into
       <p><b>Referenced in:</b></p>
       <ul>
     <li>
-    <a href="#ref-for-index-term-exposed-extended-attribute-1" title="§ 3. The HTMLModelElement interface">§ 3. The HTMLModelElement interface</a> 
-  </li>
+      <a href="#ref-for-index-term-exposed-extended-attribute-1" title="§ 3. The HTMLModelElement interface">§ 3. The HTMLModelElement interface</a> 
+    </li>
   </ul>
     </div><script id="respec-dfn-panel">(() => {
 // @ts-check
