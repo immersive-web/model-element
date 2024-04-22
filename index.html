@@ -131,9 +131,11 @@ ul.index code{color:inherit}
 #index-defined-here .print-only{display:initial}
 }
 </style>
-<meta name="description" content="The model element allows embedding 3D graphical content into a
-        [HTML] document. The HTMLModelElement interface then provides a
-        means to interface with the embedded resource. Access-Control-Request-Method">
+<meta name="description" content="The <model> element allows embedding 3D graphical content inline within
+        an [HTML] document to be managed declaratively, and rendered directly
+        by the user agent. The HTMLModelElement interface then provides a
+        simple API for controlling the presentation, animation, interaction,
+        fetching, and UI affordances of a <model>.">
 <style>
 .hljs{--base:#fafafa;--mono-1:#383a42;--mono-2:#686b77;--mono-3:#717277;--hue-1:#0b76c5;--hue-2:#336ae3;--hue-3:#a626a4;--hue-4:#42803c;--hue-5:#ca4706;--hue-5-2:#c91243;--hue-6:#986801;--hue-6-2:#9a6a01}
 @media (prefers-color-scheme:dark){
@@ -243,9 +245,11 @@ var[data-type]:hover::after,var[data-type]:hover::before{opacity:1}
     
     <section id="abstract" class="introductory"><h2>Abstract</h2>
       <p>
-        The <code>model</code> element allows embedding 3D graphical content into a
-        [<cite><a class="bibref" data-link-type="biblio" href="#bib-html" title="HTML Standard">HTML</a></cite>] document. The <code>HTMLModelElement</code> interface then provides a
-        means to interface with the embedded resource. <a data-type="http-header" href="https://fetch.spec.whatwg.org/#http-access-control-request-method" id="ref-for-index-term-access-control-request-method-1">Access-Control-Request-Method</a>
+        The <code>&lt;model&gt;</code> element allows embedding 3D graphical content inline within
+        an [<cite><a class="bibref" data-link-type="biblio" href="#bib-html" title="HTML Standard">HTML</a></cite>] document to be managed declaratively, and rendered directly
+        by the user agent. The <code>HTMLModelElement</code> interface then provides a
+        simple API for controlling the presentation, animation, interaction,
+        fetching, and UI affordances of a <code>&lt;model&gt;</code>.
       </p>
     </section>
     <section id="sotd" class="introductory"><h2>Status of This Document</h2><p>
@@ -914,7 +918,7 @@ How we envision the display of multiple models? Would we allow them to bump into
         initial proposal:
       </p>
        <rs-changelog from="initial" filter="removeCommits"><ul>
-      <li><a href="https://github.com/immersive-web/model-element/commit/60ea2c3">Remove alt attr, better define a11y problem</a></li>
+      <li><a href="https://github.com/immersive-web/model-element/commit/60ea2c3">Remove alt attr, better define a11y problem</a></li><li><a href="https://github.com/immersive-web/model-element/commit/4f209ac">Update index.html</a></li><li><a href="https://github.com/immersive-web/model-element/commit/62b52e1">Update index.html</a></li>
       </ul></rs-changelog>
     </section>
     <section id="index" class="appendix"><div class="header-wrapper"><h2 id="a-index"><bdi class="secno">A. </bdi>Index</h2><a class="self-link" href="#index" aria-label="Permalink for Appendix A."></a></div><section id="index-defined-here"><div class="header-wrapper"><h3 id="a-1-terms-defined-by-this-specification"><bdi class="secno">A.1 </bdi>Terms defined by this specification</h3><a class="self-link" href="#index-defined-here" aria-label="Permalink for Appendix A.1"></a></div>
@@ -952,13 +956,6 @@ How we envision the display of multiple models? Would we allow them to bump into
     
     <ul class="index">
     <li>
-        [<cite><a class="bibref" data-link-type="biblio" href="#bib-fetch">FETCH</a></cite>] defines the following:
-        <ul>
-          <li>
-    <span class="index-term" data-href="https://fetch.spec.whatwg.org/#http-access-control-request-method" id="index-term-access-control-request-method" tabindex="0" aria-haspopup="dialog">Access-Control-Request-Method</span>
-  </li>
-        </ul>
-      </li><li>
         [<cite><a class="bibref" data-link-type="biblio" href="#bib-html">HTML</a></cite>] defines the following:
         <ul>
           <li>
@@ -1008,9 +1005,7 @@ How we envision the display of multiple models? Would we allow them to bump into
     </dd></dl>
   </section><section id="informative-references"><div class="header-wrapper"><h3 id="b-2-informative-references"><bdi class="secno">B.2 </bdi>Informative references</h3><a class="self-link" href="#informative-references" aria-label="Permalink for Appendix B.2"></a></div>
     
-    <dl class="bibliography"><dt id="bib-fetch">[fetch]</dt><dd>
-      <a href="https://fetch.spec.whatwg.org/"><cite>Fetch Standard</cite></a>. Anne van Kesteren.  WHATWG. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
-    </dd><dt id="bib-html-aam-1.0">[HTML-AAM-1.0]</dt><dd>
+    <dl class="bibliography"><dt id="bib-html-aam-1.0">[HTML-AAM-1.0]</dt><dd>
       <a href="https://www.w3.org/TR/html-aam-1.0/"><cite>HTML Accessibility API Mappings 1.0</cite></a>. Scott O'Hara.  W3C. 18 April 2024. W3C Working Draft. URL: <a href="https://www.w3.org/TR/html-aam-1.0/">https://www.w3.org/TR/html-aam-1.0/</a>
     </dd></dl>
   </section></section><p role="navigation" id="back-to-top">
@@ -1179,18 +1174,6 @@ How we envision the display of multiple models? Would we allow them to bump into
       <ul>
     <li>
       <a href="#ref-for-dom-htmlmodelelement-1" title="§ 2. The model element">§ 2. The model element</a> 
-    </li>
-  </ul>
-    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-index-term-access-control-request-method" aria-label="Links in this document to definition: Access-Control-Request-Method">
-      <span class="caret"></span>
-      <div>
-        <a class="self-link" href="https://fetch.spec.whatwg.org/#http-access-control-request-method" aria-label="Permalink for definition: Access-Control-Request-Method. Activate to close this dialog.">Permalink</a>
-         
-      </div>
-      <p><b>Referenced in:</b></p>
-      <ul>
-    <li>
-      <a href="#ref-for-index-term-access-control-request-method-1" title="§ Abstract">§ Abstract</a> 
     </li>
   </ul>
     </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-index-term-embedded-content" aria-label="Links in this document to definition: Embedded content">
