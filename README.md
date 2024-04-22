@@ -1,5 +1,5 @@
 
-# The HTML <model> element
+# The HTML `<model>` element
 
 This is the Immersive-Web repository for the `<model>` element - `HTMLModelElement` and associated APIs.
 
