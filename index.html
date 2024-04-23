@@ -61,6 +61,87 @@
     </section>
     <section>
       <h2>
+        Introduction
+      </h2>
+      <p>
+        HTML allows the display of many media types through elements such as
+        &lt;img&gt;, &lt;picture&gt;, or &lt;video&gt;, but it does not provide
+        a native manner to directly consume 3D content. Embedding such content
+        within a page is comparatively cumbersome and relies on scripting the
+        &lt;canvas&gt; element. We believe it is time to put 3D models on equal
+        footing with other, already supported, media types.
+      </p>
+      <p>
+        There is a variety of solutions for displaying three-dimensional models
+        on the web, including general WebGL libraries and frameworks that have
+        the ability to parse and render models. There are also more
+        purpose-built libraries devoted to a simpler set of capabilities around
+        a single model, providing a simpler API to achieve this.
+      </p>
+      <p>
+        However, because these libraries constitute a layer of abstraction on
+        top of the browser, they are unreliable as a basis for browser- and
+        system-level accessibility capabilities, and may require the disclosure
+        of more information to the JavaScript-level API responsible for
+        rendering, such as the eye and head position of the user. While this is
+        necessary for complex experiences experiences such as those provided by
+        [[webxr]], it should not be necessary for the basic, spatial display of
+        an object in the context of a page.
+      </p>
+      <p>
+        The HTML &lt;model&gt; element aims to allow a website to embed
+        interactive 3D models as conveniently as any other visual media. Models
+        are expected to be created by 3D authoring tools or generated
+        dynamically, but served as a standalone resource by the server.
+      </p>
+      <p>
+        Additionally, besides the simple display of a 3D model, the
+        &lt;model&gt; element should have support for interaction and animation
+        playback while presented within the page, and also support more
+        immersive experiences, such as the stereoscopic display of 3D content.
+      </p>
+      <h3>
+        Considered alternatives
+      </h3>
+      <ol>
+        <li>Reuse &lt;embed&gt; or &lt;object&gt; instead of adding a new
+        element
+          <p>
+            It would be possible to reuse one of the generic embedding
+            elements, such as &lt;embed&gt; or &lt;object&gt;, for this
+            purpose. However, we think that 3D content should behave like other
+            media types.
+          </p>
+        </li>
+        <li>Reuse &lt;img&gt;, &lt;picture&gt; or &lt;video&gt; instead of
+        adding a new element
+          <p>
+            One can consider a 3D rendering to be an image or movie, but we
+            expect there to be differences in interactivity.
+          </p>
+        </li>
+        <li>A simple `src=""` attribute instead of &lt;source&gt; children
+          <p>
+            Like &lt;audio&gt; and &lt;video&gt;, there are several widely-used
+            formats that authors might wish to use, and browser support for
+            these formats may vary. Given this, providing multiple
+            &lt;source&gt;s seems desirable.
+          </p>
+        </li>
+        <li>Do not add a new element. Pass enough data to WebGL to render
+        accurately
+          <p>
+            As noted above, this would require any site that wants to use an AR
+            experience to request and have the user trust that site enough to
+            allow them access to the camera stream as well as other
+            information. A new element allows this use case without requiring
+            the user to make that decision.
+          </p>
+        </li>
+      </ol>
+    </section>
+    <section>
+      <h2>
         Out of scope
       </h2>
       <p>
