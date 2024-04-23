@@ -64,29 +64,27 @@
         Introduction
       </h2>
       <p>
-        HTML allows the display of many media types through elements such as
-        &lt;img&gt;, &lt;picture&gt;, or &lt;video&gt;, but it does not provide
-        a native manner to directly consume 3D content. Embedding such content
-        within a page is comparatively cumbersome and relies on scripting the
-        &lt;canvas&gt; element. We believe it is time to put 3D models on equal
-        footing with other, already supported, media types.
+        As the popularity of devices with immersive capabilities continues to
+        expand, there comes an increasing desire to make use of them to consume
+        three-dimensional content across a range of use cases - and a spectrum
+        of complexity. With that in mind, it is necessary to augment the web
+        with appropriate standards to meet those needs at every point along the
+        spectrum. While solutions like [[webxr]] are necessary for more complex
+        experiences in this regard, the level of information disclosure
+        required for such a session should not be necessary for the basic,
+        spatial display of an object in the context of a page. This is the area
+        of focus for the HTML `&lt;model&gt;` element.
       </p>
       <p>
-        There is a variety of solutions for displaying three-dimensional models
-        on the web, including general WebGL libraries and frameworks that have
-        the ability to parse and render models. There are also more
+        There are a variety of solutions for displaying three-dimensional
+        models on the web, including general WebGL libraries and frameworks
+        that have the ability to parse and render models. There are also more
         purpose-built libraries devoted to a simpler set of capabilities around
-        a single model, providing a simpler API to achieve this.
-      </p>
-      <p>
-        However, because these libraries constitute a layer of abstraction on
-        top of the browser, they are unreliable as a basis for browser- and
-        system-level accessibility capabilities, and may require the disclosure
-        of more information to the JavaScript-level API responsible for
-        rendering, such as the eye and head position of the user. While this is
-        necessary for complex experiences experiences such as those provided by
-        [[webxr]], it should not be necessary for the basic, spatial display of
-        an object in the context of a page.
+        a single model, providing a simpler API to achieve this. In both cases,
+        however, these libraries exist as a layer of abstraction on top of
+        browser APIs. As such their presentation of capability cannot
+        constitute as stable a basis for browser- and system-level
+        accessibility features.
       </p>
       <p>
         The HTML &lt;model&gt; element aims to allow a website to embed
