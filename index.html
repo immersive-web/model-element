@@ -100,45 +100,6 @@
         playback while presented within the page, and also support more
         immersive experiences, such as the stereoscopic display of 3D content.
       </p>
-      <h3>
-        Considered alternatives
-      </h3>
-      <ol>
-        <li>Reuse &lt;embed&gt; or &lt;object&gt; instead of adding a new
-        element
-          <p>
-            It would be possible to reuse one of the generic embedding
-            elements, such as &lt;embed&gt; or &lt;object&gt;, for this
-            purpose. However, we think that 3D content should behave like other
-            media types.
-          </p>
-        </li>
-        <li>Reuse &lt;img&gt;, &lt;picture&gt; or &lt;video&gt; instead of
-        adding a new element
-          <p>
-            One can consider a 3D rendering to be an image or movie, but we
-            expect there to be differences in interactivity.
-          </p>
-        </li>
-        <li>A simple `src=""` attribute instead of &lt;source&gt; children
-          <p>
-            Like &lt;audio&gt; and &lt;video&gt;, there are several widely-used
-            formats that authors might wish to use, and browser support for
-            these formats may vary. Given this, providing multiple
-            &lt;source&gt;s seems desirable.
-          </p>
-        </li>
-        <li>Do not add a new element. Pass enough data to WebGL to render
-        accurately
-          <p>
-            As noted above, this would require any site that wants to use an AR
-            experience to request and have the user trust that site enough to
-            allow them access to the camera stream as well as other
-            information. A new element allows this use case without requiring
-            the user to make that decision.
-          </p>
-        </li>
-      </ol>
     </section>
     <section>
       <h2>
