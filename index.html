@@ -107,6 +107,60 @@
         Examples
       </h2>
       <h3>
+        Loading and parsing
+      </h3>
+      <p>
+        A model element whose source path resolves to a valid resource
+        dispatch a `load` event upon the successful fetching and 
+        presentation of the resource data. If the asset fails to resolve,
+        for instance due to an invalid URL, a failure to retrieve the bytes,
+        or a failure in the parsing process, the element will dispatch an 
+        `error` event.
+      </p>
+      <h3>
+        Processing model contents
+      </h3>
+      <p data-cite="infra geometry-1" >
+        A 3D asset file contains positional data for the surfaces and objects
+        within it. Following the successful processing of a model resource, the
+        {{model/boundingBox}} attribute references a
+        [[\DOMBoundingBoxReadOnly]] internal slot, which 
+        is a nullable [=map=] of whose values are {{DOMPoint}}s. 
+        The slot contains four entries: 
+      </p>
+      <dl data-cite="infra geometry-1">
+         <dt>"min"</dt>
+         <dd>A {{DOMPoint}} representing the minimum dimension, in world
+          space, that the contents of a model occupies.</dd>
+         <dt>"max"</dt>
+         <dd>A {{DOMPoint}} representing the maximum dimension, in world
+          space, that the contents of a model occupies.</dd> 
+         <dt>"center"</dt>
+         <dd>A {{DOMPoint}} representing the mean of the min and max 
+          dimensions, in world space, of the bounding box that the contents of
+          a model occupies.</dd>
+         <dt>"radius"</dt> 
+         <dd>A floating-point number representing the radius of effective 
+          bounding sphere from the center of the box. 
+        </dd>
+      </dl>
+      <p>
+       If a model does not contain a valid resource, the [[\DOMBoundingBoxReadOnly]] internal slot is null.
+      </p>
+      </p>
+      <figure>
+      <img alt="" src=
+      "images/bounding-box.svg">
+      <figcaption>Visual aid demonstrating the extent of an object's bounding box</figcaption>
+      </figure>
+      <aside class="note">
+        The bounding box and sphere is often computed based on the visible object
+        hierarchy on the first animation frame (if an animation is present),
+        and according only to the geometry information directly specified.
+        While animation effects and geometric displacement based on material
+        data can alter these values, it is not required to integrate them.
+      </aside>
+      <h3>
         Adding a model to a document
       </h3>
       <aside class="example">
@@ -115,7 +169,7 @@
           document:
         </p>
         <pre class="html">
-           &lt;model src="3d-assets/car"&gt;&lt;/model&gt;
+           &lt;model src="3d-assets/teapot"&gt;&lt;/model&gt;
          </pre>
         <p>
           By using content negotiation the user agent relies on the server to
@@ -125,18 +179,109 @@
       <h3>
         Enabling interactivity
       </h3>
+      <aside class="example">
+        <p>
+          The following example shows how to enable the interactive rotation of
+          a model in a document:
+        </p>
+        <pre class="html">
+           &lt;model <b>interactive</b> src="3d-assets/teapot"&gt;&lt;/model&gt;
+         </pre>
+        <p>
+          See [interactive mode] for more details on the circumstances of
+          interactive mode.
+        </p>
+      </aside>
       <aside class="issue" data-number="20"></aside>
+      <h3>
+        Programmatic view control
+      </h3>
+      <aside class="example">
+        <p>
+          The following example shows how to use the Javascript API to control
+          the `entityTransform`:
+        </p>
+        <pre class="html">
+          &lt;model src="3d-assets/teapot"&gt;&lt;/model&gt;
+          &lt;script&gt;           
+            let model = document.querySelector('model');
+
+            function update() {
+              requestAnimationFrame(update);
+              model.entityTransform = new DOMMatrix().rotate(0, performance.now()/10, 0);
+            }
+            
+            requestAnimationFrame(update);
+           &lt;/script&gt;           
+         </pre>
+        <p data-cite="infra geometry-1">
+          See {{DOMMatrix}} for more details on the methods available for 
+          modifying the view transform.
+        </p>
+      </aside>
       <h3>
         Supporting multiple formats
       </h3>
+      <aside class="example">
+        <p>
+          The following example shows how to select from a list of potential
+          source formats:
+        </p>
+        <pre class="html">
+           &lt;model&gt; 
+              &lt;source src="3d-assets/teapot.usdz" type="model/vnd.pixar.usd"&gt;
+              &lt;source src="3d-assets/teapot.gltf" type="model/gltf-binary"&gt;
+           &lt;/model&gt;
+         </pre>
+      </aside>
       <aside class="issue" data-number="21"></aside>
       <h3>
         Providing fallback content for legacy user agents
       </h3>
+      <aside class="example">
+        <p>
+          The following example shows the inclusion of fallback content:
+        </p>
+        <pre class="html">
+           &lt;model&gt; 
+              &lt;source src="3d-assets/teapot"&gt;
+              &lt;img src="images/teapot-fallback-thumbnail.png"&gt; 
+           &lt;/model&gt;
+         </pre>
+      </aside>
       <aside class="issue" data-number="22"></aside>
+      <h3>
+        Providing an image-based light (IBL)
+      </h3>
+      <aside class="example">
+        <p>
+          The following example shows the inclusion of a custom image-based
+          light
+        </p>
+        <pre class="html">
+          &lt;model environmentmap="images/teahouse-interior-1k.hdr"&gt; 
+             &lt;source src="3d-assets/teapot" &gt;
+          &lt;/model&gt;
+         </pre>
+      </aside>
       <h3>
         Making `model` accessible
       </h3>
+      <aside class="example">
+        <p>
+          The following example shows the inclusion of descriptive language
+          characterizing the appearance of the model:
+        </p>
+        <pre class="html">
+          
+          &lt;figure&gt;
+            &lt;model alt="A gray, ceramic teapot with an innovative spout" &gt; 
+              &lt;source src="3d-assets/teapot"&gt;
+            &lt;/model&gt;
+            &lt;figcaption&gt;Note the innovative spout&lt;/figcaption&gt;
+          &lt;/figure&gt;
+         </pre>
+      </aside>
       <aside class="issue" data-number="23"></aside>
     </section>
     <section>
