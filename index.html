@@ -117,6 +117,14 @@
         or a failure in the source format's parsing process, the user agent dispatches an 
         `error` event.
       </p>
+      <aside class="example" title="Error handling">
+      <pre class="js">
+      const model = document.querySelector("model");
+      model.addEventListener("error", () => {
+        // Handle error 
+      });
+      </pre>
+      </aside>
       <h3>
         Processing model contents
       </h3>
