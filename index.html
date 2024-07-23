@@ -216,8 +216,9 @@
             const model = document.querySelector('model');
 
             function update() {
+              const matrix = new DOMMatrix();
+              model.entityTransform = matrix.rotate(0, performance.now() / 10, 0);
               requestAnimationFrame(update);
-              model.entityTransform = new DOMMatrix().rotate(0, performance.now()/10, 0);
             }
             
             requestAnimationFrame(update);
