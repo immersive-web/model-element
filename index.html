@@ -162,11 +162,12 @@
       <figcaption>Visual aid demonstrating the extent of an object's bounding box</figcaption>
       </figure>
       <aside class="note">
-        The bounding box and sphere is often computed based on the visible object
-        hierarchy on the first animation frame (if an animation is present),
-        and according only to the geometry information directly specified.
-        While animation effects and geometric displacement based on material
-        data can alter these values, it is not required to integrate them.
+        It is common practice for rendering contexts to compute the bounding 
+        box and sphere based only on the visible object hierarchy on the first
+        animation frame (if an animation is present), and according only to the
+        geometry information directly specified. While animation effects and 
+        geometric displacement based on material data can alter these values,
+        it is not required to integrate them.
       </aside>
       <h3>
         Adding a model to a document
