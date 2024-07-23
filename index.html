@@ -189,15 +189,15 @@
       </h3>
       <aside class="example" title="Interactive rotation">
         <p>
-          The following example shows how to enable the interactive rotation of
-          a model in a document:
+          The following example shows how to enable the interactive orbit 
+          rotation of a model in a document:
         </p>
         <pre class="html">
-           &lt;model <b>interactive</b> src="3d-assets/teapot"&gt;&lt;/model&gt;
+           &lt;model <b>stagemode="orbit"</b> src="3d-assets/teapot"&gt;&lt;/model&gt;
          </pre>
         <p>
-          See [interactive mode] for more details on the circumstances of
-          interactive mode.
+          See [orbit mode] for more details on the behavior of
+          orbit mode.
         </p>
       </aside>
       <aside class="issue" data-number="20"></aside>
@@ -313,8 +313,8 @@
           [=Embedded content=].
         </dd>
         <dd>
-          If the element has an `interactive` attribute: [=interactive
-          content=].
+          If the element has a relevant value for its `stagemode` 
+          attribute: [=orbit content=].
         </dd>
         <dd>
           [=Palpable content=].
@@ -354,7 +354,8 @@
           automatically when the page is loaded
         </dd>
         <dd>
-          [^model/interactive^] — Allows the user to interact with the model
+          [^model/stagemode^] — Specifies a mode for the user to
+          interact with the model within
         </dd>
         <dd>
           [^model/crossorigin^] — How the element handles crossorigin requests
@@ -402,7 +403,7 @@
         <code><dfn class="element-attr" data-dfn-for="model">autoplay</dfn></code> attribute
       </h3>
       <h3>
-        <code><dfn class="element-attr" data-dfn-for="model">interactive</dfn></code> attribute
+        <code><dfn class="element-attr" data-dfn-for="model">stagemode</dfn></code> attribute
       </h3>
       <h3>
         <code><dfn class="element-attr" data-dfn-for="model">controls</dfn></code> attribute
