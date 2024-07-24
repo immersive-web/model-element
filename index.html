@@ -165,9 +165,10 @@
         It is common practice for rendering contexts to compute the bounding 
         box and sphere based only on the visible object hierarchy on the first
         animation frame (if an animation is present), and according only to the
-        geometry information directly specified. While animation effects and 
-        geometric displacement based on material data can alter these values,
-        it is not required to integrate them.
+        geometry information directly specified. While skeleton animations and 
+        geometric displacement based on material data can can change the 
+        apparent dimensions of a model, the user agent is not required to
+        factor such changes in to the bounding box it returns.
       </aside>
       <h3>
         Adding a model to a document
