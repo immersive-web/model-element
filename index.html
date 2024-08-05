@@ -140,6 +140,56 @@
         Examples
       </h2>
       <h3>
+        Loading and parsing
+      </h3>
+      <p>
+        A model element whose source path resolves to a valid resource
+        dispatch a `load` event upon the successful fetching and 
+        presentation of the resource data. If the asset fails to load,
+        for instance due to an invalid URL, a failure to fetch,
+        or a failure in the source format's parsing process, the user agent dispatches an 
+        `error` event.
+      </p>
+      <aside class="example" title="Error handling">
+      <pre class="js">
+      const model = document.querySelector("model");
+      model.addEventListener("error", () => {
+        // Handle error 
+      });
+      </pre>
+      </aside>
+      <h3>
+        Processing model contents
+      </h3>
+      <p data-cite="infra geometry-1" >
+        A 3D asset file contains positional data for the surfaces and objects
+        within it. Following the successful processing of a model resource, the
+        {{Model}}'s Bounding box information is conveyed in the 
+        {{Model/boundingBoxCenter}} attribute and the 
+        {{Model/boundingBoxExtent}} attribute, both presented as three-
+        dimensional {{DOMPointReadOnly}} objects.
+      </p>
+      <p>
+       If a model does not contain a valid resource, the attributes referring 
+       to the extent and center of the bounding box are null.
+      </p>
+      </p>
+      <figure>
+      <img alt="" src=
+      "images/bounding-box.svg">
+      <figcaption>Visual aid demonstrating the center and extent of an 
+        object's bounding box</figcaption>
+      </figure>
+      <aside class="note">
+        It is common practice for rendering contexts to compute the bounding 
+        box based only on the visible object hierarchy on the first
+        animation frame (if an animation is present), and according only to the
+        geometry information directly specified. While skeleton animations and 
+        geometric displacement based on material data can can change the 
+        apparent dimensions of a model, the user agent is not required to
+        factor such changes in to the bounding box it returns.
+      </aside>
+      <h3>
         Adding a model to a document
       </h3>
       <aside class="example">
@@ -148,7 +198,7 @@
           document:
         </p>
         <pre class="html">
-           &lt;model src="3d-assets/car"&gt;&lt;/model&gt;
+           &lt;model src="3d-assets/teapot"&gt;&lt;/model&gt;
          </pre>
         <p>
           By using content negotiation the user agent relies on the server to
@@ -158,18 +208,116 @@
       <h3>
         Enabling interactivity
       </h3>
+      <aside class="example" title="Interactive rotation">
+        <p>
+          The following example shows how to enable the interactive orbit 
+          rotation of a model in a document:
+        </p>
+        <pre class="html">
+           &lt;model <b>stagemode="orbit"</b> src="3d-assets/teapot"&gt;&lt;/model&gt;
+         </pre>
+        <p>
+          See [=orbit mode=] for details about how it works.
+        </p>
+      </aside>
       <aside class="issue" data-number="20"></aside>
+      <h3>
+        Programmatic view control
+      </h3>
+      <aside class="example">
+        <p>
+          The following example shows how to use the Javascript API to control
+          the `entityTransform` IDL attribute to smoothly rotate a model along the Y axis using {{AnimationFrameProvider/requestAnimationFrame(callback)}}:
+        </p>
+        <pre class="html">
+          &lt;model src="3d-assets/teapot"&gt;&lt;/model&gt;
+          &lt;script&gt;           
+            const model = document.querySelector('model');
+
+            function update() {
+              const matrix = new DOMMatrix();
+              model.entityTransform = matrix.rotate(0, performance.now() / 10, 0);
+              requestAnimationFrame(update);
+            }
+            
+            requestAnimationFrame(update);
+           &lt;/script&gt;           
+         </pre>
+        <p data-cite="infra geometry-1">
+          See {{DOMMatrix}} for more details on the methods available for 
+          modifying the view transform.
+        </p>
+      </aside>
       <h3>
         Supporting multiple formats
       </h3>
+      <aside class="example">
+        <p>
+          The following example shows a list of potential source formats
+          that can be selected from:
+        </p>
+        <pre class="html">
+           &lt;model&gt; 
+              &lt;source src="3d-assets/teapot.usdz" type="model/vnd.pixar.usd"&gt;
+              &lt;source src="3d-assets/teapot.gltf" type="model/gltf-binary"&gt;
+           &lt;/model&gt;
+         </pre>
+         `&lt;model&gt;` source selection follows `&lt;video&gt;` selection,
+         where the top-level `src` attribute takes precedence if present, 
+         followed by the first compatible `&lt;source&gt;` element encountered.
+      </aside>
       <aside class="issue" data-number="21"></aside>
       <h3>
         Providing fallback content for legacy user agents
       </h3>
+      <aside class="example">
+        <p>
+          The following example shows the inclusion of fallback content:
+        </p>
+        <pre class="html">
+           &lt;model&gt; 
+              &lt;source src="3d-assets/teapot"&gt;
+              &lt;img src="images/teapot-fallback-thumbnail.png"&gt; 
+           &lt;/model&gt;
+         </pre>
+      </aside>
       <aside class="issue" data-number="22"></aside>
+      <h3>
+        Providing an image-based light (IBL)
+      </h3>
+      <aside class="example">
+        <p>
+          The following example shows the inclusion of a custom image-based
+          light
+        </p>
+        <pre class="html">
+          &lt;model environmentmap="images/teahouse-interior-1k.hdr"&gt; 
+             &lt;source src="3d-assets/teapot" &gt;
+          &lt;/model&gt;
+         </pre>
+      </aside>
       <h3>
         Making `model` accessible
       </h3>
+      <aside class="example">
+        <p>
+          The following example shows the inclusion of descriptive language
+          characterizing the appearance of the model:
+        </p>
+        <pre class="html">
+          
+          &lt;figure&gt;
+            &lt;model aria-describedby="teapot-description" &gt; 
+              &lt;source src="3d-assets/teapot"&gt;
+            &lt;/model&gt;
+            &lt;span id="teapot-description" class="hidden" &gt;
+              A gray, ceramic teapot with a thin, multicolored spout 
+            &lt;span&gt;
+
+            &lt;figcaption&gt;Note the stylish spout&lt;/figcaption&gt;
+          &lt;/figure&gt;
+         </pre>
+      </aside>
       <aside class="issue" data-number="23"></aside>
     </section>
     <section>
@@ -190,8 +338,8 @@
           [=Embedded content=].
         </dd>
         <dd>
-          If the element has an `interactive` attribute: [=interactive
-          content=].
+          If the element has a relevant value for its `stagemode` 
+          attribute: [=orbit content=].
         </dd>
         <dd>
           [=Palpable content=].
@@ -231,7 +379,8 @@
           automatically when the page is loaded
         </dd>
         <dd>
-          [^model/interactive^] — Allows the user to interact with the model
+          [^model/stagemode^] — Specifies a mode for the user to
+          interact with the model within
         </dd>
         <dd>
           [^model/crossorigin^] — How the element handles crossorigin requests
@@ -279,7 +428,7 @@
         <code><dfn class="element-attr" data-dfn-for="model">autoplay</dfn></code> attribute
       </h3>
       <h3>
-        <code><dfn class="element-attr" data-dfn-for="model">interactive</dfn></code> attribute
+        <code><dfn class="element-attr" data-dfn-for="model">stagemode</dfn></code> attribute
       </h3>
       <h3>
         <code><dfn class="element-attr" data-dfn-for="model">controls</dfn></code> attribute
