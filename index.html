@@ -131,39 +131,25 @@
       <p data-cite="infra geometry-1" >
         A 3D asset file contains positional data for the surfaces and objects
         within it. Following the successful processing of a model resource, the
-        {{Model}}'s {{Model/boundingBox}} attribute references a
-        [[\DOMBoundingBoxReadOnly]] internal slot, which 
-        is a nullable [=map=] of whose values are {{DOMPoint}}s. 
-        The slot contains four entries: 
+        {{Model}}'s Bounding box information is conveyed in the 
+        {{Model/boundingBoxCenter}} attribute and the 
+        {{Model/boundingBoxExtent}} attribute, both presented as three-
+        dimensional {{DOMPointReadOnly}} objects.
       </p>
-      <dl data-cite="infra geometry-1">
-         <dt>"min"</dt>
-         <dd>A {{DOMPoint}} representing the minimum dimension, in world
-          space, that the contents of a model occupies.</dd>
-         <dt>"max"</dt>
-         <dd>A {{DOMPoint}} representing the maximum dimension, in world
-          space, that the contents of a model occupies.</dd> 
-         <dt>"center"</dt>
-         <dd>A {{DOMPoint}} representing the mean of the min and max 
-          dimensions, in world space, of the bounding box that the contents of
-          a model occupies.</dd>
-         <dt>"radius"</dt> 
-         <dd>A floating-point number representing the radius of effective 
-          bounding sphere from the center of the box. 
-        </dd>
-      </dl>
       <p>
-       If a model does not contain a valid resource, the [[\DOMBoundingBoxReadOnly]] internal slot is null.
+       If a model does not contain a valid resource, the attributes referring 
+       to the extent and center of the bounding box are null.
       </p>
       </p>
       <figure>
       <img alt="" src=
       "images/bounding-box.svg">
-      <figcaption>Visual aid demonstrating the extent of an object's bounding box</figcaption>
+      <figcaption>Visual aid demonstrating the center and extent of an 
+        object's bounding box</figcaption>
       </figure>
       <aside class="note">
         It is common practice for rendering contexts to compute the bounding 
-        box and sphere based only on the visible object hierarchy on the first
+        box based only on the visible object hierarchy on the first
         animation frame (if an animation is present), and according only to the
         geometry information directly specified. While skeleton animations and 
         geometric displacement based on material data can can change the 
