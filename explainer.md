@@ -6,6 +6,7 @@
 - [Dean Jackson](https://github.com/grorg)
 - [Theresa O'Connor](https://github.com/hober)
 - [Marcos Cáceres](https://github.com/marcoscaceres)
+- [Brandel Zachernuk](https://github.com/zachernuk)
 
 ## Table of Contents
 
@@ -14,13 +15,19 @@
 
 - [tl;dr](#tldr)
 - [Introduction](#introduction)
+- [Non-goals](#non-goals)
 - [The HTMLModelElement](#the-htmlmodelelement)
   - [Fallback content](#fallback-content)
 - [DOM API](#dom-api)
-  - [Controlling the camera](#controlling-the-camera)
-  - [Controlling animations](#controlling-animations)
-  - [Controlling audio](#controlling-audio)
+- [JavaScript API](#javascript-api)
 - [DOM Events](#dom-events)
+  - [DOM Actions](#dom-actions)
+- [Visual presentation control](#visual-presentation-control)
+  - [Scale units](#scale-units)
+  - [Stage interaction mode](#stage-interaction-mode)
+    - [Orbit scale](#orbit-scale)
+  - [Lighting](#lighting)
+  - [Audio and stateful interaction](#audio-and-stateful-interaction)
 - [Playback and accessibility considerations](#playback-and-accessibility-considerations)
 - [Privacy considerations](#privacy-considerations)
 - [Security considerations](#security-considerations)
@@ -65,11 +72,25 @@ conveniently as any other visual media. Models are expected to be created by 3D 
 tools or generated dynamically, but served as a standalone resource by the server.
 
 Additionally, besides the simple display of a 3D model, the `<model>` element should have
-support for interactivity and animations while presented within the page, and also support
+support for manipulation and animation playback while presented within the page, and also support
 more immersive experiences, such as augmented reality.
+
+## Non-goals
 
 This proposal does *not* aim to define a mechanism that allows the creation of a 3D scene
 within a browser using declarative primitives or a programmatic API.
+
+While some popular model formats have the ability to encode and relate audio tracks, <model>
+is expected to present silently and will not honor audio components.
+
+Many model formats include the ability to blend animation tracks, <model> is expected to play
+only the first animation track discovered in a valid source asset.
+
+Many model formats include the ability to encode stateful interaction with the scene, for example
+with selection targets linked to the selective showing and hiding of content. <model> is expected
+to only manage a single, linear animation timeline, and the manipulation of the `entityTransform`
+that dictates the apparent scale, orientation, and position offset of the entire scene as an
+atomic element.
 
 ## The `HTMLModelElement`
 
@@ -99,13 +120,13 @@ file and a [glTF](https://www.khronos.org/gltf/) file, depending on what the bro
 
 Browsers may support direct manipulation of the `<model>` element while presented in the page. For example, a browser
 may allow the model to be rotated or zoomed within the element's bounds without affecting the scrolling
-position or zoom level of the page. To opt into this behavior, the author may use the `interactive`
-HTML attribute.
+position or zoom level of the page. To opt into this behavior, the author may set the `stagemode`
+HTML attribute to `orbit`.
 
-The previous example can be augmented to allow interaction provided by the browser:
+The previous example can be augmented to allow free orbiting of the model, provided by the browser:
 
 ```html
-<model style="width: 400px; height: 300px" interactive>
+<model style="width: 400px; height: 300px" stagemode="orbit">
     <source src="assets/example.usdz" type="model/vnd.usdz+zip">
     <source src="assets/example.glb" type="model/gltf-binary">
 </model>
@@ -113,9 +134,9 @@ The previous example can be augmented to allow interaction provided by the brows
 
 It is also possible that browsers support an animated presentation of the model, by running
 animations defined in the source data. Such animations are not enabled by default, but can
-be triggered on load by using the `autoplay` HTML attribute.
+be triggered on load by using the `autoplay` HTML attribute
 
-The original example can be augmented to allow for such animations:
+The original example can be augmented to allow for such animation:
 
 ```html
 <model style="width: 400px; height: 300px" autoplay>
@@ -124,14 +145,13 @@ The original example can be augmented to allow for such animations:
 </model>
 ```
 
-The `interactive` and `autoplay` attributes are not mutually exclusive and may be combined. A browser can
-run a default animation that is suspended while the user interacts with the model and that is
-automatically resumed after a period of inactivity.
+The `stagemode="orbit"` and `autoplay` conditions are not mutually exclusive and may be combined. A browser can
+run a default animation while the user interacts with the model.
 
-As such, the original example can be augmented to allow for both animations and interactivity:
+As such, the original example can be augmented to allow for both animations and free orbit:
 
 ```html
-<model style="width: 400px; height: 300px" autoplay interactive>
+<model style="width: 400px; height: 300px" autoplay stagemode="orbit">
     <source src="assets/example.usdz" type="model/vnd.usdz+zip">
     <source src="assets/example.glb" type="model/gltf-binary">
 </model>
@@ -178,11 +198,14 @@ elements to the `<model>` element.
 * `autoplay`: read-write boolean indicating whether the model will automatically start playback.
 Setting this property to `false` removes the `autoplay` HTML attribute if present, while setting it to `true`
 adds the `autoplay` HTML attribute if absent.
-* `interactive`: read-write boolean indicating whether the model can be interacted with. Setting this
-property to `false` removes the `interactive` HTML attribute if present, while setting it to `true`
-adds the `interactive` HTML attribute if absent. An interactive model will provide some default
-behaviour that allows the user to transform the virtual camera around the model, such as by clicking
-and dragging.
+* `stagemode`: read-write string indicating whether user input automatically 
+results in changing the display orientation of the model. Setting this
+property to anything but `orbit` removes the automatic orbit behavior, while setting it to `orbit`
+sets the stage mode to orbit.
+* `environmentmap`: read-write string indicating the URL of an environment map,
+or Image-Based Light (IBL). Supplied as an equirectangular image, frequently in a High-Dynamic Range
+(HDR) image format.
+* `loop`: read-write boolean indicating whether the model animation, if present, will automatically loop.
 * `loading`: behaves in the same manner as the
 [`img` attribute of the same name](https://html.spec.whatwg.org/multipage/embedded-content.html#attr-img-loading).
 * `poster`: behaves in the same manner as the [`video` attribute of the same name](https://html.spec.whatwg.org/multipage/media.html#attr-video-poster)
@@ -196,84 +219,40 @@ model in augmented reality to allow the user to visualize it at real scale in th
 surroundings. To support this, new DOM APIs may be added or the existing HTML Fullscreen API extended
 via more [FullscreenOptions](https://fullscreen.spec.whatwg.org/#dictdef-fullscreenoptions) properties.
 
-### Controlling the camera
+## JavaScript API
 
-Using the `interactive` property, the author allows a built-in behavior such that dragging over a
-`<model>` element will result in modifying the camera. We also propose to allow authors direct control
-of the camera via DOM APIs. An initial proposition would be to add an `HTMLModelElementCamera`:
+In addition to the DOM API relating to the source, animation, and environment map, the JavaScript API has
+additional capabilities relating to the animation timing and view parameters. Note that while <model> bears
+a similarity to an `HTMLMediaElement`, it is not _necessarily_ a media element, in that it may possess 
+no animation track, or function more like an animated GIF, reflecting a short sequence that does not reflect
+a significant change in state.
 
-```idl
-dictionary HTMLModelElementCamera {
-    double pitch;
-    double yaw;
-    double scale;
-};
-```
-
-Then the camera can be set and read back:
-
-```idl
-interface HTMLModelElement : HTMLElement {
-    Promise<HTMLModelElementCamera> getCamera();
-    Promise<undefined> setCamera(HTMLModelElementCamera camera);
-}
-```
-
-Note the use of promises since it is likely that the model is rendered out-of-process and any communication
-with that process would need to be asynchronous. This applies to other promise-based APIs discussed in this
-document.
-
-### Controlling animations
-
-Formats supported by `<model>` may support animations built into the resource itself, such as those supported by the USDZ
-file format. We propose allowing page authors to control such animations.
-
-This is a wide topic with likely dependencies on the file format support for animations itself. Another
-important topic would be whether the Web Animations specification could be leveraged to expose and control
-animations for the resource. At the moment, this document intentionally doesn't describe how animations
-within a `<model>` element relate to the [default document timeline](https://www.w3.org/TR/web-animations-1/#the-documents-default-timeline).
-
-For experimental purposes, we propose an initial, basic set of DOM APIs based on the assumption that
-a single animation is controlled. With this proposal the author could control whether the animation is
-playing, looping, query its duration and set its current time, allowing the creation of controls to
-toggle playback and scrub through the animation.
-
-```idl
-interface HTMLModelElement : HTMLElement {
-    Promise<boolean> isPlayingAnimation();
-    Promise<undefined> playAnimation();
-    Promise<undefined> pauseAnimation();
-
-    Promise<boolean> isLoopingAnimation();
-    Promise<undefined> setIsLoopingAnimation(boolean looping);
-
-    Promise<double> animationDuration();
-    Promise<double> animationCurrentTime();
-    Promise<undefined> setAnimationCurrentTime(double currentTime);
-}
-```
-
-### Controlling audio
-
-Another feature that may be supported by the resource file format is audio. Much like animations,
-this is a wide topic with potentially multiple audio clips being built into the resource, and our
-initial proposal involves simply controlling whether built-in audio is muted:
-
-```idl
-interface HTMLModelElement : HTMLElement {
-    Promise<boolean> hasAudio();
-    Promise<boolean> isMuted();
-    Promise<undefined> setIsMuted(boolean isMuted);
-}
-```
-
-Note that the audio state is not related to the animation state, so the embedded audio may be played
-while embedded animations are paused and vice versa.
+* `entityTransform`: a read-write `DOMMatrixReadOnly` that expresses the current mapping of the view of
+the model contents to the view displayed in the browser. 
+* `boundingBoxCenter`: a read-only `DOMPoint` that indicates the center of the axis-aligned bounding box (AABB)
+of the model contents. If there is an animation present, the bounding box is computed for the first frame of 
+the animation and remains static for the lifetime of the model. It does not update based on a change of
+the `entityTransform`.
+* `boundingBoxExtent`: a read-only `DOMPoint` that indicates the extent of the bounding box of the model
+contents. 
+* `boundingSphereCenter`: a read-only `DOMPoint` that indicates the center of the bounding sphere of the model contents, as it may differ from the bounding _box_ center. 
+* `boundingSphereRadius`: a read-only `Number` that indicates the radius of the bounding sphere of the model contents. 
+* `duration`: a read-only `Number` reflecting the un-scaled total duration of the animation, if present.
+If there is no animation on this model, the value is 0.
+* `currentTime`: a read-write `Number` reflecting the un-scaled playback time of the model animation, if present.
+It is clamped to the duration of the animation, so for an animation with no animation, the value is always 0.
+* `playbackRate`: a read-write `Number` reflecting the time scaling for animations, if present. For example,
+a model with a ten-second animation and a `playbackRate` of 0.5 will take 20 seconds to complete.
+* `paused`: A read-only `Boolean` value indicating whether the element has an animation that is currently playing.
+* `play()`: A method that attempts to play a model's animation, if present. It returns a `Promise` that resolves
+when playback has been successfully started.
+* `pause()`: A method that attempts to pause the playback of a model's animation. If the model is already paused
+this method will have no effect.
 
 ## DOM Events
 
-While the author may prevent any built-in interactive behavior for a `<model>` by ommitting the `interactive`
-attribute, it might be desirable for the decision to allow such interactive behavior to be made at runtime.
+While the author may prevent any built-in interactive behavior for a `<model>` by ommitting the `stagemode`
+attribute, it might be desirable for the decision to allow custom control of the model behavior at runtime.
 To that end, when a user initiates a gesture over a `<model>` element, the author may call the `preventDefault()`
 method when handling the `pointerdown` event. If this method is not called for the
 [`pointerdown`](https://www.w3.org/TR/pointerevents/#the-pointerdown-event) event for the
@@ -282,19 +261,100 @@ method when handling the `pointerdown` event. If this method is not called for t
 
 The `mousedown` and `touchstart` compatibility events may also be used for this purpose.
 
+* `load`: Dispatched when the model's source file has been loaded and processed, such that the
+bounding box information is available and the animation duration, if present, is known.
+* `error`: Dispatched if the the model's source file is unable to be fetched, or if the file
+cannot be interpreted as a valid <model> asset.
+* `iblload`: Dispatched when a model's selected environmentmap has been loaded and is ready to
+contribute to the visual appearance of the model.
+* `iblerror`: Dispatched if there has been an issue with the model's selected environmentmap,
+which will prevent its ability to act as the lighting environment.
+
+### DOM actions
+
+In addition to being a standard DOM element, special behaviors may be desirable on spatial platforms,
+relating to the `Element.requestFullscreen()` and the `document.pictureInPictureElement` properties.
+
+* `document.pictureInPictureElement`: By requesting the model to be the picture-in-picture element,
+the model becomes separated from the rest of the active window, and positionable within the user's space.
+its real-world location is not made available to the page context. In addition to a JavaScript-based
+request of this feature, a user gesture may be used to both invoke the action and position the element.
+
+* `Element.requestFullscreen()`: A `<model>` that is part of a DOM fragmented and has been granted 
+fullscreen access on a spatial platform may be presented with a transparent background.
+
+## Visual presentation control
+
+In a spatial or stereoscopic environment, A model element presents its three-dimensional content
+ as though it exists inside a portal in a page, with content clipped at the z-boundary of the model 
+ element's front face, so that no content has the ability to protrude beyond the appropriate surface.
+
+The visual presentation of a model is primarily managed through its `entityTransform` attribute, 
+specified as a `DOMMatrixReadOnly`. The model scene is a right-handed, Y-up coordinate system, with the
+center of the view-plane at (0,0,0). 
+<!-- Diagram of the coordinate space -->
+
+The initial `entityTransform` is set to center the view on the `boundingBoxCenter`, set back by
+`boundingBoxExtent.z/2` so that the element resides entirely within the portal, and to fit the
+`boundingingBoxExtent` within the visible view. That is, to set a uniform scale such that the
+`boundingBoxExtent.y` fits within the model's portal height, and the `boundingBoxExtent.x` fits within
+the model's portal width.
+<!-- Diagram of the default/autofit scale -->
+
+### Scale units
+The page dimensions are understood to be reflected as points, such that a 1000-pixel model element
+with its `entityTransform` set to the identity will depict a size of about 32cm, and a 500-pixel
+model will likewise show a viewport covering 16cm. For privacy reasons, user agents may obscure the
+true spatial scale of the window, so that 1000 pixels may be much larger or smaller - a fixed conversion
+assuming 72DPI as a default should be understood as standard. This only reflects a mapping to the 
+perceptual scale, and doesn't reflect the _rasterization_ scale of the element, which occurs at the
+discretion of the user agent.
+<!-- Diagram of the visual scale with real-world units -->
+
+### Stage interaction mode
+Setting the `stagemode` attribute to `orbit` results in an _orbit_ interaction mode, where the 
+`entityTransform` becomes read-only (or attempts to write directly to it are ignored), and the view is
+updated exclusively based on input events from the user. Dragging on the model horizontally
+results in a rotation on the Y axis of the model, and vertical dragging alters the pitch of the 
+element:
+
+<!-- Diagram of the input events in orbit mode -->
+
+#### Orbit scale
+
+Because the orbit mode may result in presenting any arbitrary orientation of the model contents,
+the effective scale of the model is reduced to accommodate the bounding _sphere_, rather than the
+bounding box, and the setback in the z-dimension is also set to this bounding sphere radius.
+<!-- Diagram of the scale and setback in and out of orbit mode -->
+
+### Lighting
+The model may be illuminated by a system-default environment map, or by an environment map as specified
+by a valid, author-specified `environmentmap` attribute. On a platform with the ability to estimate
+the user's lighting environment, this may be applied as a default map. 
+A physically-based material model like [OpenPBR] or [MaterialX] is assumed.
+<!-- screenshot of two different IBLs on the same asset or assets -->
+
+
+## Audio and stateful interaction
+
+While Some model source formats have the ability to specify audio sources, it
+is recommended that an initial implementation exclude audio playback. This is
+because audio playback is achievable through separate APIs, and the relationship 
+between arbitrary seeking inside a model animation and the audio sources therein
+is not well-established.
+
 ## Playback and accessibility considerations
 
-Model resources may contain audio and animations and as such should be
+Model resources may contain animations and as such should be
 considered like other media and animated content by browsers. This means
 that browser behaviors around loading, autoplay, and accessibility should be
 honored for the `<model>` element as well, for instance:
 
 - a static poster image may be displayed prior to loading the full `<model>` resource,
-- audio may be muted until the user interacts with the `<model>` element,
 - playback may be disabled if the user has set a preference to reduce animations.
 
-Like other timed media, the `<model>` element will provide a DOM API for playing, pausing,
-muting, etc.
+Like other timed media, the `<model>` element will provide a DOM API for playing, 
+pausing, etc.
 
 The `<model>` element has an `alt` attribute to provide a textual description of the
 content. Also, the 3D content itself might expose some features to the accessibility engine.
@@ -380,8 +440,6 @@ While this is a clear problem, it also comes with some large advantages.
 
 For reference, the Model Viewer project has a [rendering engine fidelity comparison](https://modelviewer.dev/fidelity/).
 
-A future version of this explainer will describe the lighting model and environment in which the
-3D content should be rendered. Both items will require community collaboration and some consensus.
 
 ## Considered alternatives
 
