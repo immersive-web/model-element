@@ -49,7 +49,7 @@ a renderer built-in to the browser.
 
 HTML allows the display of many media types through elements such as `<img>`,
 `<picture>`, or `<video>`, but it does not provide a declarative manner to directly
-display 3D content. Embedding 3D content within a page is comparatively
+consume 3D content. Embedding 3D content within a page is comparatively
 cumbersome and relies on scripting the `<canvas>` element. We believe it is
 time to put 3D models on equal footing with other, already supported, media
 types.
@@ -60,7 +60,7 @@ are WebGL frameworks that can process many different formats. Then there is
 the [model-viewer](https://modelviewer.dev) project which shows models
 inline in a web page, and also allows users on some devices to see the 3D
 object in augmented reality. And iOS Safari has the ability to navigate
-directly to an augmented reality view with its
+directly to an augmented reality view with its 
 [AR Quick Look feature](https://webkit.org/blog/8421/viewing-augmented-reality-assets-in-safari-for-ios/).
 
 However, there are cases where these current options cannot render content.
@@ -78,7 +78,7 @@ more immersive experiences, such as augmented reality.
 ## Non-goals
 
 This proposal does *not* aim to define a mechanism that allows the creation of a 3D scene
-within a browser using declarative primitives or a programmatic API.
+within a browser using declarative primitives or a programmatic API. 
 
 While some popular model formats have the ability to encode and relate audio tracks, <model>
 is expected to present silently and will not honor audio components.
@@ -134,13 +134,13 @@ The previous example can be augmented to allow free orbiting of the model, provi
 
 It is also possible that browsers support an animated presentation of the model, by running
 animations defined in the source data. Such animations are not enabled by default, but can
-be triggered on load by using the `autoplay` HTML attribute
+be triggered on load by using the `autoplay` HTML attribute.
 
 The original example can be augmented to allow for such animation:
 
 ```html
 <model style="width: 400px; height: 300px" autoplay>
-    <source src="assets/example.usdz" type="model/vnd.usdz+zip">
+    <source src="assets/example.usdz" type="model/vnd.usd+zip">
     <source src="assets/example.glb" type="model/gltf-binary">
 </model>
 ```
@@ -152,7 +152,7 @@ As such, the original example can be augmented to allow for both animations and 
 
 ```html
 <model style="width: 400px; height: 300px" autoplay stagemode="orbit">
-    <source src="assets/example.usdz" type="model/vnd.usdz+zip">
+    <source src="assets/example.usdz" type="model/vnd.usd+zip">
     <source src="assets/example.glb" type="model/gltf-binary">
 </model>
 ```
@@ -184,7 +184,6 @@ element would be displayed.
 </model>
 ```
 
-
 ## DOM API
 
 Each `<model>` element is represented in the DOM as `HTMLModelElement` instances.
@@ -202,8 +201,7 @@ adds the `autoplay` HTML attribute if absent.
 results in changing the display orientation of the model. Setting this
 property to anything but `orbit` removes the automatic orbit behavior, while setting it to `orbit`
 sets the stage mode to orbit.
-* `environmentmap`: read-write string indicating the URL of an environment map,
-or Image-Based Light (IBL). Supplied as an equirectangular image, frequently in a High-Dynamic Range
+* `environmentmap`: read-write string indicating the URL of an environment map, also known as an Image-Based Light (IBL). Supplied as an equirectangular image, frequently in a High-Dynamic Range
 (HDR) image format.
 * `loop`: read-write boolean indicating whether the model animation, if present, will automatically loop.
 * `loading`: behaves in the same manner as the
@@ -216,16 +214,13 @@ APIs to observe the loading and decoding of data.
 While HTML supports the notion of taking an element fullscreen, browsers may want to offer yet more
 immersive experiences that require going beyond the page itself, one example would be to present the
 model in augmented reality to allow the user to visualize it at real scale in the user's immediate
-surroundings. To support this, new DOM APIs may be added or the existing HTML Fullscreen API extended
+surroundings. To support this, new DOM APIs may be added or the existing HTML fullscreen API extended
 via more [FullscreenOptions](https://fullscreen.spec.whatwg.org/#dictdef-fullscreenoptions) properties.
 
 ## JavaScript API
 
 In addition to the DOM API relating to the source, animation, and environment map, the JavaScript API has
-additional capabilities relating to the animation timing and view parameters. Note that while <model> bears
-a similarity to an `HTMLMediaElement`, it is not _necessarily_ a media element, in that it may possess 
-no animation track, or function more like an animated GIF, reflecting a short sequence that does not reflect
-a significant change in state.
+additional capabilities relating to the animation timing and view parameters. 
 
 * `entityTransform`: a read-write `DOMMatrixReadOnly` that expresses the current mapping of the view of
 the model contents to the view displayed in the browser. 
@@ -236,12 +231,12 @@ the `entityTransform`.
 * `boundingBoxExtent`: a read-only `DOMPoint` that indicates the extent of the bounding box of the model
 contents. 
 * `boundingSphereCenter`: a read-only `DOMPoint` that indicates the center of the bounding sphere of the model contents, as it may differ from the bounding _box_ center. 
-* `boundingSphereRadius`: a read-only `Number` that indicates the radius of the bounding sphere of the model contents. 
-* `duration`: a read-only `Number` reflecting the un-scaled total duration of the animation, if present.
+* `boundingSphereRadius`: a read-only `double` that indicates the radius of the bounding sphere of the model contents. 
+* `duration`: a read-only `double` reflecting the un-scaled total duration of the animation, if present.
 If there is no animation on this model, the value is 0.
-* `currentTime`: a read-write `Number` reflecting the un-scaled playback time of the model animation, if present.
+* `currentTime`: a read-write `double` reflecting the un-scaled playback time of the model animation, if present.
 It is clamped to the duration of the animation, so for an animation with no animation, the value is always 0.
-* `playbackRate`: a read-write `Number` reflecting the time scaling for animations, if present. For example,
+* `playbackRate`: a read-write `double` reflecting the time scaling for animations, if present. For example,
 a model with a ten-second animation and a `playbackRate` of 0.5 will take 20 seconds to complete.
 * `paused`: A read-only `Boolean` value indicating whether the element has an animation that is currently playing.
 * `play()`: A method that attempts to play a model's animation, if present. It returns a `Promise` that resolves
@@ -347,7 +342,7 @@ is not well-established.
 
 Model resources may contain animations and as such should be
 considered like other media and animated content by browsers. This means
-that browser behaviors around loading, autoplay, and accessibility should be
+that browser behaviors around loading, autoplay and accessibility should be
 honored for the `<model>` element as well, for instance:
 
 - a static poster image may be displayed prior to loading the full `<model>` resource,
@@ -369,7 +364,7 @@ policy directive), and likely a few others.
 ## Security considerations
 
 As always, introducing support for parsing and processing new formats raises the surface area
-of attack possibilities in a browser.
+of attack posibilities in a browser.
 
 However, some existing browsers already process such formats in a non-inline manner
 (such as iOS's AR Quick Look and Android's Scene Viewer).
@@ -427,7 +422,7 @@ an attempt was made, it would likely pose too many restrictions on the browser e
 on a number of operating systems, hardware, and environments.
 
 Instead we suggest adopting a Physically-Based Rendering approach, probably referencing an existing
-shading model such as [MaterialX](https://www.materialx.org/). Browsers would be free to
+shading model such as [MaterialX](https://materialx.org/). Browsers would be free to
 implement the system as they wish, with a goal of producing the most accurate rendering possible.
 We do not expect pixel-accurate results between browsers.
 
@@ -446,10 +441,7 @@ For reference, the Model Viewer project has a [rendering engine fidelity compari
 1. *Reuse `<embed>` or `<object>` instead of adding a new element*
 
    It would be possible to reuse one of the generic embedding elements, such as `<embed>` or `<object>`,
-   for this purpose. However, we think that 3D content should behave like other media types.
-   Further, having an accompanying IDL interface (`HTMLModelElement`) provides developers with a means 
-   to programmatically interact with various aspects of the 3D content (which would otherwise not be possible
-   or simply cumbersome via `<embed>` or `<object>`). 
+   for this purpose. However, we think that 3D content should behave similar to other media types.
 
 2. *Reuse `<img>`, `<picture>` or `<video>` instead of adding a new element*
 
