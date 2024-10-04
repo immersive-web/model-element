@@ -167,7 +167,21 @@
       <h3>
         Supporting multiple formats
       </h3>
-      <aside class="issue" data-number="21"></aside>
+      <aside class="example">
+        <p>
+          The following example shows a list of potential source formats
+          that can be selected from:
+        </p>
+        <pre class="html">
+           &lt;model&gt; 
+              &lt;source src="3d-assets/teapot.usdz" type="model/vnd.pixar.usd"&gt;
+              &lt;source src="3d-assets/teapot.gltf" type="model/gltf-binary"&gt;
+           &lt;/model&gt;
+         </pre>
+         `&lt;model&gt;` source selection follows `&lt;video&gt;` selection,
+         where the top-level `src` attribute takes precedence if present, 
+         followed by the first compatible `&lt;source&gt;` element encountered.
+      </aside>
       <h3>
         Providing fallback content for legacy user agents
       </h3>
