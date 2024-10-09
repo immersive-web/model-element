@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Model demonstration</title>
+  <style>
+    html,
+    body {
+      background-color: #ffffff;
+      margin:0;
+      padding:0;
+    }
+
+    .height-probe {
+      height:100lvh;
+      position:fixed;
+      z-index:-99;
+    }
+    .voiceover-text {
+      position:fixed;
+      bottom:50px;
+      width: 80vw;
+      left:10vw;
+      -webkit-backdrop-filter: blur(10px);
+      background-color:rgba(0,0,0,0.5);
+      color:white;
+      text-align:center;
+      -webkit-text-stroke:0.15vw black;
+      z-index:999;
+      border-radius:30px;
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:3.7vw;
+      height:5vw;
+    }
+
+    body {
+      height: calc(15000px + 100lvh);
+    }
+
+    .touch-scroll-taker {
+      position:absolute;
+      top:0;
+      left:0;
+      height:1500lvh;
+      z-index: 99;
+      background-color: transparent;
+      width:100%;
+    }
+
+    .vo-icon {
+      position:fixed;
+      top:20px;
+      left:20px;
+      width:60px;
+      height:60px;
+      z-index:999;
+      background:rgba(255,255,255,0.1);
+      border-radius:10px;
+      padding:20px;
+    }
+    
+    .vr-icon {
+      position:fixed;
+      padding:20px;
+      background:rgba(255,255,255,0.1);
+      border-radius:10px;
+      top:120px;
+      left:20px;
+      width:60px;
+      height:60px;
+      z-index:999;
+    }
+    path {
+      cursor:pointer;
+    }
+
+    .hidden {
+      display:none;
+    }
+
+  </style>
+</head>
+
+<body>
+<div class="height-probe"></div>
+
+
+  <div class="vo-icon">
+    <svg version="1.1" id="states" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+      viewBox="0 0 76.82 76.76" style="enable-background:new 0 0 76.82 76.76;" xml:space="preserve">
+    <style type="text/css">
+      
+    </style>
+    <path id="sound_on" d="M20.05,22.84h13.7L50.06,7.69c2.91-2.7,7.64-0.61,7.6,3.36l-0.32,35.53l-0.16,17.53
+      c-0.01,0.67-0.15,1.28-0.39,1.82c-1.2,2.69-4.9,3.69-7.28,1.39l-16.24-15.7H20.05c-2.5,0-4.52-2.03-4.52-4.52V27.36
+      c0-0.9,0.26-1.74,0.72-2.45C17.05,23.66,18.45,22.84,20.05,22.84z"/>
+    <path class="hidden" id="sound_off" d="M56.8,65.94c-1.2,2.69-4.9,3.69-7.28,1.39l-16.24-15.7H20.05c-2.5,0-4.52-2.03-4.52-4.52
+      V27.36c0-0.9,0.26-1.74,0.72-2.45L56.8,65.94z M57.34,46.58l0.32-35.53c0.04-3.97-4.69-6.06-7.6-3.36L33.75,22.84L57.34,46.58z
+      M72.91,72.01c1.07-1.08,1.07-2.82-0.01-3.89L13.09,8.46c-1.07-1.07-2.82-1.07-3.89,0.01c-1.07,1.08-1.07,2.82,0.01,3.89
+      l59.82,59.66c0.54,0.54,1.24,0.8,1.94,0.8C71.67,72.82,72.38,72.55,72.91,72.01z"/>
+    </svg>
+  </div>
+
+
+    <div class="vr-icon hidden">
+      <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+      viewBox="0 0 99.8 55.03" style="enable-background:new 0 0 99.8 55.03;" xml:space="preserve">
+    <path d="M49.9,43.58c-4.06,0-8.93,5.27-15.69,8.32c-6.76,3.04-12.89,4.89-21.98,0S0,37.03,0,27.49c0-9.53,2.73-17.8,14.94-23.44
+      C22.97,0.34,39.56,0,49.9,0c10.35,0,26.93,0.34,34.96,4.05C97.07,9.69,99.8,17.96,99.8,27.49S96.68,46.73,87.56,51.9
+      s-15.21,3.04-21.98,0C58.83,48.86,53.96,43.58,49.9,43.58"/>
+    </svg>
+
+    </div>
+
+<div class="voiceover-text" >
+  This is the HTMLModelElement
+</div>
+<div class="touch-scroll-taker"></div>
+</body>
+
+
+<script type="importmap">
+			{
+				"imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.166.0/build/three.module.min.js",
+          "three/examples/":"https://cdn.jsdelivr.net/npm/three@0.166.0/examples/jsm/"
+
+				}
+			}
+</script>
+
+<script type="module">
+  import * as THREE from "three";
+
+  import { GUI } from "three/examples/libs/lil-gui.module.min.js";
+  import { RGBELoader } from "three/examples/loaders/RGBELoader.js";
+  import { OrbitControls } from "three/examples/controls/OrbitControls.js";
+  import { TransformControls } from "three/examples/controls/TransformControls.js";
+  import { VRButton } from "three/examples/webxr/VRButton.js";
+  import { RoundedBoxGeometry } from "three/examples/geometries/RoundedBoxGeometry.js";
+  import { GLTFLoader } from "three/examples/loaders/GLTFLoader.js";
+  import { GLTFExporter } from "three/examples/exporters/GLTFExporter.js";
+  import { USDZExporter } from "three/examples/exporters/USDZExporter.js";
+  import { XRHandModelFactory } from 'three/examples/webxr/XRHandModelFactory.js';
+  import { XRControllerModelFactory } from 'three/examples/webxr/XRControllerModelFactory.js';
+  import { GroundedSkybox } from 'three/examples/objects/GroundedSkybox.js';
+  import * as SkeletonUtils from 'three/examples/utils/SkeletonUtils.js';
+  import { Text } from 'https://cdn.jsdelivr.net/npm/troika-three-text@0.49.1/+esm';
+
+window.keyData = JSON.parse(localStorage.getItem("keydata")) || [
+[{name:"Caption",value:"This is the HTMLModelElement"},{name:"useNormalIBL",value:true},{name:"curAnimationTime",value:"0.000"},{name:"timeScale",value:"0.00001"},{name:"Scale reference opacity",value:"1.000"},{name:"orbitMode",value:false},{name:"Show bounding box",value:false},{name:"Show bounding sphere",value:false},{name:"window width",value:"0.000"},{name:"window height",value:"0.000"},{name:"scale",value:"1.000"},{name:"cx",value:"0.634"},{name:"cy",value:"1.587"},{name:"cz",value:"0.405"},{name:"tx",value:"0.215"},{name:"ty",value:"1.488"},{name:"tz",value:"-0.235"},{name:"portal width",value:"0.000"},{name:"portal height",value:"0.000"},{name:"r",value:"0.336"},{name:"g",value:"0.336"},{name:"b",value:"0.336"},{name:"clipModel",value:true},{name:"showScaleArrows",value:false},{name:"x",value:"0.000"},{name:"y",value:"0.000"},{name:"z",value:"0.000"}],
+[{name:"Caption",value:"The first spatial HTML element."},{name:"useNormalIBL",value:true},{name:"Scale reference opacity",value:"1.000"},{name:"timeScale",value:"0.00001"},{name:"orbitMode",value:false},{name:"Show bounding box",value:false},{name:"Show bounding sphere",value:false},{name:"window width",value:"0.000"},{name:"window height",value:"0.000"},{name:"scale",value:"1.000"},{name:"cx",value:"-0.642"},{name:"cy",value:"1.566"},{name:"cz",value:"0.508"},{name:"tx",value:"-0.171"},{name:"ty",value:"1.462"},{name:"tz",value:"-0.398"},{name:"portal width",value:"0.000"},{name:"portal height",value:"0.000"},{name:"r",value:"0.336"},{name:"g",value:"0.336"},{name:"b",value:"0.336"},{name:"clipModel",value:true},{name:"x",value:"0.000"},{name:"y",value:"0.000"},{name:"z",value:"0.000"}],
+[{name:"Caption",value:"It appears as a 3D object in a portal,"},{name:"useNormalIBL",value:true},{name:"Scale reference opacity",value:"0.000"},{name:"orbitMode",value:false},{name:"Show bounding box",value:false},{name:"Show bounding sphere",value:false},{name:"window width",value:"0.000"},{name:"window height",value:"0.000"},{name:"scale",value:"1.000"},{name:"cx",value:"0.053"},{name:"cy",value:"1.487"},{name:"cz",value:"0.274"},{name:"tx",value:"0.047"},{name:"ty",value:"1.479"},{name:"tz",value:"-0.431"},{name:"portal width",value:"0.000"},{name:"portal height",value:"0.000"},{name:"r",value:"0.336"},{name:"g",value:"0.336"},{name:"b",value:"0.336"},{name:"clipModel",value:true},{name:"x",value:"0.000"},{name:"y",value:"0.000"},{name:"z",value:"0.000"}],
+[{name:"Caption",value:"but is not visible behind the window."},{name:"useNormalIBL",value:true},{name:"Scale reference opacity",value:"0.000"},{name:"orbitMode",value:false},{name:"Show bounding box",value:false},{name:"Show bounding sphere",value:false},{name:"window width",value:"0.000"},{name:"window height",value:"0.000"},{name:"scale",value:"1.000"},{name:"cx",value:"1.056"},{name:"cy",value:"1.507"},{name:"cz",value:"-0.617"},{name:"tx",value:"0.049"},{name:"ty",value:"1.481"},{name:"tz",value:"-0.465"},{name:"portal width",value:"0.000"},{name:"portal height",value:"0.000"},{name:"r",value:"0.336"},{name:"g",value:"0.336"},{name:"b",value:"0.336"},{name:"clipModel",value:true},{name:"x",value:"0.000"},{name:"y",value:"0.000"},{name:"z",value:"0.000"}],
+[{name:"Caption",value:"The portal color may be changed,"},{name:"useNormalIBL",value:true},{name:"Scale reference opacity",value:"0.000"},{name:"orbitMode",value:false},{name:"Show bounding box",value:false},{name:"Show bounding sphere",value:false},{name:"window width",value:"0.000"},{name:"window height",value:"0.000"},{name:"scale",value:"1.000"},{name:"cx",value:"0.040"},{name:"cy",value:"1.515"},{name:"cz",value:"0.380"},{name:"tx",value:"0.026"},{name:"ty",value:"1.476"},{name:"tz",value:"-0.481"},{name:"portal width",value:"0.000"},{name:"portal height",value:"0.000"},{name:"r",value:"0.336"},{name:"g",value:"0.127"},{name:"b",value:"0.078"},{name:"clipModel",value:true},{name:"x",value:"0.000"},{name:"y",value:"0.000"},{name:"z",value:"0.000"}],
+[{name:"Caption",value:"and the environment map updated to match."},{name:"useNormalIBL",value:false},{name:"Scale reference opacity",value:"0.000"},{name:"orbitMode",value:false},{name:"Show bounding box",value:false},{name:"Show bounding sphere",value:false},{name:"window width",value:"0.000"},{name:"window height",value:"0.000"},{name:"scale",value:"1.000"},{name:"cx",value:"0.040"},{name:"cy",value:"1.515"},{name:"cz",value:"0.380"},{name:"tx",value:"0.026"},{name:"ty",value:"1.476"},{name:"tz",value:"-0.481"},{name:"portal width",value:"0.000"},{name:"portal height",value:"0.000"},{name:"r",value:"0.336"},{name:"g",value:"0.127"},{name:"b",value:"0.078"},{name:"clipModel",value:true},{name:"x",value:"0.000"},{name:"y",value:"0.000"},{name:"z",value:"0.000"}],
+[{name:"Caption",value:"An auto-fit parameter uses the model bounds"},{name:"useNormalIBL",value:false},{name:"Scale reference opacity",value:"0.000"},{name:"orbitMode",value:false},{name:"Show bounding box",value:true},{name:"Show bounding sphere",value:false},{name:"window width",value:"0.000"},{name:"window height",value:"0.000"},{name:"scale",value:"1.000"},{name:"cx",value:"0.577"},{name:"cy",value:"1.375"},{name:"cz",value:"0.170"},{name:"tx",value:"0.038"},{name:"ty",value:"1.472"},{name:"tz",value:"-0.493"},{name:"portal width",value:"0.783"},{name:"portal height",value:"0.000"},{name:"r",value:"0.336"},{name:"g",value:"0.127"},{name:"b",value:"0.078"},{name:"clipModel",value:true},{name:"x",value:"0.000"},{name:"y",value:"0.000"},{name:"z",value:"0.000"}],
+[{name:"Caption",value:"to keep the model in view without clipping,"},{name:"useNormalIBL",value:false},{name:"Scale reference opacity",value:"0.000"},{name:"orbitMode",value:false},{name:"Show bounding box",value:true},{name:"Show bounding sphere",value:false},{name:"window width",value:"0.000"},{name:"window height",value:"0.000"},{name:"scale",value:"1.000"},{name:"cx",value:"0.352"},{name:"cy",value:"1.765"},{name:"cz",value:"-0.057"},{name:"tx",value:"0.078"},{name:"ty",value:"1.493"},{name:"tz",value:"-0.523"},{name:"portal width",value:"-0.507"},{name:"portal height",value:"0.049"},{name:"r",value:"0.336"},{name:"g",value:"0.127"},{name:"b",value:"0.078"},{name:"clipModel",value:true},{name:"x",value:"0.000"},{name:"y",value:"0.000"},{name:"z",value:"0.000"}],
+[{name:"Caption",value:"and to set it back so it resides in the portal."},{name:"useNormalIBL",value:false},{name:"Scale reference opacity",value:"0.000"},{name:"orbitMode",value:false},{name:"Show bounding box",value:true},{name:"Show bounding sphere",value:false},{name:"window width",value:"0.000"},{name:"window height",value:"0.000"},{name:"scale",value:"1.000"},{name:"cx",value:"0.808"},{name:"cy",value:"1.523"},{name:"cz",value:"-0.627"},{name:"tx",value:"0.078"},{name:"ty",value:"1.489"},{name:"tz",value:"-0.521"},{name:"portal width",value:"0.708"},{name:"portal height",value:"0.030"},{name:"r",value:"0.336"},{name:"g",value:"0.127"},{name:"b",value:"0.078"},{name:"clipModel",value:true},{name:"x",value:"0.000"},{name:"y",value:"0.000"},{name:"z",value:"0.000"}],
+[{name:"Caption",value:"If the free orbit mode is enabled,"},{name:"useNormalIBL",value:false},{name:"Scale reference opacity",value:"0.000"},{name:"orbitMode",value:true},{name:"Show bounding box",value:false},{name:"Show bounding sphere",value:true},{name:"window width",value:"0.000"},{name:"window height",value:"0.000"},{name:"scale",value:"1.000"},{name:"cx",value:"0.237"},{name:"cy",value:"1.623"},{name:"cz",value:"0.187"},{name:"tx",value:"0.078"},{name:"ty",value:"1.489"},{name:"tz",value:"-0.521"},{name:"portal width",value:"0.708"},{name:"portal height",value:"0.030"},{name:"r",value:"0.336"},{name:"g",value:"0.127"},{name:"b",value:"0.078"},{name:"clipModel",value:true},{name:"x",value:"0.000"},{name:"y",value:"0.000"},{name:"z",value:"0.000"}],
+[{name:"Caption",value:"the model is fit to the bounding sphere,"},{name:"useNormalIBL",value:false},{name:"Scale reference opacity",value:"0.000"},{name:"orbitMode",value:true},{name:"Show bounding box",value:false},{name:"Show bounding sphere",value:true},{name:"window width",value:"0.000"},{name:"window height",value:"0.000"},{name:"scale",value:"1.000"},{name:"cx",value:"0.075"},{name:"cy",value:"1.503"},{name:"cz",value:"0.213"},{name:"tx",value:"0.023"},{name:"ty",value:"1.484"},{name:"tz",value:"-0.523"},{name:"portal width",value:"0.084"},{name:"portal height",value:"0.146"},{name:"r",value:"0.336"},{name:"g",value:"0.127"},{name:"b",value:"0.078"},{name:"clipModel",value:true},{name:"x",value:"0.000"},{name:"y",value:"0.000"},{name:"z",value:"0.000"}],
+[{name:"Caption",value:"so that it remains in view"},{name:"useNormalIBL",value:false},{name:"Scale reference opacity",value:"0.000"},{name:"orbitMode",value:true},{name:"Show bounding box",value:false},{name:"Show bounding sphere",value:true},{name:"window width",value:"0.000"},{name:"window height",value:"0.000"},{name:"scale",value:"1.000"},{name:"cx",value:"-0.178"},{name:"cy",value:"1.440"},{name:"cz",value:"0.186"},{name:"tx",value:"0.001"},{name:"ty",value:"1.467"},{name:"tz",value:"-0.530"},{name:"portal width",value:"0.084"},{name:"portal height",value:"0.146"},{name:"r",value:"0.336"},{name:"g",value:"0.127"},{name:"b",value:"0.078"},{name:"clipModel",value:true},{name:"x",value:"1.521"},{name:"y",value:"0.980"},{name:"z",value:"-0.798"}],
+[{name:"Caption",value:"regardless of the orientation."},{name:"useNormalIBL",value:false},{name:"Scale reference opacity",value:"0.000"},{name:"orbitMode",value:true},{name:"Show bounding box",value:false},{name:"Show bounding sphere",value:true},{name:"window width",value:"0.000"},{name:"window height",value:"0.000"},{name:"scale",value:"1.000"},{name:"cx",value:"0.232"},{name:"cy",value:"1.465"},{name:"cz",value:"0.172"},{name:"tx",value:"0.001"},{name:"ty",value:"1.467"},{name:"tz",value:"-0.530"},{name:"portal width",value:"0.084"},{name:"portal height",value:"0.146"},{name:"r",value:"0.336"},{name:"g",value:"0.127"},{name:"b",value:"0.078"},{name:"clipModel",value:true},{name:"x",value:"-1.879"},{name:"y",value:"-1.803"},{name:"z",value:"0.823"}],
+[{name:"Caption",value:"It is also set back by the full sphere radius."},{name:"useNormalIBL",value:false},{name:"showScaleArrows",value:false},{name:"Scale reference opacity",value:"0.000"},{name:"orbitMode",value:true},{name:"Show bounding box",value:false},{name:"Show bounding sphere",value:true},{name:"window width",value:"0.000"},{name:"window height",value:"0.000"},{name:"scale",value:"1.000"},{name:"cx",value:"0.817"},{name:"cy",value:"1.483"},{name:"cz",value:"-0.617"},{name:"tx",value:"0.002"},{name:"ty",value:"1.474"},{name:"tz",value:"-0.523"},{name:"portal width",value:"0.084"},{name:"portal height",value:"0.146"},{name:"r",value:"0.336"},{name:"g",value:"0.127"},{name:"b",value:"0.078"},{name:"clipModel",value:true},{name:"x",value:"0.000"},{name:"y",value:"0.000"},{name:"z",value:"0.000"}],
+[{name:"Caption",value:"On platforms with a dynamic window scale,"},{name:"useNormalIBL",value:false},{name:"showScaleArrows",value:true},{name:"Scale reference opacity",value:"1.000"},{name:"orbitMode",value:false},{name:"Show bounding box",value:false},{name:"Show bounding sphere",value:false},{name:"window width",value:"0.000"},{name:"window height",value:"0.000"},{name:"scale",value:"1.000"},{name:"cx",value:"2.307"},{name:"cy",value:"2.018"},{name:"cz",value:"1.432"},{name:"tx",value:"0.007"},{name:"ty",value:"0.863"},{name:"tz",value:"-0.094"},{name:"portal width",value:"0.084"},{name:"portal height",value:"0.146"},{name:"r",value:"0.336"},{name:"g",value:"0.127"},{name:"b",value:"0.078"},{name:"clipModel",value:true},{name:"x",value:"0.000"},{name:"y",value:"0.000"},{name:"z",value:"0.000"}],
+[{name:"Caption",value:"which do not report the true window scale,"},{name:"useNormalIBL",value:false},{name:"Scale reference opacity",value:"1.000"},{name:"orbitMode",value:false},{name:"Show bounding box",value:false},{name:"Show bounding sphere",value:false},{name:"window width",value:"0.000"},{name:"window height",value:"0.000"},{name:"scale",value:"2.796"},{name:"cx",value:"3.352"},{name:"cy",value:"1.452"},{name:"cz",value:"1.517"},{name:"tx",value:"0.047"},{name:"ty",value:"0.954"},{name:"tz",value:"-0.484"},{name:"portal width",value:"0.084"},{name:"portal height",value:"0.146"},{name:"r",value:"0.336"},{name:"g",value:"0.127"},{name:"b",value:"0.078"},{name:"clipModel",value:true},{name:"x",value:"0.000"},{name:"y",value:"0.000"},{name:"z",value:"0.000"}],
+[{name:"Caption",value:"the scale is set relative to the pixel size."},{name:"useNormalIBL",value:false},{name:"Scale reference opacity",value:"1.000"},{name:"orbitMode",value:false},{name:"Show bounding box",value:false},{name:"Show bounding sphere",value:false},{name:"window width",value:"0.000"},{name:"window height",value:"0.000"},{name:"scale",value:"1.117"},{name:"cx",value:"-1.436"},{name:"cy",value:"1.637"},{name:"cz",value:"1.324"},{name:"tx",value:"-0.265"},{name:"ty",value:"1.017"},{name:"tz",value:"-0.427"},{name:"portal width",value:"0.084"},{name:"portal height",value:"0.146"},{name:"r",value:"0.336"},{name:"g",value:"0.127"},{name:"b",value:"0.078"},{name:"clipModel",value:true},{name:"x",value:"0.000"},{name:"y",value:"0.000"},{name:"z",value:"0.000"}],
+[{name:"Caption",value:"On a supported platform,"},{name:"useNormalIBL",value:false},{name:"Scale reference opacity",value:"1.000"},{name:"orbitMode",value:false},{name:"Show bounding box",value:false},{name:"Show bounding sphere",value:false},{name:"window width",value:"0.000"},{name:"window height",value:"0.000"},{name:"scale",value:"1.117"},{name:"cx",value:"0.243"},{name:"cy",value:"1.555"},{name:"cz",value:"-0.125"},{name:"tx",value:"-0.009"},{name:"ty",value:"1.445"},{name:"tz",value:"-0.639"},{name:"portal width",value:"0.084"},{name:"portal height",value:"0.146"},{name:"r",value:"0.336"},{name:"g",value:"0.127"},{name:"b",value:"0.078"},{name:"clipModel",value:true},{name:"x",value:"0.000"},{name:"y",value:"0.000"},{name:"z",value:"0.000"}],
+[{name:"Caption",value:"the model may be extracted from the portal,"},{name:"useNormalIBL",value:false},{name:"Scale reference opacity",value:"1.000"},{name:"orbitMode",value:false},{name:"Show bounding box",value:false},{name:"Show bounding sphere",value:false},{name:"window width",value:"0.000"},{name:"window height",value:"0.000"},{name:"scale",value:"1.117"},{name:"cx",value:"0.665"},{name:"cy",value:"1.498"},{name:"cz",value:"-0.467"},{name:"tx",value:"-0.038"},{name:"ty",value:"1.436"},{name:"tz",value:"-0.565"},{name:"portal width",value:"0.084"},{name:"portal height",value:"0.146"},{name:"r",value:"0.336"},{name:"g",value:"0.127"},{name:"b",value:"0.078"},{name:"clipModel",value:false},{name:"x",value:"0.000"},{name:"y",value:"0.000"},{name:"z",value:"0.000"}],
+[{name:"Caption",value:"no longer clipped to its dimensions,"},{name:"useNormalIBL",value:false},{name:"Scale reference opacity",value:"1.000"},{name:"orbitMode",value:false},{name:"Show bounding box",value:false},{name:"Show bounding sphere",value:false},{name:"window width",value:"0.000"},{name:"window height",value:"0.000"},{name:"scale",value:"1.117"},{name:"cx",value:"0.549"},{name:"cy",value:"1.652"},{name:"cz",value:"-0.251"},{name:"tx",value:"-0.043"},{name:"ty",value:"1.431"},{name:"tz",value:"-0.551"},{name:"portal width",value:"0.084"},{name:"portal height",value:"0.146"},{name:"r",value:"0.336"},{name:"g",value:"0.127"},{name:"b",value:"0.078"},{name:"clipModel",value:false},{name:"x",value:"0.000"},{name:"y",value:"0.000"},{name:"z",value:"0.000"}],
+[{name:"Caption",value:"and should be lit according to its environment."},{name:"useNormalIBL",value:false},{name:"Scale reference opacity",value:"1.000"},{name:"orbitMode",value:false},{name:"Show bounding box",value:false},{name:"Show bounding sphere",value:false},{name:"window width",value:"0.000"},{name:"window height",value:"0.000"},{name:"scale",value:"1.117"},{name:"cx",value:"-0.357"},{name:"cy",value:"1.691"},{name:"cz",value:"-0.045"},{name:"tx",value:"-0.010"},{name:"ty",value:"1.435"},{name:"tz",value:"-0.535"},{name:"portal width",value:"0.084"},{name:"portal height",value:"0.146"},{name:"r",value:"0.336"},{name:"g",value:"0.127"},{name:"b",value:"0.078"},{name:"clipModel",value:false},{name:"x",value:"0.000"},{name:"y",value:"0.000"},{name:"z",value:"0.000"}],
+[{name:"Caption",value:"If the model has an animation"},{name:"useNormalIBL",value:true},{name:"curAnimationTime",value:"0.000"},{name:"timeScale",value:"1.00001"},{name:"Scale reference opacity",value:"1.000"},{name:"orbitMode",value:false},{name:"Show bounding box",value:false},{name:"Show bounding sphere",value:false},{name:"window width",value:"0.000"},{name:"window height",value:"0.000"},{name:"scale",value:"1.000"},{name:"cx",value:"0.634"},{name:"cy",value:"1.587"},{name:"cz",value:"0.405"},{name:"tx",value:"0.215"},{name:"ty",value:"1.488"},{name:"tz",value:"-0.235"},{name:"portal width",value:"0.000"},{name:"portal height",value:"0.000"},{name:"r",value:"0.336"},{name:"g",value:"0.336"},{name:"b",value:"0.336"},{name:"clipModel",value:true},{name:"showScaleArrows",value:false},{name:"x",value:"0.000"},{name:"y",value:"0.000"},{name:"z",value:"0.000"}],
+[{name:"Caption",value:"it can be played, paused, and seeked."},{name:"curAnimationTime",value:"2.7236"},{name:"timeScale",value:"0.00001"},{name:"useNormalIBL",value:true},{name:"Scale reference opacity",value:"0.000"},{name:"orbitMode",value:false},{name:"Show bounding box",value:false},{name:"Show bounding sphere",value:false},{name:"window width",value:"0.000"},{name:"window height",value:"0.000"},{name:"scale",value:"1.000"},{name:"cx",value:"0.053"},{name:"cy",value:"1.487"},{name:"cz",value:"0.274"},{name:"tx",value:"0.047"},{name:"ty",value:"1.479"},{name:"tz",value:"-0.431"},{name:"portal width",value:"0.000"},{name:"portal height",value:"0.000"},{name:"r",value:"0.336"},{name:"g",value:"0.336"},{name:"b",value:"0.336"},{name:"clipModel",value:true},{name:"x",value:"0.000"},{name:"y",value:"0.000"},{name:"z",value:"0.000"}],
+[{name:"Caption",value:"The model bounds are not updated"},{name:"useNormalIBL",value:true},{name:"curAnimationTime",value:"2.7236"},{name:"timeScale",value:"0.00001"},{name:"Scale reference opacity",value:"0.000"},{name:"orbitMode",value:false},{name:"Show bounding box",value:true},{name:"Show bounding sphere",value:false},{name:"window width",value:"0.000"},{name:"window height",value:"0.000"},{name:"scale",value:"1.000"},{name:"cx",value:"0.577"},{name:"cy",value:"1.375"},{name:"cz",value:"0.170"},{name:"tx",value:"0.038"},{name:"ty",value:"1.472"},{name:"tz",value:"-0.493"},{name:"portal width",value:"0.783"},{name:"portal height",value:"0.000"},{name:"r",value:"0.336"},{name:"g",value:"0.336"},{name:"b",value:"0.336"},{name:"clipModel",value:true},{name:"x",value:"0.000"},{name:"y",value:"0.000"},{name:"z",value:"0.000"}],
+[{name:"Caption",value:"based on action within the animation.,"},{name:"useNormalIBL",value:true},{name:"curAnimationTime",value:"2.7236"},{name:"timeScale",value:"0.00001"},{name:"Scale reference opacity",value:"0.000"},{name:"orbitMode",value:false},{name:"Show bounding box",value:true},{name:"Show bounding sphere",value:false},{name:"window width",value:"0.000"},{name:"window height",value:"0.000"},{name:"scale",value:"1.000"},{name:"cx",value:"0.352"},{name:"cy",value:"1.765"},{name:"cz",value:"-0.057"},{name:"tx",value:"0.078"},{name:"ty",value:"1.493"},{name:"tz",value:"-0.523"},{name:"portal width",value:"-0.507"},{name:"portal height",value:"0.049"},{name:"r",value:"0.336"},{name:"g",value:"0.336"},{name:"b",value:"0.336"},{name:"clipModel",value:true},{name:"x",value:"0.000"},{name:"y",value:"0.000"},{name:"z",value:"0.000"}]
+
+
+];
+
+var generator = window;
+
+function smoothstep(low,high,val) {
+  val = (val-low)/(high-low);
+  val = Math.max(0, Math.min(1, val));
+  return val*val*(3-2*val);
+}
+
+  class App {
+    constructor() {
+      this.toUpdate = [];
+
+      //we should set a better FOV for portrait:
+      var heightProbe = document.querySelector('.height-probe');
+      this.renderHeight = heightProbe.offsetHeight;
+      var aspect = innerWidth/this.renderHeight;
+      var fovExtra = 20*smoothstep(1.5, 0.5, aspect);
+      this.camera = new THREE.PerspectiveCamera(45 + fovExtra ,aspect, 0.1, 100.0);
+      this.camera.position.set(0.583, 1.428, 0.519);      this.initRenderer();
+
+      this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+      this.controls.target = new THREE.Vector3(0.258, 1.501, -0.144);
+      this.toUpdate.push(this.controls);
+      
+
+      var launchIcon = document.querySelector(".vr-icon");
+      navigator.xr &&
+      navigator.xr.isSessionSupported( 'immersive-vr' ).then(_=>{
+        this.initVR();
+        launchIcon.classList.remove("hidden")
+      });
+      launchIcon.addEventListener('click', e=>this.launchVR());
+      this.pointerDown = false;
+      this.controls.addEventListener('end', e=>{
+        this.pointerDown = false;
+        this.camPos.copy(this.camera.position);
+        this.camTarget.copy(this.controls.target);
+      });
+
+      this.controls.addEventListener('start', e=>{
+        this.pointerDown = true;
+        this.camPos.copy(this.camera.position);
+        this.camTarget.copy(this.controls.target);
+      });
+
+      this.controls.addEventListener('change', e=>{
+        if(this.pointerDown) {
+
+          this.camPos.copy(this.camera.position);
+          this.camTarget.copy(this.controls.target);
+        }
+      });
+
+      this.controls.enableZoom = false;
+      this.scene = new THREE.Scene();
+
+      this.scene.add(this.camera);
+
+      this.name = "Model explainer demo";
+      this.version = 1;
+      this.gui = new GUI();
+      this.gui.hide();
+
+      this.keysByName = window.keyData.map(frameData=>{
+        const object = {};
+        frameData.forEach(({name, value})=>{
+          var parsed = parseFloat(value,10);
+          if(!isNaN(parsed)) value = parsed;
+          object[name]=value;
+        })
+        return object;
+      });
+      this.oldScroll = window.scrollY;
+      this.oldWidth = innerWidth;
+      addEventListener('resize', e=>this.shouldResize = true);
+      this.toUpdate.push({update:()=>{
+        if(this.shouldResize) {
+          this.shouldResize = false;
+          if(innerWidth!=this.oldWidth) {
+            this.handleResize();
+          }
+        }
+      }});
+
+      this.muted = false;
+      var soundOff = document.getElementById("sound_off");
+      var soundOn =  document.getElementById("sound_on");
+      [soundOff, soundOn].forEach(e=>e.addEventListener('click', e=>{
+        this.muted = !this.muted;
+        soundOff.classList.toggle("hidden");
+        soundOn.classList.toggle("hidden");
+      }));
+      
+
+      const cameraProps  = this.gui.addFolder("camera properties");
+
+      if(navigator.maxTouchPoints==0) {
+        var touchTaker = document.querySelector(".touch-scroll-taker");
+        touchTaker.remove();
+
+      this.renderer.domElement.addEventListener('pointerup', e=>{
+        this.isDown = false;
+        this.lastInteractTime = performance.now();
+      });
+      
+      this.renderer.domElement.addEventListener('pointerdown', e=>{
+        this.isDown = true;
+        this.lastInteractTime = performance.now();
+      });
+
+      }
+
+      this.camPos = new THREE.Vector3();
+      this.camTarget = new THREE.Vector3();
+
+      this.camProxy = new THREE.Object3D();
+      this.targetProxy = new THREE.Object3D();
+      this.scene.add(this.camProxy);
+      this.scene.add(this.targetProxy);
+
+
+      cameraProps.close();
+      cameraProps.add(this.camPos, "x").name("cx");
+      cameraProps.add(this.camPos, "y").name("cy");
+      cameraProps.add(this.camPos, "z").name("cz");
+
+      cameraProps.add(this.camTarget, "x").name("tx");
+      cameraProps.add(this.camTarget, "y").name("ty");
+      cameraProps.add(this.camTarget, "z").name("tz");
+      this.voText = "This is the HTMLModelElement";
+      this.lastInteractTime = performance.now();
+      this.isDown = false;
+
+      this.gui.add(this, "voText").name("Caption").listen().onChange(e=>{
+        
+        document.querySelector(".voiceover-text").innerHTML = this.voText;
+        if(this.vrVOText) {
+          this.vrVOText.text = this.voText;
+        }
+        speechSynthesis.cancel();
+        document.querySelector(".voiceover-text").classList.remove("done");
+        let utterance = new SpeechSynthesisUtterance(this.voText);
+        utterance.addEventListener('end', e=>{
+          document.querySelector(".voiceover-text").classList.add("done");
+        });
+
+        if(!this.muted) {
+          speechSynthesis.speak(utterance);
+        }
+      });
+
+
+      this.gui.add(this, "addKeyFrame");
+      this.gui.add(this, "launchVR");
+      
+      this.useNormalIBL = true;
+
+
+      this.animButton = this.gui.add(this,"readNextKeyFrame");
+      this.gui.add(this,"overwriteKeyframe");
+      this.gui.add({clear:()=>{
+        localStorage.setItem("keydata", "");
+        window.keyData = [];
+      }}, "clear").name("Erase keyframes");
+      this.currentKeyframe = 0;
+      
+      this.loadScene();
+      this.initHDR();
+     
+    }
+
+    handleResize() {
+      var heightProbe = document.querySelector('.height-probe');
+      this.renderHeight = heightProbe.offsetHeight;
+      
+      var aspect = innerWidth/this.renderHeight;
+      var fovExtra = 20*smoothstep(1.5, 0.5, aspect);
+      this.camera.aspect = aspect;
+      this.camera.fov = 45 + fovExtra;
+      this.camera.updateProjectionMatrix();
+      this.renderer.setSize(innerWidth, this.renderHeight);
+      
+    }
+
+
+    overwriteKeyframe() {
+      var props = 
+      this.gui.controllersRecursive().map(c=>{
+        var val = c.object[c.property]
+        if(typeof val !="function") {
+          if(typeof val =="number") val = val.toFixed(3);
+          return {name:c._name, value:val}
+        }
+      }).filter(e=>e!=null);
+      window.keyData[this.currentKeyframe-1] = props;
+      localStorage.setItem("keydata", JSON.stringify(window.keyData));   
+    }
+
+
+    handleScroll() {
+    
+        this.lastTimeScroll = this.smoothedScrollY;
+        var pct = (this.smoothedScrollY/document.body.offsetHeight*window.keyData.length);
+        var lowFrame = Math.floor(pct);
+        var highFrame = Math.min(window.keyData.length-1, lowFrame+1);
+        var interpoland = pct-lowFrame;
+        var lowKeydata = this.keysByName[lowFrame];
+        var highKeydata = this.keysByName[highFrame];
+        if(!lowKeydata|| !highKeydata) {
+          debugger;
+        }
+        var f = smoothstep(0,1, interpoland);
+        var g = 1-f;
+        this.gui.controllersRecursive().forEach(c=>{
+
+          var oldVal = c.object[c.property];
+          if(lowKeydata[c._name]==undefined) return;
+          if(typeof c.object[c.property] =="number") {
+
+            c.object[c.property] = lowKeydata[c._name]*g + highKeydata[c._name]*f;
+          } else {
+            c.object[c.property] = lowKeydata[c._name];
+          }
+          if(c.object[c.property]!=oldVal) {
+            c._callOnChange();
+          }
+        });
+
+    }
+
+    readNextKeyFrame() {
+
+      var data = window.keyData[this.currentKeyframe];
+      this.animButton.name("Go to frame "+this.currentKeyframe+" of "+window.keyData.length );
+      this.currentKeyframe = (this.currentKeyframe+1)%window.keyData.length;
+      
+      this.gui.controllersRecursive().forEach(c=>{
+        data.forEach(d=>{
+          var delay = 1000;
+          if(d.name==c._name) { 
+            var numericalValue = parseFloat(d.value, 10);
+            if(!isNaN(numericalValue)) {
+             this.lerpTo(d.value,c.property,c.object, 1000,e=>c._callOnChange()); 
+            } else {
+              if(c._name=="Caption") delay = 0;
+              if(c._name=="orbitMode") delay = 0;
+              setTimeout(()=>{
+                c.object[c.property] =d.value;
+                c._callOnChange();
+              }, delay);
+            }
+            
+          }
+        })});
+    }
+
+
+    async nextFrame() {
+      return new Promise(resolve=>generator.requestAnimationFrame(resolve));
+    }
+
+
+
+    async lerpTo(newVal, prop, obj, duration, callback) {
+
+      var oldVal = obj[prop];
+      var startTime = performance.now();
+      var elapsed = 0;
+      while(elapsed<duration) {
+        elapsed = performance.now()-startTime;
+        var f = smoothstep(0,1,elapsed/duration);
+        var fVal = f*newVal + (1-f)*oldVal;;
+        obj[prop] = fVal;
+        callback();
+        await this.nextFrame();
+      }
+    }
+
+
+    randomTex() {
+      if(this.cachedNoiseTex) return this.cachedNoiseTex;
+      var c = document.createElement('canvas');
+      c.width = c.height = 512;
+      var g = c.getContext('2d');
+      var imgData = g.getImageData(0,0, 512,512);
+      for(var i=0;i<imgData.data.length;i+=4) {
+        imgData.data[i+0] = imgData.data[i+1] = imgData.data[i+2] = Math.random()*0xff;
+        imgData.data[i+3] = 255;
+      }
+      g.putImageData(imgData,0,0);
+      this.cachedNoiseTex = new THREE.CanvasTexture(c);
+      return this.cachedNoiseTex;
+    }
+
+    addKeyFrame() {
+
+      var props = 
+      this.gui.controllersRecursive().map(c=>{
+        var val = c.object[c.property]
+        if(typeof val !="function") {
+          if(typeof val =="number") val = val.toFixed(3);
+          return {name:c._name, value:val}
+        }
+      }).filter(e=>e!=null);
+      window.keyData.push(props);
+      localStorage.setItem("keydata", JSON.stringify(window.keyData));      
+    }
+
+
+    dissolveMaterial(color) {
+
+      
+
+      return new THREE.ShaderMaterial({
+
+        vertexShader:`
+          void main() {
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.);
+          }
+        `,
+        fragmentShader:`
+          uniform vec4 color;
+          uniform float opacity;
+          uniform sampler2D noiseTex;
+          void main() {
+            if( texture2D(noiseTex, fract(gl_FragCoord.xy/700.)).r>opacity){ discard;}
+            gl_FragColor = color;
+            
+            
+          }
+          `,
+        transparent:true,
+          uniforms:{
+            color:{value:color},
+            noiseTex:{value:this.randomTex()},
+            opacity:{value:1}
+          }});
+
+    } 
+    async loadScene() {
+        const { scene, animations } = await new GLTFLoader().loadAsync("./explainer_illustrations/teapot_website.glb");
+        this.animator = new THREE.AnimationMixer(scene);
+        this.action = this.animator.clipAction(animations[0]);
+
+
+        this.animator.timeScale = 0.00001;
+        this.gui.add(this.animator, "timeScale", 0.00001,1);
+        this.curAnimationTime = 0;
+        this.gui.add(this, "curAnimationTime", 0, 4.4).onChange(e=>{
+          this.animator.setTime(this.curAnimationTime/this.animator.timeScale);
+        });
+        this.action.play();
+
+        this.toUpdate.push({update:()=>{
+          const delta = this.clock.getDelta();
+          this.animator.update( delta );
+        }});
+        this.clock = new THREE.Clock();
+        
+        this.scene.add(scene);
+        var blueMat = scene.getObjectByName("person-blue").material = this.dissolveMaterial(new THREE.Vector4(0.5,0.7,1.,1));
+        var blackMat = scene.getObjectByName("person-outline").material = this.dissolveMaterial(new THREE.Vector4(0,0,0,1));
+        
+        this.gui.add(blueMat.uniforms.opacity, "value", 0,1).onChange(e=>{
+          blackMat.uniforms.opacity.value = blueMat.uniforms.opacity.value;
+        }).name("Scale reference opacity");
+
+        this.pageWindow = scene.getObjectByName("pageWindow");
+        this.pageWindow.updateMorphTargets();
+
+        this.texts = {};
+        scene.traverse(e=>{
+          if(e.name.indexOf("text-")!=-1) {
+            var newText = new Text();
+            newText.color = e.userData.color;
+            newText.text = e.userData.text;
+            newText.fontSize = e.userData.fontSize;
+            newText.maxWidth = e.userData.maxWidth;
+            e.add(newText);
+            newText.sync();
+            this.texts[e.name.substr(5)] = newText;
+          }
+        });
+        
+
+       this.portal = scene.getObjectByName("portal");
+       this.teapot = scene.getObjectByName("teapot");
+
+       this.wobbleAmount = 0.00;
+        this.gui.add(this, "wobbleAmount", 0, 0.02);
+
+       this.teapot.traverse(e=>{
+        if(e.material) e.material.onBeforeCompile = shader=>{
+            shader.vertexShader = shader.vertexShader.replace("#include <clipping_planes_pars_vertex>",  
+            `#include <clipping_planes_pars_vertex>
+                uniform float time;
+                uniform float wobbleAmount;
+            `);
+
+          shader.vertexShader = shader.vertexShader.replace("#include <fog_vertex>",
+            `#include <fog_vertex>
+                gl_Position.x+= wobbleAmount * sin(time*10.+position.y*200.);
+            `);
+
+          shader.uniforms = Object.assign(shader.uniforms, {
+            time:{value:0},
+            wobbleAmount:{value:0.01},
+           });
+           this.toUpdate.push({update:()=>{
+             shader.uniforms.time.value = performance.now()/1000;
+             shader.uniforms.wobbleAmount.value = this.wobbleAmount;
+           }});
+        }; 
+      });      
+
+       this.teapotScaleTarget = new THREE.Vector3(1,1,1);
+       this.teapotTargetZ = 0;
+       this.toUpdate.push({update:()=>{
+         this.teapot.scale.lerp(this.teapotScaleTarget,0.2);
+         this.teapot.position.z = 0.2*this.teapotTargetZ+0.8*this.teapot.position.z;
+        }});
+        const updatePortal = ()=>{
+
+            var modelExtent = this.modelBoundingBox.max.clone().sub(this.modelBoundingBox.min);
+
+
+            if(this.orbitMode) {
+                modelExtent.setScalar(this.radius);
+            } 
+
+            var maxScale = Math.min(
+                (1+this.pageWindow.morphTargetInfluences[0]) * modelExtent.x*10, 
+                (1+this.pageWindow.morphTargetInfluences[1]) * modelExtent.y*10
+            );
+           
+            this.teapotScaleTarget.setScalar(maxScale);
+            
+
+            this.teapotTargetZ = -modelExtent.z*maxScale/2; 
+
+            if(this.orbitMode) {
+                this.teapotTargetZ = -maxScale/10;
+            } 
+
+            if(!this.clipModel) this.teapotTargetZ = 0.2;
+
+
+            this.clipTicker.scale.x = (this.pageWindow.morphTargetInfluences[1]+1)*0.2;
+            this.clipTicker.scale.y = (this.pageWindow.morphTargetInfluences[0]+1)*0.2;
+            
+
+            this.corners[0].position.x = 0.1*(this.pageWindow.morphTargetInfluences[1]+1);
+            this.corners[1].position.x = 0.1*(this.pageWindow.morphTargetInfluences[1]+1);
+
+            this.corners[2].position.x = -0.1*(this.pageWindow.morphTargetInfluences[1]+1);
+            this.corners[3].position.x = -0.1*(this.pageWindow.morphTargetInfluences[1]+1);
+
+            this.corners[0].position.y = 0.1*(this.pageWindow.morphTargetInfluences[0]+1);
+            this.corners[3].position.y = 0.1*(this.pageWindow.morphTargetInfluences[0]+1);
+            
+            this.corners[1].position.y = -0.1*(this.pageWindow.morphTargetInfluences[0]+1);
+            this.corners[2].position.y = -0.1*(this.pageWindow.morphTargetInfluences[0]+1);
+
+        }
+        this.orbitMode = false;
+        this.gui.add(this, "orbitMode").onChange(updatePortal);
+        
+        
+        this.portalOptions = this.gui.addFolder("Portal options");
+        this.portalOptions.add(this.pageWindow.morphTargetInfluences,"1", -1,2).onChange(updatePortal).name("portal width");
+        this.portalOptions.add(this.pageWindow.morphTargetInfluences,"0", -1,0.57).onChange(updatePortal).name("portal height");
+        
+        
+        var arrowGroup0 = scene.getObjectByName("line-indicator");
+        arrowGroup0.removeFromParent();
+
+        this.addBoundingBox(this.teapot, arrowGroup0);
+        var arrowGroup1 = arrowGroup0.clone(true);
+        scene.add(arrowGroup1);
+      
+        var arrowGroup2 = arrowGroup0.clone(true);
+        scene.add(arrowGroup2);
+      
+
+
+        const shadowPlane = scene.getObjectByName('shadowPlane');
+        shadowPlane.material.transparent = true;
+        shadowPlane.material.blending = THREE.MultiplyBlending;
+        arrowGroup2.scale.setScalar(0.5);
+
+        const updateScale = ()=>{
+            const lShadowBasePos = scene.getObjectByName('lShadowBase').getWorldPosition(new THREE.Vector3());
+            const rShadowBasePos = scene.getObjectByName('rShadowBase').getWorldPosition(new THREE.Vector3());
+            lShadowBasePos.x-= 0.1*this.pageWindow.morphTargetInfluences[3];
+            rShadowBasePos.x+= 0.1*this.pageWindow.morphTargetInfluences[3];
+            lShadowBasePos.y-= 0.1*this.pageWindow.morphTargetInfluences[2];
+            rShadowBasePos.y-= 0.1*this.pageWindow.morphTargetInfluences[2];
+            
+            shadowPlane.position.lerpVectors(lShadowBasePos, rShadowBasePos, 0.5);
+            shadowPlane.position.y = 0;
+
+            var extraWidth = this.pageWindow.morphTargetInfluences[3];
+            shadowPlane.scale.setScalar(lShadowBasePos.distanceTo(rShadowBasePos)+extraWidth*scene.getObjectByName('scalePivot').scale.x*0.4);
+
+            this.setMeasure(
+                arrowGroup1, 
+                new THREE.Vector3(0,0,0), 
+                shadowPlane.position,
+                new THREE.Color("blue"),
+                "m",
+                1
+            );
+
+            this.setMeasure(
+                arrowGroup2, 
+                lShadowBasePos, 
+                rShadowBasePos,
+                new THREE.Color("red"),
+                "m",
+                1
+            );
+
+        };
+
+        this.showScaleArrows = true;
+        this.gui.add(this, "showScaleArrows").onChange(e=>{
+            arrowGroup1.visible = arrowGroup2.visible = this.showScaleArrows;
+        });
+        updateScale();
+
+        this.gui.add(this.pageWindow.morphTargetInfluences,"3", -1,2).onChange(updateScale).name("window width");
+        this.gui.add(this.pageWindow.morphTargetInfluences,"2", -1,2).onChange(updateScale).name("window height");
+
+        this.gui.add({scale:1}, "scale", 0.5, 4).onChange(e=>{
+            scene.getObjectByName('scalePivot').scale.setScalar(e);
+            updateScale();
+        });
+
+        this.initClipElements();
+        scene.getObjectByName("portal-origin").add(this.clipParent);
+
+        scene.getObjectByName("portal").visible = false;
+        this.portalMatte = new THREE.Mesh(
+            new THREE.SphereGeometry(0.5, 32,32, Math.PI, Math.PI),
+            new THREE.MeshBasicMaterial({color:0x505050,  side:THREE.BackSide})
+            );
+        
+
+        this.portalOptions.add(this.portalMatte.material.color, "r",0,1);
+        this.portalOptions.add(this.portalMatte.material.color, "g",0,1);
+        this.portalOptions.add(this.portalMatte.material.color, "b",0,1);
+
+
+        this.teapotOptions = this.gui.addFolder("Model options");
+
+        this.gui.add(this, "useNormalIBL").onChange(e=>{
+        this.teapot.traverse(e=>{
+            if(e.material)  {
+              e.material.envMap = (this.useNormalIBL||!this.clipModel)?this.normalIBL:this.orangeIBL;
+            }
+          })
+      })
+
+        this.teapotOptions.add(this.teapot.rotation,"x", -Math.PI, Math.PI);
+        this.teapotOptions.add(this.teapot.rotation,"y", -Math.PI, Math.PI);
+        this.teapotOptions.add(this.teapot.rotation,"z", -Math.PI, Math.PI);
+        this.clipContent.add(this.teapot);
+        this.clipContent.add(this.portalMatte);
+
+        this.clipModel = true;
+        this.portalOptions.add(this, "clipModel").onChange(e=>{
+
+          var planes = this.clipModel? this.clippingPlanes:[];
+          this.teapot.traverse(e=>{
+            if(e.material)  {
+              e.material.clippingPlanes = planes;
+              e.material.envMap = (this.useNormalIBL||!this.clipModel)?this.normalIBL:this.orangeIBL;
+            }
+          })
+          updatePortal();
+        });
+
+        
+        this.clipContent.traverse(e=>{
+            if(e.material) e.material.clippingPlanes = this.clippingPlanes;
+        });
+        updatePortal();
+        this.smoothedScrollY = scrollY;
+        this.lastTimeScroll = 0;
+        addEventListener('scroll', e=>{
+          this.lastInteractTime = 0;
+        });
+
+
+        this.toUpdate.push({update:()=>{
+        if(this.isDown){ this.lastInteractTime = performance.now();}
+        this.smoothedScrollY = 0.9*this.smoothedScrollY+0.1 * Math.max(0,scrollY);
+        var diff = this.smoothedScrollY-this.lastTimeScroll;
+          if(Math.abs(diff)>0.05) {
+            this.handleScroll();
+          }
+        }
+      });
+      this.readNextKeyFrame();
+
+        this.vrVOLocator = new THREE.Object3D();
+        this.vrVOLocator.visible = false;
+        this.camProxy.add(this.vrVOLocator);
+        this.vrVOLocator.position.set(0, -0.18, 0.2);
+        this.vrVOText = new Text();
+        this.vrVOText.anchorX = "50%";
+        this.vrVOText.maxWidth = 0.7;
+        this.vrVOText.fontSize = 0.028;
+        this.vrVOLocator.add(this.vrVOText);
+        this.vrVOText.sync();
+        this.vrVOText.rotation.y = Math.PI;
+        var reticle = this.scene.getObjectByName("reticle");
+        reticle.rotation.x = Math.PI/2;
+        reticle.position.y = 0.2
+        this.vrVOLocator.add(reticle);
+
+        this.vrVOLocator.add(this.vrVOText);
+
+    }
+    
+    initClipElements() {
+
+        var tcs = [];
+        this.renderer.localClippingEnabled = true;
+        this.clippingPlanes = [];
+        this.corners = [];
+        
+        var back = this.scene.getObjectByName("pageWindow").material.clone();
+        back.side = THREE.BackSide;
+
+        this.clipTicker = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), back);
+        this.clipTicker.onBeforeRender = (renderer, scene, camera,geo,group)=>{
+            var pos = new THREE.Vector3();
+            var rot = new THREE.Quaternion();
+            var scale = new THREE.Vector3();
+            camera.matrixWorld.decompose(pos,rot,scale);
+            this.updateClipPositions(pos);
+        }
+        this.clipParent = new THREE.Object3D()
+        this.clipParent.add(this.clipTicker);
+        for(var i=0;i<4;i++) {
+            var o3d = new THREE.Object3D();
+            this.clipParent.add(o3d);
+            this.corners.push(o3d);
+            
+            
+            var theta = (i/4+0.125)*2*Math.PI;
+            o3d.position.set(0.2*Math.sin(theta), 0.2*Math.cos(theta), 0);
+        }
+        
+
+
+
+        this.clipContent = new THREE.Object3D();
+        this.clipParent.add(this.clipContent);
+        for(var i=0;i<4;i++) {
+            this.clippingPlanes.push(new THREE.Plane().setFromCoplanarPoints(
+                this.camera.position, 
+                this.corners[(i+1)%4].position,
+                this.corners[(i+2)%4].position 
+                ));
+        }
+    }
+
+    updateClipPositions(pos) {
+        for(var i=0;i<4;i++) {
+            this.clippingPlanes[i].setFromCoplanarPoints(
+                pos, 
+                this.corners[(i+1)%4].localToWorld(new THREE.Vector3()),
+                this.corners[(i+2)%4].localToWorld(new THREE.Vector3())
+                );
+            }
+    }
+
+
+    addBoundingBox(target, arrowGroup) {
+        var axes = new THREE.Object3D();
+        this.gui.add(axes, "visible").name("Show bounding box");
+        this.scene.add(axes);
+        var x = arrowGroup.clone();
+        x.scale.setScalar(0.08);
+        axes.add(x);
+        var y = arrowGroup.clone();
+        y.scale.setScalar(0.08);
+        axes.add(y);
+        var z = arrowGroup.clone();
+        z.scale.setScalar(0.08);
+        axes.add(z);
+        this.modelBoundingBox = target.geometry.boundingBox;
+        var min = target.geometry.boundingBox.min.clone();
+        var max = target.geometry.boundingBox.max.clone();
+        var center = new THREE.Vector3().lerpVectors(max,min, 0.5)
+        this.radius = min.distanceTo(max)/2;
+        var trueSphereRadius = 0;
+        var a = this.teapot.geometry.attributes.position.array;
+        for(var n=0;n<a.length;n+=3) {
+            trueSphereRadius = Math.max(trueSphereRadius, Math.sqrt(a[n+0]*a[n+0] + a[n+1]*a[n+1] + a[n+2]*a[n+2] ));
+        }
+        this.radius = trueSphereRadius;
+
+        this.modelBoundingSphere = new THREE.Mesh(new THREE.CylinderGeometry(1, 0.97, 0.001, 64, 1, true), new THREE.MeshBasicMaterial({color:0x101040, 
+            transparent:true,
+            depthTest:false,
+            blending:THREE.AdditiveBlending}));
+        this.scene.add(this.modelBoundingSphere);
+         a = this.modelBoundingSphere.geometry.attributes.position.array;
+        for(var n=0;n<a.length;n+=3) {
+            var j = a[n+2];
+            a[n+2] = a[n+1];
+            a[n+1] =j;
+        }
+
+        this.toUpdate.push({update:()=>{
+            this.modelBoundingSphere.lookAt(this.camera.position);
+        }});
+        this.gui.add(this.modelBoundingSphere, "visible").name("Show bounding sphere");
+
+        this.toUpdate.push({update:()=>{
+
+            target.getWorldPosition(new THREE.Vector3());
+            var wCenter = target.localToWorld(center.clone());
+            this.modelBoundingSphere.position.copy(wCenter);
+            var globalScale = 1;
+            var entity = target;
+            while(entity!=null) {
+                globalScale *=entity.scale.x;
+                entity = entity.parent;
+            }
+
+            this.modelBoundingSphere.scale.setScalar(this.radius*globalScale);
+            var v1 = target.localToWorld(new THREE.Vector3(max.x, max.y, max.z))
+            var v2 = target.localToWorld(new THREE.Vector3(min.x, max.y, max.z))
+            var v3 = target.localToWorld(new THREE.Vector3(min.x, min.y, max.z))
+            var v4 = target.localToWorld(new THREE.Vector3(min.x, max.y, min.z))
+
+            this.setMeasure(x,v2,v1,new THREE.Color("red"),"m",1);
+
+            this.setMeasure(y,v2,v3,new THREE.Color("green"),"m",1);
+            this.setMeasure(z,v2,v4,new THREE.Color("blue"),"m", 1);
+            x.userData.text.fontSize=0.3
+            x.userData.text.position.y=0.3
+            y.userData.text.fontSize=0.3
+            y.userData.text.position.y=0.3
+            z.userData.text.fontSize=0.3
+            z.userData.text.position.y=0.3;
+
+            var lerpAmount = 0.1*smoothstep(500, 1000, performance.now()-this.lastInteractTime);
+            this.camProxy.position.copy(this.camPos);
+            this.targetProxy.position.copy(this.camTarget);
+            this.camProxy.lookAt(this.targetProxy.position);
+
+          this.camera.position.lerp(this.camPos, lerpAmount);
+          this.controls.target.lerp(this.camTarget, lerpAmount);
+
+        }});
+        }
+        
+        setMeasure(arrowGroup,a, b, color, suffix, scale) {
+
+        arrowGroup.position.lerpVectors(a,b,0.5);
+        var abDist = a.distanceTo(b);
+        arrowGroup.lookAt(b);
+
+        let lineL = arrowGroup.getObjectByName("line-l");
+        let lineR = arrowGroup.getObjectByName("line-r");
+        let lineH = arrowGroup.getObjectByName("line-h");
+        lineL.material = new THREE.MeshBasicMaterial();
+        lineR.material = lineH.material = lineL.material;
+        lineL.material.color.copy(color);
+        lineL.position.z = -abDist/2/arrowGroup.scale.x;
+        lineR.position.z =  abDist/2/arrowGroup.scale.x;
+        lineH.scale.x = abDist/arrowGroup.scale.x;
+        
+        var t = arrowGroup.userData.text;
+
+        if(t==null) {
+
+            t = arrowGroup.userData.text = new Text();
+            arrowGroup.add(t);
+            t.fontSize = 0.08/arrowGroup.scale.x;
+            t.anchorX = "50%";
+            
+            t.position.y = 0.1/arrowGroup.scale.x;
+        }
+
+        t.color = color;
+        t.rotation.y = -Math.PI/2;
+        t.text = (abDist*scale).toFixed(2)+suffix;
+        t.sync();
+    }
+
+
+    initRenderer() {
+      this.renderer = new THREE.WebGLRenderer({antialias: true });
+      this.renderer.setSize(innerWidth, this.renderHeight);
+      this.renderer.xr.setFoveation(1);
+      this.renderer.setClearColor(0xc0b0a0);
+      this.renderer.setAnimationLoop(e => this.update(e));
+      this.renderer.setPixelRatio(devicePixelRatio);
+
+
+
+      this.renderer.xr.enabled = true;
+      Object.assign(this.renderer.domElement.style, {
+        position:'fixed',
+        top:0
+      });
+
+      document.body.appendChild(this.renderer.domElement);
+    }
+
+    initVR() {
+
+
+      const controllerModelFactory = new XRControllerModelFactory();
+      const handModelFactory = new XRHandModelFactory();
+      
+      const addControls = number => {
+        const controller = this.renderer.xr.getController(number);
+        this.scene.add(controller);
+        const grip = this.renderer.xr.getControllerGrip(number);
+        grip.add(controllerModelFactory.createControllerModel(grip));
+        this.scene.add(grip);
+        const hand = this.renderer.xr.getHand(number);
+
+        hand.add(handModelFactory.createHandModel(hand, 'mesh'));
+
+        this.scene.add(hand);
+        return { controller, grip, hand };
+      };
+
+      this.zero = addControls(0);
+      this.one = addControls(1);
+    }
+
+    launchVR() {
+      speechSynthesis.speak(new SpeechSynthesisUtterance("launching VR"));
+      const sessionParams = { optionalFeatures: [ 'local-floor', 'hand-tracking'] };
+      navigator.xr.requestSession( 'immersive-vr', sessionParams )
+      .then( session => {
+        
+        this.currentKeyframe = 0;
+        this.readNextKeyFrame();
+        
+        generator = session;
+        this.vrVOLocator.visible = true;
+  
+        this.renderer.xr.setSession( session );
+  
+        session.addEventListener('select', e=>{
+          this.readNextKeyFrame();
+        });
+  
+        session.addEventListener('end', e=>{
+          this.vrVOLocator.visible = false;
+          generator = window;
+        });
+      });
+    }
+
+
+    update(e) {
+
+        this.toUpdate.forEach(e=>e.update());
+        this.renderer.render(this.scene, this.camera);
+        
+    }
+
+    initHDR() {
+
+      new RGBELoader()
+        .setDataType(THREE.HalfFloatType)
+        .setPath('./explainer_illustrations/')
+        .load('studio_country_hall_2k.hdr', texture => {
+            
+          const pmremGenerator = new THREE.PMREMGenerator(this.renderer);
+          pmremGenerator.compileEquirectangularShader();
+          const envMap = pmremGenerator.fromEquirectangular(texture).texture;
+          this.normalIBL = envMap;
+         
+         var skybox = new GroundedSkybox( texture, 2,4 );
+         skybox.rotation.y = -1.32;
+				skybox.position.y = 2 - 0.01;
+				this.scene.add( skybox );
+          this.scene.environment = envMap;
+          this.worldEnvMap = envMap;
+          texture.dispose();
+          pmremGenerator.dispose();
+        });
+      new RGBELoader()
+        .setDataType(THREE.HalfFloatType)
+        .setPath('./explainer_illustrations/')
+        .load('cobblestones.hdr', texture => {
+            
+          const pmremGenerator = new THREE.PMREMGenerator(this.renderer);
+          pmremGenerator.compileEquirectangularShader();
+          const envMap = pmremGenerator.fromEquirectangular(texture).texture;
+          this.orangeIBL = envMap;
+          texture.dispose();
+          pmremGenerator.dispose();
+        });
+    }
+  }
+
+
+  var app = window.app = new App();
+</script>
+
+</html>
