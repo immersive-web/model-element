@@ -80,14 +80,14 @@ more immersive experiences, such as augmented reality.
 This proposal does *not* aim to define a mechanism that allows the creation of a 3D scene
 within a browser using declarative primitives or a programmatic API. 
 
-While some popular model formats have the ability to encode and relate audio tracks, <model>
+While some popular model formats have the ability to encode and relate audio tracks, `<model>`
 is expected to present silently and will not honor audio components.
 
-Many model formats include the ability to blend animation tracks, <model> is expected to play
+Many model formats include the ability to blend animation tracks, `<model>` is expected to play
 only the first animation track discovered in a valid source asset.
 
 Many model formats include the ability to encode stateful interaction with the scene, for example
-with selection targets linked to the selective showing and hiding of content. <model> is expected
+with selection targets linked to the selective showing and hiding of content. `<model>` is expected
 to only manage a single, linear animation timeline, and the manipulation of the `entityTransform`
 that dictates the apparent scale, orientation, and position offset of the entire scene as an
 atomic element.
@@ -257,7 +257,7 @@ The `mousedown` and `touchstart` compatibility events may also be used for this 
 * `load`: Dispatched when the model's source file has been loaded and processed, such that the
 bounding box information is available and the animation duration, if present, is known.
 * `error`: Dispatched if the the model's source file is unable to be fetched, or if the file
-cannot be interpreted as a valid <model> asset.
+cannot be interpreted as a valid `<model>` asset.
 * `iblload`: Dispatched when a model's selected environmentmap has been loaded and is ready to
 contribute to the visual appearance of the model.
 * `iblerror`: Dispatched if there has been an issue with the model's selected environmentmap,
