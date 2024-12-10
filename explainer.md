@@ -20,6 +20,7 @@
   - [Fallback content](#fallback-content)
 - [DOM API](#dom-api)
 - [JavaScript API](#javascript-api)
+- [Resource Promises](#resource-promises)
 - [DOM Events](#dom-events)
   - [DOM Actions](#dom-actions)
 - [Visual presentation control](#visual-presentation-control)
@@ -242,6 +243,18 @@ when playback has been successfully started.
 * `pause()`: A method that attempts to pause the playback of a model's animation. If the model is already paused
 this method will have no effect.
 
+## Resource Promises
+
+* `ready`: Resolved when the model's source file has been loaded and processed, such that the
+bounding box information is available and the animation duration, if present, is known. The 
+Promise is rejected if the source file is unable to be fetched, or if the file
+cannot be interpreted as a valid `<model>` asset.
+
+* `environmentMapReady`: Resolved when a model's selected environment map has been loaded and is 
+ready to contribute to the visual appearance of the model. The Promise is rejected if there has 
+been an issue with the model's selected environment map that will prevent its ability to act as
+the lighting environment.
+
 ## DOM Events
 
 While the author may prevent any built-in interactive behavior for a `<model>` by ommitting the `stagemode`
@@ -253,15 +266,6 @@ method when handling the `pointerdown` event. If this method is not called for t
 `preventDefault()` for any additional pointer event will have no effect.
 
 The `mousedown` and `touchstart` compatibility events may also be used for this purpose.
-
-* `load`: Dispatched when the model's source file has been loaded and processed, such that the
-bounding box information is available and the animation duration, if present, is known.
-* `error`: Dispatched if the the model's source file is unable to be fetched, or if the file
-cannot be interpreted as a valid `<model>` asset.
-* `iblload`: Dispatched when a model's selected environmentmap has been loaded and is ready to
-contribute to the visual appearance of the model.
-* `iblerror`: Dispatched if there has been an issue with the model's selected environmentmap,
-which will prevent its ability to act as the lighting environment.
 
 ### DOM actions
 
