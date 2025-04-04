@@ -168,22 +168,38 @@ the element, it should appear as in the image below.
 
 ### Fallback content
 
-In the case where `<model>` can not display any of its `<source>` children, it
-will fall-back to showing its last non-`<source>` child that is a replaced
-element. In the example below, this would mean the contents of the `<picture>`
-element would be displayed.
+In the case where `<model>` can not display any of its `<source>` children, 
+it will fall-back to showing its last non-`<source>` child that is a 
+replaced element. In the example below, this would mean the `<img>` element
+would be displayed.
 
 ```html
 <model>
     <source src="fake.typ1" type="imaginary/type-1">
     <source src="fake.typ2" type="imaginary/type-2">
-    <picture>
-        <source src="animated-version.mp4" type="video/mp4">
-        <source src="animated-version.webp" type="image/webp">
-        <img src="animated-version.gif"/>
-    </picture>
+    <img src="animated-version.gif" alt="Ha Ha reaction bubble">
 </model>
 ```
+
+Expanded example that includes `<video>` element in order to account for 
+localized, accessible video alternatives like Closed Captions (CC/SDH) and Audio 
+Descriptions (AD). 
+
+```html
+<model>
+    <source src="fake.typ1" type="imaginary/type-1">
+    <source src="fake.typ2" type="imaginary/type-2">
+    <video controls poster="poster.gif">
+        <source src="animated-crawl.webm" type="video/webm">
+        <source src="animated-crawl.mp4" type="video/mp4">
+        <track kind="captions" src="sdh_en.vtt" srclang="en" label="English (SDH)">
+        <track kind="captions" src="sdh_ja.vtt" srclang="ja" label="日本語 (SDH)">
+        <img src="animated-crawl.gif" alt="Probably need the full text of the animated crawl here, or use a text element as the fallback instead of img.">
+    </picture>
+    </video>
+</model>
+```
+
 
 ## DOM API
 
@@ -348,13 +364,18 @@ that browser behaviors around loading, autoplay and accessibility should be
 honored for the `<model>` element as well, for instance:
 
 - a static poster image may be displayed prior to loading the full `<model>` resource,
-- playback may be disabled if the user has set a preference to reduce animations.
+- playback may be disabled if the user has set a preference to reduce or stop animations.
 
 Like other timed media, the `<model>` element will provide a DOM API for playing, 
 pausing, etc.
 
-The `<model>` element has an `alt` attribute to provide a textual description of the
-content. Also, the 3D content itself might expose some features to the accessibility engine.
+The `<model>` element needs, at minimum, an `alt` attribute (possibly on a fallback img 
+descendent) to provide a textual description of the content. Likewise, animated models 
+might include `<video>` elements as fallback, along with the localization and 
+accessiblity features available via the `<track>` element.
+
+Also, the 3D content itself might expose some features to the accessibility engine, as is
+currently being discussed for USD.
 
 ## Privacy considerations
 
