@@ -245,7 +245,7 @@ the model contents to the view displayed in the browser.
 of the model contents. If there is an animation present, the bounding box is computed based on the bind pose of 
 the animation and remains static for the lifetime of the model. It does not update based on a change of
 the `entityTransform`.
-* `boundingBoxExtent`: a read-only `DOMPoint` that indicates the extent of the bounding box of the model
+* `boundingBoxExtents`: a read-only `DOMPoint` that indicates the extents of the bounding box of the model
 contents. 
 * `duration`: a read-only `double` reflecting the un-scaled total duration of the animation, if present.
 If there is no animation on this model, the value is 0.
