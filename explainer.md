@@ -309,7 +309,7 @@ center of the view-plane at (0,0,0).
 
 The initial `entityTransform` is set to center the view on the `boundingBoxCenter`, set back by
 `boundingBoxExtents.z/2` so that the element resides entirely within the portal, and to fit the
-`boundingingBoxExtents` within the visible view. That is, to set a uniform scale such that the
+`boundingBoxExtents` within the visible view. That is, to set a uniform scale such that the
 `boundingBoxExtents.y` fits within the model's portal height, and the `boundingBoxExtents.x` fits within
 the model's portal width.
 <!-- Diagram of the default/autofit scale -->
