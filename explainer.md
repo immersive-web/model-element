@@ -214,11 +214,11 @@ elements to the `<model>` element.
 * `autoplay`: read-write boolean indicating whether the model will automatically start playback.
 Setting this property to `false` removes the `autoplay` HTML attribute if present, while setting it to `true`
 adds the `autoplay` HTML attribute if absent.
-* `stagemode`: read-write string indicating whether user input automatically 
+* `stageMode`: read-write string indicating whether user input automatically 
 results in changing the display orientation of the model. Setting this
 property to anything but `orbit` removes the automatic orbit behavior, while setting it to `orbit`
 sets the stage mode to orbit.
-* `environmentmap`: read-write string indicating the URL of an environment map, also known as an Image-Based Light (IBL). Supplied as an equirectangular image, frequently in a High-Dynamic Range
+* `environmentMap`: read-write string indicating the URL of an environment map, also known as an Image-Based Light (IBL). Supplied as an equirectangular image, frequently in a High-Dynamic Range
 (HDR) image format.
 * `loop`: read-write boolean indicating whether the model animation, if present, will automatically loop.
 * `loading`: behaves in the same manner as the
@@ -273,7 +273,7 @@ the lighting environment.
 
 ## DOM Events
 
-While the author may prevent any built-in interactive behavior for a `<model>` by ommitting the `stagemode`
+While the author may prevent any built-in interactive behavior for a `<model>` by omitting the `stagemode`
 attribute, it might be desirable for the decision to allow custom control of the model behavior at runtime.
 To that end, when a user initiates a gesture over a `<model>` element, the author may call the `preventDefault()`
 method when handling the `pointerdown` event. If this method is not called for the
