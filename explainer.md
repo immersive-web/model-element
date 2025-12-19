@@ -195,7 +195,6 @@ Descriptions (AD).
         <track kind="captions" src="sdh_en.vtt" srclang="en" label="English (SDH)">
         <track kind="captions" src="sdh_ja.vtt" srclang="ja" label="日本語 (SDH)">
         <img src="animated-crawl.gif" alt="Probably need the full text of the animated crawl here, or use a text element as the fallback instead of img.">
-    </picture>
     </video>
 </model>
 ```
