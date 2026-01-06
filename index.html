@@ -353,9 +353,13 @@
         [Exposed=Window]
         interface HTMLModelElement : HTMLElement {
 
+          readonly attribute Promise<HTMLModelElement> ready;
+          readonly attribute DOMPointReadOnly boundingBoxCenter;
+          readonly attribute DOMPointReadOnly boundingBoxExtents;
+          attribute DOMMatrixReadOnly entityTransform;
+
         };
       </pre>
-      <aside class="issue" data-number="12"></aside>
       <aside class="issue" data-number="42"></aside>
     </section>
     <section>
