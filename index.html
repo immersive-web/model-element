@@ -344,13 +344,11 @@ var[data-type]:hover::after,var[data-type]:hover::before{opacity:1}
         <code><span class="element-attr" data-dfn-for="model" data-dfn-type="element-attr">loading</span></code> attribute
       </a></li><li class="tocline"><a class="tocxref" href="#loop-attribute"><bdi class="secno">4.7 </bdi>
         <code><span class="element-attr" data-dfn-for="model" data-dfn-type="element-attr">loop</span></code> attribute
-      </a></li><li class="tocline"><a class="tocxref" href="#muted-attribute"><bdi class="secno">4.8 </bdi>
-        <code><span class="element-attr" data-dfn-for="model" data-dfn-type="element-attr">muted</span></code> attribute
-      </a></li><li class="tocline"><a class="tocxref" href="#poster-attribute"><bdi class="secno">4.9 </bdi>
+      </a></li><li class="tocline"><a class="tocxref" href="#poster-attribute"><bdi class="secno">4.8 </bdi>
         <code><span class="element-attr" data-dfn-for="model" data-dfn-type="element-attr">poster</span></code> attribute
-      </a></li><li class="tocline"><a class="tocxref" href="#src-attribute"><bdi class="secno">4.10 </bdi>
+      </a></li><li class="tocline"><a class="tocxref" href="#src-attribute"><bdi class="secno">4.9 </bdi>
         <code><span class="element-attr" data-dfn-for="model" data-dfn-type="element-attr">src</span></code> attribute
-      </a></li><li class="tocline"><a class="tocxref" href="#width-attribute"><bdi class="secno">4.11 </bdi>
+      </a></li><li class="tocline"><a class="tocxref" href="#width-attribute"><bdi class="secno">4.10 </bdi>
         <code><span class="element-attr" data-dfn-for="model" data-dfn-type="element-attr">width</span></code> attribute
       </a></li></ol></li><li class="tocline"><a class="tocxref" href="#the-htmlmodelelement-interface"><bdi class="secno">5. </bdi>
         The <code>HTMLModelElement</code> interface
@@ -386,9 +384,7 @@ var[data-type]:hover::after,var[data-type]:hover::before{opacity:1}
         CSS integrations
       </a><ol class="toc"><li class="tocline"><a class="tocxref" href="#media-playback-states-playing-paused-seeking"><bdi class="secno">14.1 </bdi>
         Media Playback States (<code>:playing</code>, <code>:paused</code>, <code>:seeking</code>)
-      </a></li><li class="tocline"><a class="tocxref" href="#the-muted-and-volume-locked-pseudo-classes"><bdi class="secno">14.2 </bdi>
-        The <code>:muted</code> and <code>:volume-locked</code> pseudo-classes
-      </a></li><li class="tocline"><a class="tocxref" href="#fullscreen-presentation-state-the-fullscreen-pseudo-class"><bdi class="secno">14.3 </bdi>
+      </a></li><li class="tocline"><a class="tocxref" href="#fullscreen-presentation-state-the-fullscreen-pseudo-class"><bdi class="secno">14.2 </bdi>
         Fullscreen Presentation State: the <code>:fullscreen</code> pseudo-class
       </a></li></ol></li><li class="tocline"><a class="tocxref" href="#fullscreen-integration"><bdi class="secno">15. </bdi>
         Fullscreen integration
@@ -634,9 +630,6 @@ var[data-type]:hover::after,var[data-type]:hover::before{opacity:1}
           <code><a data-link-type="element-attr" href="#dfn-loop" class="internalDFN" id="ref-for-dfn-loop-1"><code>loop</code></a></code> — Whether to loop the media resource
         </dd>
         <dd>
-          <code><a data-link-type="element-attr" href="#dfn-muted" class="internalDFN" id="ref-for-dfn-muted-1"><code>muted</code></a></code> — Whether to mute the media resource by default
-        </dd>
-        <dd>
           <code><a data-link-type="element-attr" href="#dfn-poster" class="internalDFN" id="ref-for-dfn-poster-1"><code>poster</code></a></code> — Poster frame to show while the resource is loading
         </dd>
         <dd>
@@ -685,24 +678,21 @@ var[data-type]:hover::after,var[data-type]:hover::before{opacity:1}
       </section><section id="loop-attribute"><div class="header-wrapper"><h3 id="x4-7-loop-attribute"><bdi class="secno">4.7 </bdi>
         <code><dfn class="element-attr" data-dfn-for="model" data-dfn-type="element-attr" id="dfn-loop" tabindex="0" aria-haspopup="dialog" data-export="">loop</dfn></code> attribute
       </h3><a class="self-link" href="#loop-attribute" aria-label="Permalink for Section 4.7"></a></div>
-      </section><section id="muted-attribute"><div class="header-wrapper"><h3 id="x4-8-muted-attribute"><bdi class="secno">4.8 </bdi>
-        <code><dfn class="element-attr" data-dfn-for="model" data-dfn-type="element-attr" id="dfn-muted" tabindex="0" aria-haspopup="dialog" data-export="">muted</dfn></code> attribute
-      </h3><a class="self-link" href="#muted-attribute" aria-label="Permalink for Section 4.8"></a></div>
-      </section><section id="poster-attribute"><div class="header-wrapper"><h3 id="x4-9-poster-attribute"><bdi class="secno">4.9 </bdi>
+      </section><section id="poster-attribute"><div class="header-wrapper"><h3 id="x4-8-poster-attribute"><bdi class="secno">4.8 </bdi>
         <code><dfn class="element-attr" data-dfn-for="model" data-dfn-type="element-attr" id="dfn-poster" tabindex="0" aria-haspopup="dialog" data-export="">poster</dfn></code> attribute
-      </h3><a class="self-link" href="#poster-attribute" aria-label="Permalink for Section 4.9"></a></div>
+      </h3><a class="self-link" href="#poster-attribute" aria-label="Permalink for Section 4.8"></a></div>
       <p>
         The <code><a data-link-type="element-attr" href="#dfn-poster" class="internalDFN" id="ref-for-dfn-poster-2"><code>poster</code></a></code> attribute gives the URL of an image file that the
         user agent can show while 3D content is unavailable. The attribute, if
         present, must contain a <span class="link-me">valid non-empty URL
         potentially surrounded by spaces</span>.
       </p>
-      </section><section id="src-attribute"><div class="header-wrapper"><h3 id="x4-10-src-attribute"><bdi class="secno">4.10 </bdi>
+      </section><section id="src-attribute"><div class="header-wrapper"><h3 id="x4-9-src-attribute"><bdi class="secno">4.9 </bdi>
         <code><dfn class="element-attr" data-dfn-for="model" data-dfn-type="element-attr" id="dfn-src" tabindex="0" aria-haspopup="dialog" data-export="">src</dfn></code> attribute
-      </h3><a class="self-link" href="#src-attribute" aria-label="Permalink for Section 4.10"></a></div>
-      </section><section id="width-attribute"><div class="header-wrapper"><h3 id="x4-11-width-attribute"><bdi class="secno">4.11 </bdi>
+      </h3><a class="self-link" href="#src-attribute" aria-label="Permalink for Section 4.9"></a></div>
+      </section><section id="width-attribute"><div class="header-wrapper"><h3 id="x4-10-width-attribute"><bdi class="secno">4.10 </bdi>
         <code><dfn class="element-attr" data-dfn-for="model" data-dfn-type="element-attr" id="dfn-width" tabindex="0" aria-haspopup="dialog" data-export="">width</dfn></code> attribute
-      </h3><a class="self-link" href="#width-attribute" aria-label="Permalink for Section 4.11"></a></div>
+      </h3><a class="self-link" href="#width-attribute" aria-label="Permalink for Section 4.10"></a></div>
     </section></section>
     <section data-dfn-for="HTMLModelElement" id="the-htmlmodelelement-interface"><div class="header-wrapper"><h2 id="x5-the-htmlmodelelement-interface"><bdi class="secno">5. </bdi>
         The <code>HTMLModelElement</code> interface
@@ -860,12 +850,9 @@ How we envision the display of multiple models? Would we allow them to bump into
         Media Playback States (<code>:playing</code>, <code>:paused</code>, <code>:seeking</code>)
       </h3><a class="self-link" href="#media-playback-states-playing-paused-seeking" aria-label="Permalink for Section 14.1"></a></div>
       <div class="issue" id="issue-container-number-31"><div role="heading" class="issue-title marker" id="h-issue-25" aria-level="3"><a href="https://github.com/immersive-web/model-element/issues/31"><span class="issue-number">Issue 31</span></a><span class="issue-label">: CSS integrations: Media Playback States</span></div><p dir="auto">If <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="1326697046" data-permission-text="Title is private" data-url="https://github.com/immersive-web/model-element/issues/13" data-hovercard-type="issue" data-hovercard-url="/immersive-web/model-element/issues/13/hovercard" href="https://github.com/immersive-web/model-element/issues/13">#13</a>  holds, how does the <code class="notranslate">&lt;model&gt;</code> work with Media Playback States <code class="notranslate">:playing</code>, <code class="notranslate">:paused</code>?</p></div>
-      </section><section id="the-muted-and-volume-locked-pseudo-classes"><div class="header-wrapper"><h3 id="x14-2-the-muted-and-volume-locked-pseudo-classes"><bdi class="secno">14.2 </bdi>
-        The <code>:muted</code> and <code>:volume-locked</code> pseudo-classes
-      </h3><a class="self-link" href="#the-muted-and-volume-locked-pseudo-classes" aria-label="Permalink for Section 14.2"></a></div>
-      </section><section id="fullscreen-presentation-state-the-fullscreen-pseudo-class"><div class="header-wrapper"><h3 id="x14-3-fullscreen-presentation-state-the-fullscreen-pseudo-class"><bdi class="secno">14.3 </bdi>
+      </section><section id="fullscreen-presentation-state-the-fullscreen-pseudo-class"><div class="header-wrapper"><h3 id="x14-2-fullscreen-presentation-state-the-fullscreen-pseudo-class"><bdi class="secno">14.2 </bdi>
         Fullscreen Presentation State: the <code>:fullscreen</code> pseudo-class
-      </h3><a class="self-link" href="#fullscreen-presentation-state-the-fullscreen-pseudo-class" aria-label="Permalink for Section 14.3"></a></div>
+      </h3><a class="self-link" href="#fullscreen-presentation-state-the-fullscreen-pseudo-class" aria-label="Permalink for Section 14.2"></a></div>
     </section></section>
     <section id="fullscreen-integration"><div class="header-wrapper"><h2 id="x15-fullscreen-integration"><bdi class="secno">15. </bdi>
         Fullscreen integration
@@ -1167,18 +1154,6 @@ How we envision the display of multiple models? Would we allow them to bump into
       <a href="#ref-for-dfn-loop-1" title="§ 4. The model element">§ 4. The model element</a> 
     </li>
   </ul>
-    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-muted" aria-label="Links in this document to definition: muted">
-      <span class="caret"></span>
-      <div>
-        <a class="self-link" href="#dfn-muted" aria-label="Permalink for definition: muted. Activate to close this dialog.">Permalink</a>
-         
-      </div>
-      <p><b>Referenced in:</b></p>
-      <ul>
-    <li>
-      <a href="#ref-for-dfn-muted-1" title="§ 4. The model element">§ 4. The model element</a> 
-    </li>
-  </ul>
     </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-poster" aria-label="Links in this document to definition: poster">
       <span class="caret"></span>
       <div>
@@ -1190,7 +1165,7 @@ How we envision the display of multiple models? Would we allow them to bump into
     <li>
       <a href="#ref-for-dfn-poster-1" title="§ 4. The model element">§ 4. The model element</a> 
     </li><li>
-      <a href="#ref-for-dfn-poster-2" title="§ 4.9 poster attribute">§ 4.9 poster attribute</a> 
+      <a href="#ref-for-dfn-poster-2" title="§ 4.8 poster attribute">§ 4.8 poster attribute</a> 
     </li>
   </ul>
     </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-src" aria-label="Links in this document to definition: src">
@@ -1367,14 +1342,12 @@ How we envision the display of multiple models? Would we allow them to bump into
     <span class="print-only">§4.7</span></li><li>
       <a class="index-term" href="#dfn-model"><code>model</code></a> 
     <span class="print-only">§4.</span></li><li>
-      <a class="index-term" href="#dfn-muted"><code>muted</code></a> 
-    <span class="print-only">§4.8</span></li><li>
       <a class="index-term" href="#dfn-poster"><code>poster</code></a> 
-    <span class="print-only">§4.9</span></li><li>
+    <span class="print-only">§4.8</span></li><li>
       <a class="index-term" href="#dfn-src"><code>src</code></a> 
-    <span class="print-only">§4.10</span></li><li>
+    <span class="print-only">§4.9</span></li><li>
       <a class="index-term" href="#dfn-width"><code>width</code></a> 
-    <span class="print-only">§4.11</span></li>
+    <span class="print-only">§4.10</span></li>
   </ul>
   </section><section id="index-defined-elsewhere"><div class="header-wrapper"><h3 id="a-2-terms-defined-by-reference"><bdi class="secno">A.2 </bdi>Terms defined by reference</h3><a class="self-link" href="#index-defined-elsewhere" aria-label="Permalink for Appendix A.2"></a></div>
     
