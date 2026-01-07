@@ -353,7 +353,7 @@
         [Exposed=Window]
         interface HTMLModelElement : HTMLElement {
 
-          readonly attribute Promise<HTMLModelElement> ready;
+          readonly attribute Promise&lt;HTMLModelElement&gt; ready;
           readonly attribute DOMPointReadOnly boundingBoxCenter;
           readonly attribute DOMPointReadOnly boundingBoxExtents;
           attribute DOMMatrixReadOnly entityTransform;
