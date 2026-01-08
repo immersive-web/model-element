@@ -208,7 +208,20 @@
       <h3>
         Making `model` accessible
       </h3>
-      <aside class="issue" data-number="23"></aside>
+      <aside class="example">
+        <p>
+          The following example supplies alt text information for both
+          the model content and fallback content, in the event that model
+          is not supported on the target user agent. 
+        </p>
+        <pre class="html">
+          &lt;model&gt; 
+              &lt;source src="3d-assets/teapot.usdz" type="model/vnd.usdz+zip"&gt;
+              &lt;source src="3d-assets/teapot.glb" type="model/gltf-binary"&gt;
+              &lt;img src="image-assets/teapot.png" alt="A teapot"&gt;
+          &lt;/model&gt;
+        </pre>
+      </aside>
     </section>
     <section>
       <h2>
