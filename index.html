@@ -204,7 +204,19 @@
       <h3>
         Providing fallback content for legacy user agents
       </h3>
-      <aside class="issue" data-number="22"></aside>
+        <aside class="example">
+          <p>
+            The following example supplies fallback content for user agents that 
+            do not yet support the element:
+          </p>
+          <pre class="html">
+            &lt;model&gt; 
+                &lt;source src="3d-assets/teapot.usdz" type="model/vnd.pixar.usd"&gt;
+                &lt;source src="3d-assets/teapot.glb" type="model/gltf-binary"&gt;
+                &lt;img src="image-assets/teapot.png"&gt;
+            &lt;/model&gt;
+          </pre>
+        </aside>
       <h3>
         Making `model` accessible
       </h3>
