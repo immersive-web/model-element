@@ -253,8 +253,8 @@
           [=Embedded content=].
         </dd>
         <dd>
-          If the element has an `interactive` attribute: [=interactive
-          content=].
+          If the element has its `stagemode` attribute set to a recognized 
+          mode such as `orbit`: [=interactive content=].
         </dd>
         <dd>
           [=Palpable content=].
@@ -294,7 +294,8 @@
           automatically when the page is loaded
         </dd>
         <dd>
-          [^model/interactive^] — Allows the user to interact with the model
+          [^model/stagemode^] — Specifies the mode for interacting with the model,
+          such as `orbit` mode.
         </dd>
         <dd>
           [^model/crossorigin^] — How the element handles crossorigin requests
@@ -339,7 +340,7 @@
         <code><dfn class="element-attr" data-dfn-for="model">autoplay</dfn></code> attribute
       </h3>
       <h3>
-        <code><dfn class="element-attr" data-dfn-for="model">interactive</dfn></code> attribute
+        <code><dfn class="element-attr" data-dfn-for="model">stagemode</dfn></code> attribute
       </h3>
       <h3>
         <code><dfn class="element-attr" data-dfn-for="model">controls</dfn></code> attribute
@@ -386,6 +387,7 @@
           readonly attribute DOMPointReadOnly boundingBoxExtents;
           attribute DOMMatrixReadOnly entityTransform;
 
+          [Reflect] attribute DOMString stageMode;
         };
       </pre>
       <aside class="issue" data-number="42"></aside>
