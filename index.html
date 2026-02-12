@@ -388,7 +388,6 @@
 
         };
       </pre>
-      <aside class="issue" data-number="42"></aside>
     </section>
     <section>
       <h2>
@@ -422,10 +421,50 @@
       <aside class="issue" data-number="48"></aside>
       <aside class="issue" data-number="47"></aside>
       <h3>
-        Orientation/camera
+        Model pose 
       </h3>
-      <aside class="issue" data-number="42"></aside>
-      <aside class="issue" data-number="41"></aside>
+
+
+      <div w-nodev>
+
+        <p>The position, rotation, and scale of a model element's contents are controlled through the 
+        <code data-x="attr-entity-transform">entityTransform</code> property, a 
+        `DOMMatrixReadOnly` that can be composed using that object's existing
+        API. </p>
+        
+        <p>Updates to the <code data-x="attr-entity-transform">entityTransform</code> will be reflected on the next rendered frame. </p> 
+        
+        <p>On the initial load for a model, the `entityTransform` is set so that the object is fully in view within the model element's <code data-x="attr-model-width">width</code> and <code data-x="attr-model-height">height</code> on the page.
+      
+      </p>
+      <p>
+        The initial <dfn>model fit algorithm</dfn> consists of the following steps.
+      </p>
+
+        <ol>
+      
+          <li><p>Determine the <code data-x="dom-model-boundingboxextents">boundingBoxExtents</code>, <var>extents</var>, of the resource and store it in the relevant attribute.</p></li>
+          <li><p>Determine the boundingBoxCenter, <var>center</var>, of the resource and store it in the relevant attribute.</p></li>
+          <li><p>Divide <var>extents.x</var> by the model's <code data-x="attr-model-width">width</code> in the viewport. This is the X-scale. </p></li>
+          <li><p>Divide <var>extents.y</var> by the model's <code data-x="attr-model-height">height</code> in the viewport. this is the Y-scale.</p></li>
+          <li><p>scale the <code data-x="dom-model-entitytransform">entityTransform</code> to be the minimum of the X-scale and Y-scale.</p></li>
+          <li><p>Set the <code data-x="dom-model-entitytransform">entityTransform</code> to be centered on <var>center.x</var>, <var>center.y </var>and set back from <var>center.z</var> by <var>extents.z / 2</var>, so that the full extents are visible and set directly behind the viewport.</p></li>
+        </ol>
+
+        <aside class="note">
+          <p>
+          This algorithm is executed only on the initial load of the element, at its initial page dimensions. Subsequent changes to the model's <code data-x="attr-model-width">width</code> or <code data-x="attr-model-height">height</code> will not automatically trigger a change in the <code data-x="dom-model-entitytransform">entityTransform</code>.
+          </p>
+        </aside>
+        
+        <aside class="note">
+          <p>
+         Given that the <code data-x="dom-model-entitytransform">entityTransform</code> is determinative of the model's fit on the page, resetting to the initial pose can be achieved by storing this initial value and re-applying it at any point in the future.
+          </p>
+        </aside>
+        
+        </div>
+      </p>
       <h3>
         Embedded content
       </h3>
