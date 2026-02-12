@@ -441,12 +441,13 @@
         The initial <dfn>model fit algorithm</dfn> consists of the following steps.
       </p>
 
-        <ol>
-      
-          <li><p>Determine the <code data-x="dom-model-boundingboxextents">boundingBoxExtents</code>, <var>extents</var>, of the resource and store it in the relevant attribute.</p></li>
-          <li><p>Determine the boundingBoxCenter, <var>center</var>, of the resource and store it in the relevant attribute.</p></li>
+
+      <ol>
+          <li><p>Retrieve the bounds of the smallest axis-aligned box that contains the geometry of the object.</p></li>
+          <li><p>Let <var>extents</var> be the <code data-x="dom-model-boundingboxextents">boundingBoxExtents</code> of the resource.</p></li>
+          <li><p>Let <var>center</var> be the <code data-x="dom-model-boundingboxcenter">boundingBoxCenter</code> of the resource.</p></li>
           <li><p>Divide <var>extents.x</var> by the model's <code data-x="attr-model-width">width</code> in the viewport. This is the X-scale. </p></li>
-          <li><p>Divide <var>extents.y</var> by the model's <code data-x="attr-model-height">height</code> in the viewport. this is the Y-scale.</p></li>
+          <li><p>Divide <var>extents.y</var> by the model's <code data-x="attr-model-height">height</code> in the viewport. This is the Y-scale.</p></li>
           <li><p>scale the <code data-x="dom-model-entitytransform">entityTransform</code> to be the minimum of the X-scale and Y-scale.</p></li>
           <li><p>Set the <code data-x="dom-model-entitytransform">entityTransform</code> to be centered on <var>center.x</var>, <var>center.y </var>and set back from <var>center.z</var> by <var>extents.z / 2</var>, so that the full extents are visible and set directly behind the viewport.</p></li>
         </ol>
