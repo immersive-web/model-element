@@ -427,14 +427,14 @@
 
       <div w-nodev>
 
-        <p>The position, rotation, and scale of a model element's contents are controlled through the 
+        <p>The The position, rotation, and scale of a displayed model MUST present its contents according to its 
         <code data-x="attr-entity-transform">entityTransform</code> property, a 
         `DOMMatrixReadOnly` that can be composed using that object's existing
         API. </p>
         
-        <p>Updates to the <code data-x="attr-entity-transform">entityTransform</code> will be reflected on the next rendered frame. </p> 
+        <p>Updates to the <code data-x="attr-entity-transform">entityTransform</code> SHOULD be reflected on the next rendered frame. </p> 
         
-        <p>On the initial load for a model, the `entityTransform` is set so that the object is fully in view within the model element's <code data-x="attr-model-width">width</code> and <code data-x="attr-model-height">height</code> on the page.
+        <p>On the initial load for a model, the `entityTransform` MUST be set so that the object is fully in view within the model element's <code data-x="attr-model-width">width</code> and <code data-x="attr-model-height">height</code> on the page.
       
       </p>
       <p>
