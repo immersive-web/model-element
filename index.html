@@ -384,7 +384,11 @@
           readonly attribute Promise&lt;HTMLModelElement&gt; ready;
           readonly attribute DOMPointReadOnly boundingBoxCenter;
           readonly attribute DOMPointReadOnly boundingBoxExtents;
+
           attribute DOMMatrixReadOnly entityTransform;
+
+          attribute USVString environmentMap;
+          readonly attribute <span data-x="idl-Promise">Promise</span>&lt;undefined> <span data-x="dom-model-environmentMapReady">environmentMapReady</span>;
 
           [Reflect=stagemode] attribute DOMString stageMode;
         };
@@ -425,10 +429,14 @@
       <h2>
         Rendering
       </h2>
+      <p>The model SHOULD be rendered according to a realtime, physically-based rendering (PBR) shading model, and lit by an image-based light.</p>
+
+      <h3>Environment map</h3>
+      <p>If provided, an environment map MUST be interpreted as an equirectangular environment map. If an environmentMap is not specified, the User Agent MUST provide an appropriate map.</p>
+
+
       <aside class="issue" data-number="1"></aside>
       <aside class="issue" data-number="5"></aside>
-      <aside class="issue" data-number="48"></aside>
-      <aside class="issue" data-number="47"></aside>
       <h3>
         Orientation/camera
       </h3>
@@ -471,6 +479,7 @@
       <h2>
         Events
       </h2>
+      <p> The <code data-x="dom-model-environmentMapReady">environmentMapReady</code> <code data-x="idl-Promise">Promise</code> resolves when an environment map resource has been loaded, or is rejected if the resource is unable to be loaded.</p>
       <p>
         The [^model^] element emits a  <code>ready</code> <span data-x="idl-Promise">Promise</span> when the model is processed and ready to display. The Promise is rejected if the model source cannot be loaded.
       </p>
