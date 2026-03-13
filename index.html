@@ -253,7 +253,7 @@
           [=Embedded content=].
         </dd>
         <dd>
-          If the element has an `interactive` attribute: [=interactive
+          If the element's `stagemode` attribute is set to anything other than `none`: [=interactive
           content=].
         </dd>
         <dd>
@@ -294,7 +294,7 @@
           automatically when the page is loaded
         </dd>
         <dd>
-          [^model/interactive^] — Allows the user to interact with the model
+          [^model/stagemode^] — Allows the user to interact with the model in a specified mode
         </dd>
         <dd>
           [^model/crossorigin^] — How the element handles crossorigin requests
@@ -339,7 +339,7 @@
         <code><dfn class="element-attr" data-dfn-for="model">autoplay</dfn></code> attribute
       </h3>
       <h3>
-        <code><dfn class="element-attr" data-dfn-for="model">interactive</dfn></code> attribute
+        <code><dfn class="element-attr" data-dfn-for="model">stagemode</dfn></code> attribute
       </h3>
       <h3>
         <code><dfn class="element-attr" data-dfn-for="model">controls</dfn></code> attribute
@@ -386,6 +386,7 @@
           readonly attribute DOMPointReadOnly boundingBoxExtents;
           attribute DOMMatrixReadOnly entityTransform;
 
+          [Reflect=stagemode] attribute DOMString stageMode;
         };
       </pre>
       <aside class="issue" data-number="42"></aside>
@@ -403,9 +404,17 @@
       <h2>
         Interaction
       </h2>
+      <p>
+        In addition to emitting standard input events, model may interpret input events according to specific stage modes, including `none` and `orbit`.
+      </p>
+      <h3>none</h3>
+      <p>The default value for stageMode. In this this mode, input events do not have any direct action on the behavior of the element.</p>
+      <h3>orbit</h3>
+      <p>In this mode, input events in a horizontal direction result in a rotation of the model about the Y axis, and events in a vertical direction result in a rotation about the horizontal axis. This is reflected in the model's `entityTransform` value.</p>
+      <p>In this mode, the `entityTransform` value is read-only.</p>
+      <p>Setting the mode to orbit results in a change of the position and scale to the <dfn>orbit fit</dfn> mode.</p>
       <aside class="issue" data-number="2"></aside>
     </section>
-    <aside class="issue" data-number="25"></aside>
     <section>
       <h2>
         Controls
@@ -425,6 +434,20 @@
       </h3>
       <aside class="issue" data-number="42"></aside>
       <aside class="issue" data-number="41"></aside>
+      <h4>Orbit fit</h4>
+      <p>The orbit fit algorithm is triggered when the model's `stagemode` is set to `orbit`. The <dfn>orbit fit algorithm</dfn> consists of the following steps.</p>
+
+      <ol>
+        <li><p>Retrieve the bounds of the smallest axis-aligned box that contains the geometry of the object.</p></li>
+        <li><p>Let <var>extents</var> be the <code data-x="dom-model-boundingboxextents">boundingBoxExtents</code> of the resource.</p></li>
+        <li><p>Let <var>center</var> be the <code data-x="dom-model-boundingboxcenter">boundingBoxCenter</code> of the resource.</p></li>
+        <li><p>Let <var>length</var> be the *length* of the extents of <var>extents</var>.</p></li>
+        <li><p>Divide <var>length</var> by the model's <code data-x="attr-model-width">width</code> in the viewport. This is the X-scale. </p></li>
+        <li><p>Divide <var>length</var> by the model's <code data-x="attr-model-height">height</code> in the viewport. This is the Y-scale. </p></li>
+        <li><p>scale the <code data-x="dom-model-entitytransform">entityTransform</code> to be the minimum of the X-scale and Y-scale.</p></li>
+        <li><p>Set the <code data-x="dom-model-entitytransform">entityTransform</code> to be centered on <var>center.x</var>, <var>center.y </var>and set back from <var>center.z</var> by <var>extents.z / 2</var>, so that the full extents are visible and set directly behind the viewport, and will remain in view at any orientation.</p></li>
+      </ol>
+
       <h3>
         Embedded content
       </h3>
