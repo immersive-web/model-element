@@ -437,13 +437,36 @@
         <p>On the initial load for a model, the `entityTransform` MUST be set so that the object is fully in view within the model element's <code data-x="attr-model-width">width</code> and <code data-x="attr-model-height">height</code> on the page.
       
       </p>
+
+      <p>The <dfn>bounding box calculation algorithm</dfn> consists of the following steps.</p>
+
+      <ol>
+        <li><p>With the model scene loaded, set the animation to the first frame if present.</p></li>
+        <li><p>let <var>max</var> be a new `DOMPoint` with values of `-Infinity`.</p></li>
+        <li><p>let <var>min</var> be a new `DOMPoint` with values of `Infinity`.</p></li>
+        <li><p>let <var>queue</var> be an empty list of elements.</p></li>
+        <li><p>Add the model's root object to <var>queue</var>.</p></li>
+        <li><p>While <var>queue</var> is not empty:</p></li>
+        <ol>
+          <li><p>set <var>element</var> to the last element in <var>queue</var> and remove it from <var>queue</var>.</p></li>
+          <li><p>If <var>element</var>contains any child elements, add them to <var>queue</var>.</p></li>
+          <li><p>If <var>element</var> contains renderable geometry, find the minimum and maximum value for the X, Y and Z locations of that geometry.</p></li>
+          <li><p>Apply the world matrix of <var>element</var> to the bounding box of its geometry.</p></li>
+          <li><p>set each value of <var>min</var> to the minimum of its current value and the minimum for this element's bounding box.</p></li>
+          <li><p>set each value of <var>max</var> to the maximum of its current value and the maximum for this element's bounding box.</p></li>
+        </ol>
+        <li><p>Set the values of <var>boundingBoxCenter</var> to be the mean of each values of <var>min</var> and <var>max</var>.</p></li>
+        <li><p>Set the values of <var>boundingBoxExtents</var> to be each value of<var>min</var> subtracted from <var>max</var>.</p></li>
+    </ol>
+
       <p>
         The initial <dfn>model fit algorithm</dfn> consists of the following steps.
       </p>
 
 
       <ol>
-          <li><p>Retrieve the bounds of the smallest axis-aligned box that contains the geometry of the object.</p></li>
+          
+          <li><p>Retrieve the bounds of the smallest axis-aligned box that contains the geometry of the object using the <dfn>bounding box calculation algorithm.</dfn></p></li>
           <li><p>Let <var>extents</var> be the <code data-x="dom-model-boundingboxextents">boundingBoxExtents</code> of the resource.</p></li>
           <li><p>Let <var>center</var> be the <code data-x="dom-model-boundingboxcenter">boundingBoxCenter</code> of the resource.</p></li>
           <li><p>Divide <var>extents.x</var> by the model's <code data-x="attr-model-width">width</code> in the viewport. This is the X-scale. </p></li>
