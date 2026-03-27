@@ -600,7 +600,12 @@
       <h2>
         Fullscreen integration
       </h2>
-      <aside class="issue" data-number="31"></aside>
+      <p>
+        Model elements in fullscreen mode, as invoked through `model.reqeustFullscreen(),` are presented in-line in the full-screen window. 
+        <aside class="note">
+          On spatial platforms that do not have a fixed maximum region of display, the specific behavior of fullscreen may be unexpected. An example implementation may retain a window of the original boundary and aspect ratio of the browser window, presenting the target element as the sole contents of the browser window. 
+        </aside>
+      </p>
     </section>
     <section>
       <h2>
