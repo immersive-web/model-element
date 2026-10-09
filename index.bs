@@ -354,53 +354,6 @@ If provided, an environment map MUST be interpreted as an equirectangular enviro
 If an {{HTMLModelElement/environmentMap}} is not specified, the User Agent MUST provide
 an appropriate map.
 
-<div id="issue-1">
-
-ISSUE: I agree that it is very good to make it easy for people to display 3D content in a web page.
-  I completely disagree with the methods and processes described in this proposal to make it an HTML
-  element. HTML elements need to be fully defined so that they can be similarly implemented across
-  browsers and reflect what people would see in applications outside of browsers. The process of
-  rendering a high-quality model requires proper handling and rendering of the model&#x27;s
-  geometry, appearance, animation, and interaction.<br><br>My knowledge is in glTF (and glTF binary)
-  so these comments may or may not reflect on the capabilities of USDZ. I will address the topics as
-  separate issues: Appearance and Animation / interactivity; with respect to 3D models in glTF
-  format. Static geometry is pretty straight-forward and not subject to much
-  interpretation.<br><br>The really difficult part is appearance. The document states that &quot;it
-  is impractical to define a pixel accurate rendering...&quot; for models. However, this is really
-  important. Khronos has done extensive work in the 3D Commerce Working Group towards pixel accurate
-  rendering across multiple 3D viewers (<a
-  href="https://www.khronos.org/3dcommerce/certification/">https://www.khronos.org/3dcommerce/certification/</a>).
-  The accuracy was demanded by retailers so their products would appear visually identical across
-  different web sites. There were so many factors that mattered in producing acceptable renderings
-  that include lighting, rendering calculations (including equation approximations), conversion from
-  GPU to display, and tone mapping.<br><br>The component that caused the most issues and
-  difficulties is lighting. A model built for physically-based rendering looks best in a complex
-  lighting environment. This is usually done with image based lighting, but punctual plus area
-  lights will also work. The statement that &quot;A future version ... will describe the lighting
-  model and environment .... Both items will require community collaboration and some
-  consensus.&quot; makes the process sound much easier that Khronos found it to be.<br><br>Some
-  issues that came from the Certification work. Note that the Certification program did not solve
-  all of these in the initial release.<br><br>• Is lighting done as an 8-bit RGB or 16-bit HDR
-  image<br>• Is lighting done with many point and area lights?<br>• How does the content creator
-  provide for different lighting?<br>• How does the user adjust the lighting to match a particular
-  environment?<br>• What background is used for the model display?<br>• How is the (floating-point)
-  rendering converted to an 8-bit RGB display?<br>• How is the rendering adjusted depending on user
-  environment?<br>• How is the rendering adjusted depending on device (hardware, OS, browser)<br>•
-  How is time-dependent display degradation handled?<br><br>It may be possible to construct an
-  initial release without resolving all of these items. <a
-  href="https://github.com/immersive-web/model-element/issues/1">GitHub issue #1: Consistent
-  presentation/rendering of model resources</a>.
-
-</div>
-<div id="issue-5">
-
-ISSUE: The Oculus browser is displayed on a curved surface.<br> How we envision the display of
-  multiple models? Would we allow them to bump into each other or would there be clipping? <a
-  href="https://github.com/immersive-web/model-element/issues/5">GitHub issue #5: How would the
-  model display on curved screens?</a>.
-
-</div>
-
 <h3 id="model-pose">Model pose</h3>
 
 The position, rotation, and scale of a displayed model MUST present its contents according
@@ -423,9 +376,11 @@ The model APIs distinguish the following coordinate spaces:
   <dd>The coordinate space of the model element's content box. Its origin is the center of
   the viewport plane, with positive X pointing right, positive Y pointing up, and positive
   Z pointing toward the viewer. One unit of length in this space is one
-  <dfn>CSS-derived meter</dfn>, defined by the conversion
-  <code>1 CSS px = 0.0254 / 96 CSS-derived meters</code>, using the fixed ratios between
-  CSS absolute length units in [[CSS-VALUES-4]]. This is not a CSS <code>m</code> unit.</dd>
+  <dfn>CSS-derived meter</dfn>, equal to 100 CSS centimeters. The fixed ratios between
+  <a spec="css-values-4" lt="absolute length">absolute length units</a> in [[CSS-VALUES-4]],
+  <code>1in = 96px = 2.54cm</code>, give the conversion
+  <code>1 CSS px = 0.0254 / 96 CSS-derived meters</code>. This specification defines
+  the term "CSS-derived meter"; CSS does not define an <code>m</code> unit.</dd>
   <dt><dfn>physical presentation space</dfn></dt>
   <dd>The device-dependent space in which the user agent presents the page, including any
   spatial or stereoscopic presentation. Its mapping from [=element space=] may depend on
@@ -453,18 +408,31 @@ For fitting, the user agent MUST convert the content box's width and height from
 pixels to [=CSS-derived meters=] by multiplying each dimension by <code>0.0254 / 96</code>.
 Device pixels MUST NOT be used for this calculation.
 
-Browser zoom MUST NOT change the units defined above or the model-space bounds of a
-resource. If zoom changes the layout dimensions used by a fitting algorithm, those
-dimensions MUST be converted using the same CSS-pixel conversion. This does not change
-when the fitting algorithms run. Changes to {{Window/devicePixelRatio}} or rasterization
-resolution MUST NOT change the API units, model-space bounds, or the conversion from CSS
-pixels to [=element space=].
+Browser zoom in this section refers to <a spec="cssom-view-1">page zoom</a> and visual
+viewport scaling, as distinguished in the <a
+href="https://drafts.csswg.org/cssom-view-1/#zooming">Zooming section</a> of [[CSSOM-VIEW-1]].
+Page zoom affects the size of the initial viewport. Visual viewport scaling, exposed by
+{{VisualViewport/scale}}, magnifies the page without affecting the initial viewport.
+
+Page zoom and visual viewport scaling MUST NOT change the units defined above or the
+model-space bounds of a resource. If page zoom changes the layout dimensions used by a
+fitting algorithm, those dimensions MUST be converted using the same CSS-pixel conversion.
+This does not change when the fitting algorithms run.
+
+The {{Window/devicePixelRatio}} algorithm in [[CSSOM-VIEW-1]] uses the size of a CSS pixel
+at the current page zoom, with a visual viewport scale factor of 1.0, divided by the size
+of a device pixel. Page zoom can therefore change {{Window/devicePixelRatio}}; visual
+viewport scaling is excluded from that calculation. Changes to
+{{Window/devicePixelRatio}} or rasterization resolution MUST NOT change the API units,
+model-space bounds, or the conversion from CSS pixels to [=element space=].
 
 <div class="note" id="issue-155">
 <p>These distinctions address the default length-unit question raised in <a
   href="https://github.com/immersive-web/model-element/issues/155">GitHub issue #155</a>.
   A meter of asset geometry and a CSS-derived meter of element space are not guarantees
-  of one physical meter in the device's presentation. Authors should not multiply
+  of one physical meter in the device's presentation. The absolute-unit anchoring rules
+  and <a spec="css-values-4">reference pixel</a> in [[CSS-VALUES-4]] explain why CSS
+  physical units need not match physical measurements on a screen. Authors should not multiply
   element-space translations by <code>devicePixelRatio</code>.</p>
 </div>
 
@@ -488,9 +456,12 @@ pixels to [=element space=].
 
 <h4 id="model-bounds-and-fitting">Model bounds and fitting</h4>
 
-On the initial load for a model, the {{HTMLModelElement/entityTransform}} MUST be set so that
+On the initial load for a model, the user agent MUST run the
+[=bounding box calculation algorithm=] and store the resulting model-space bounds.
+The {{HTMLModelElement/entityTransform}} MUST be set so that
 the object is fully in view within the model element's <{model/width}> and <{model/height}>
-on the page.
+on the page. Initial fitting uses the [=model fit algorithm=] with an identity rotation
+in `none` mode, or the [=orbit fit algorithm=] in `orbit` mode.
 
 The <dfn>bounding box calculation algorithm</dfn> consists of the following steps.
 
@@ -517,12 +488,15 @@ The <dfn>bounding box calculation algorithm</dfn> consists of the following step
 
 The fitting algorithms use the width and height of the element's laid-out content box,
 converted to [=CSS-derived meters=] in [=element space=]. The bounds remain in
-[=model space=], before {{HTMLModelElement/entityTransform}} is applied.
+[=model space=], before {{HTMLModelElement/entityTransform}} is applied. Subsequent fitting
+updates MUST use the stored bounds of the loaded resource; they MUST NOT repeat the
+[=bounding box calculation algorithm=] or restart or seek the animation.
 
-The initial <dfn noexport>model fit algorithm</dfn> consists of the following steps.
+The <dfn noexport>model fit algorithm</dfn> takes a |rotation| argument and consists of the
+following steps.
 
-1. Retrieve the bounds of the smallest axis-aligned box that contains the geometry of the
-    object using the [=bounding box calculation algorithm=].
+1. Retrieve the resource's stored bounds, previously calculated using the
+    [=bounding box calculation algorithm=].
 2. Let |extents| be the {{HTMLModelElement/boundingBoxExtents}} of the resource.
 3. Let |center| be the {{HTMLModelElement/boundingBoxCenter}} of the resource.
 4. Let |width| and |height| be the laid-out content-box dimensions in CSS pixels, each
@@ -531,37 +505,66 @@ The initial <dfn noexport>model fit algorithm</dfn> consists of the following st
 6. Let |yScale| be |height| divided by |extents|.y, or positive infinity if |extents|.y is zero.
 7. Let |scale| be the minimum of |xScale| and |yScale|. If both are positive infinity, set
     |scale| to 1. If either viewport dimension is zero, set |scale| to 0.
-8. Set {{HTMLModelElement/entityTransform}} to a uniform scale of |scale|, with no rotation.
-9. Translate the scaled model so that its bounding-box center is aligned with the center
-    of the viewport in X and Y, and is |scale| × |extents|.z / 2 behind the viewport plane.
-    The translation must account for the scaled position of |center|, so that the front
-    face of the scaled bounding box lies on the viewport plane and the rest lies behind it.
+8. Set {{HTMLModelElement/entityTransform}} to a uniform scale of |scale| and the supplied
+    |rotation|.
+9. Translate the model so that |center|, after applying the scale and rotation, is aligned
+    with the center of the viewport in X and Y, and is |scale| × |extents|.z / 2 behind
+    the viewport plane. The translation must account for the scaled and rotated position
+    of |center|. With the identity rotation used for initial fitting, the front face of
+    the scaled bounding box lies on the viewport plane and the rest lies behind it.
 
 <div class="note">
-  <p>For a viewport centered at the origin with positive Z pointing toward the viewer,
-  the translation is <code>(-scale × center.x, -scale × center.y,
+  <p>For initial fitting with an identity rotation, the translation in element space is
+  <code>(-scale × center.x, -scale × center.y,
   -scale × (center.z + extents.z / 2))</code>. Scaling a model around its own origin
   without compensating for its scaled center would not center an off-origin asset.</p>
 </div>
 
-<div class="note">
-  <p>This algorithm is executed only on the initial load of the element, at its initial page
-  dimensions. Subsequent changes to the model's <{model/width}> or <{model/height}> will not
-  automatically trigger a change in the {{HTMLModelElement/entityTransform}}.</p>
-</div>
+<h4 id="automatic-fitting">Automatic fitting after resize</h4>
+
+Each model element has an <dfn noexport>automatic fitting enabled</dfn> flag, initially true.
+Beginning to load a new model resource MUST set this flag to true.
+
+A successful script assignment to {{HTMLModelElement/entityTransform}} in `none` mode
+MUST set [=automatic fitting enabled=] to false. An update made by a fitting algorithm
+MUST NOT disable automatic fitting.
+
+Entering `orbit` mode MUST set [=automatic fitting enabled=] to true and apply the
+[=orbit fit algorithm=]. Returning from `orbit` to `none` MUST preserve the current
+{{HTMLModelElement/entityTransform}} and leave automatic fitting enabled; changing modes
+back to `none` does not itself refit the model.
+
+When either dimension of the loaded model element's content box changes after layout,
+the user agent MUST perform the following steps:
+
+1. If [=automatic fitting enabled=] is false, preserve
+    {{HTMLModelElement/entityTransform}} and return.
+2. If the element is in `orbit` mode, apply the [=orbit fit algorithm=], preserving the
+    current rotation.
+3. Otherwise, apply the [=model fit algorithm=] with the current rotation as its |rotation|
+    argument.
+
+These updates SHOULD be reflected on the next rendered frame. The trigger is a change
+to the laid-out content-box dimensions, whether caused by <{model/width}> or
+<{model/height}> attributes, CSS sizing, or another layout change. Changing an attribute
+without changing those dimensions does not itself trigger a refit.
 
 <div class="note">
   <p>Given that the {{HTMLModelElement/entityTransform}} is determinative of the model's fit
   on the page, resetting to the initial pose can be achieved by storing this initial value
-  and re-applying it at any point in the future.</p>
+  and re-applying it at any point in the future. In `none` mode, re-applying that value
+  through script also disables automatic fitting until `orbit` mode is entered or a
+  new model resource begins loading.</p>
 </div>
 
 <h4 id="orbit-fit-section">Orbit fit</h4>
 
-The [=orbit fit algorithm=] is triggered when the model's <{model/stagemode}> is set to `orbit`.
+The [=orbit fit algorithm=] is used when the model's <{model/stagemode}> enters `orbit`
+mode and for automatic fitting while that mode is active.
 The <dfn>orbit fit algorithm</dfn> consists of the following steps.
 
-1. Retrieve the bounds of the smallest axis-aligned box that contains the geometry of the object.
+1. Retrieve the resource's stored bounds, previously calculated using the
+    [=bounding box calculation algorithm=].
 2. Let |extents| be the {{HTMLModelElement/boundingBoxExtents}} of the resource.
 3. Let |center| be the {{HTMLModelElement/boundingBoxCenter}} of the resource.
 4. Let |diameter| be the Euclidean length of |extents|:
