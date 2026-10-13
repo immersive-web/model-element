@@ -223,6 +223,10 @@ Hint that the model can start its animation automatically, if present, when the 
 
 <h3 id="height-attribute"><code><dfn element-attr for="model">height</dfn></code> attribute</h3>
 
+The <{model/height}> attribute, if specified, MUST have a value that is a
+<a spec="html">valid non-negative integer</a>. It gives the desired vertical dimension
+of the <{model}> element in CSS pixels. Zero is permitted.
+
 <h3 id="loading-attribute"><code><dfn element-attr for="model">loading</dfn></code> attribute</h3>
 
 <div id="issue-44">
@@ -245,6 +249,10 @@ present, must contain a <a spec="html">valid non-empty URL potentially surrounde
 <h3 id="src-attribute"><code><dfn element-attr for="model">src</dfn></code> attribute</h3>
 
 <h3 id="width-attribute"><code><dfn element-attr for="model">width</dfn></code> attribute</h3>
+
+The <{model/width}> attribute, if specified, MUST have a value that is a
+<a spec="html">valid non-negative integer</a>. It gives the desired horizontal dimension
+of the <{model}> element in CSS pixels. Zero is permitted.
 
 <h2 id="htmlmodelelement-interface">The {{HTMLModelElement}} interface</h2>
 
