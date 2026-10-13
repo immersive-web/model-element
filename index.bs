@@ -1,0 +1,954 @@
+<pre class="metadata">
+Title: The &lt;model&gt; element
+Shortname: model-element
+Level: none
+Status: CG-DRAFT
+Group: immersivewebcg
+ED: https://immersive-web.github.io/model-element/
+Repository: immersive-web/model-element
+Editor: Brandel Zachernuk, Apple Inc. https://apple.com/
+Editor: Laszlo Gombos, Samsung https://samsung.com/
+Editor: Rik Cabanier, Meta https://meta.com/
+Former Editor: Marcos Cáceres, Apple Inc. https://apple.com/
+Abstract: The <code>&lt;model&gt;</code> element allows embedding 3D graphical content inline within an [[HTML]] document to be managed declaratively, and rendered directly by the user agent. The {{HTMLModelElement}} interface then provides a simple API for controlling the presentation, animation, interaction, fetching, and UI affordances of a <code>&lt;model&gt;</code>.
+Status Text: This is a work in progress.
+Markup Shorthands: markdown yes
+Boilerplate: issues-index yes
+Ignored Terms: stagemode
+</pre>
+
+<!-- Marcos Cáceres retired as editor on 2024-04-01. -->
+<!-- The Reflect=stagemode value names a content attribute, not an IDL type. -->
+<!-- Issue descriptions below are snapshots of the linked GitHub issues. -->
+
+<h2 id="introduction">Introduction</h2>
+
+The HTML &lt;model&gt; element allows a website to embed interactive 3D
+models as conveniently as any other visual media. Models are served as
+a standalone resource. The &lt;model&gt; element also has support for
+interaction and animation playback while presented within the page,
+and supports more spatial experiences, such as the stereoscopic
+display of 3D content where available.
+
+As &lt;model&gt; is rendered directly by the user agent, it has
+the ability to utilize privileged information, such as the user's
+head and eye position or the lighting of the user's environment,
+without exposing that information to JavaScript. Additionally, the use
+of accessibility information and controls can be engaged in a
+privacy-preserving manner.
+
+As &lt;model&gt; is [=embedded content=], the user agent can present
+3D content in a privacy-preserving, interactive, and accessible manner.
+
+<h2 id="out-of-scope">Out of scope</h2>
+
+There are a number of specified non-goals for this initial incubation;
+some are beyond the long-term scope of this proposal, and others are
+deferred for the benefit of reaching consensus on an initial
+specification, which can hopefully serve the needs of users and authors
+sooner.
+
+<h3 id="scene-graph-inspection-and-manipulation">Scene graph inspection and manipulation</h3>
+
+While the use cases for inspecting and manipulating the contents of a
+given model asset are clear, the initial scope of this proposal is
+intentionally limited to a reduced complexity, hopefully making the
+initial specification one that has broad consensus amongst the web
+community.
+
+<h3 id="animation-mixing-and-blending">Animation mixing and blending</h3>
+
+While many popular model formats include the ability to encode, play
+and mix multiple animations in an animation mixing system, This initial
+specification considers only a single animation timeline, both for
+simplicity and for having a minimal viable specification on which the
+web community can build on.
+
+<h3 id="stateful-interaction-with-model-contents">Stateful interaction with <code>model</code> contents</h3>
+
+While many popular model formats support tapping on a 3D button inside
+their contents to show or hide additional contents like a title, play
+an animation or undertake some other stateful action. Because there is
+no current intention to provide a JavaScript-facing mechanism to be
+aware of such actions, stateful interactions should be considered out
+of scope.
+
+<h3 id="subresource-loading">Subresource loading</h3>
+
+While many popular model formats support the use of external asset
+requests for better re-use and consistency, this initial specification
+will only allow assets that are self-contained.
+
+<h2 id="examples">Examples</h2>
+
+<h3 id="adding-a-model-to-a-document">Adding a model to a document</h3>
+
+<div class="example" id="example-simple-model">
+  <p>The following example shows the simplest way to add a 3D model to a
+  document:</p>
+
+  <pre class="language-html">
+    &lt;model src="3d-assets/car"&gt;&lt;/model&gt;
+  </pre>
+
+  <p>By using content negotiation the user agent relies on the server to
+  send back a 3D model in a format the user agent supports.</p>
+</div>
+
+<h3 id="enabling-orbit-stage-mode">Enabling orbit stage mode</h3>
+
+<div class="example" id="example-orbit-stage-mode">
+  <p>The following example shows the syntax for enabling the standard "orbit" mode:</p>
+
+  <pre class="language-html">
+    &lt;model stagemode="orbit"&gt;
+      &lt;source src="3d-assets/teapot.usdz" type="model/vnd.pixar.usd"&gt;
+      &lt;source src="3d-assets/teapot.glb" type="model/gltf-binary"&gt;
+    &lt;/model&gt;
+  </pre>
+</div>
+
+<h3 id="supporting-multiple-formats">Supporting multiple formats</h3>
+
+<div class="example" id="example-multiple-formats">
+  <p>The following example shows a list of potential source formats
+  that can be selected from:</p>
+
+  <pre class="language-html">
+    &lt;model&gt;
+      &lt;source src="3d-assets/teapot.usdz" type="model/vnd.pixar.usd"&gt;
+      &lt;source src="3d-assets/teapot.glb" type="model/gltf-binary"&gt;
+    &lt;/model&gt;
+  </pre>
+
+  <p><code>&lt;model&gt;</code> source selection follows <code>&lt;video&gt;</code> selection,
+  where the top-level <code>src</code> attribute takes precedence if present,
+  followed by the first compatible <code>&lt;source&gt;</code> element encountered.</p>
+</div>
+
+<h3 id="providing-fallback-content-for-legacy-user-agents">Providing fallback content for legacy user agents</h3>
+
+<div class="example" id="example-fallback-content">
+  <p>The following example supplies fallback content for user agents that
+  do not yet support the element:</p>
+
+  <pre class="language-html">
+    &lt;model&gt;
+      &lt;source src="3d-assets/teapot.usdz" type="model/vnd.pixar.usd"&gt;
+      &lt;source src="3d-assets/teapot.glb" type="model/gltf-binary"&gt;
+      &lt;img src="image-assets/teapot.png"&gt;
+    &lt;/model&gt;
+  </pre>
+</div>
+
+<h3 id="making-model-accessible">Making <code>model</code> accessible</h3>
+
+<div class="example" id="example-accessible-model">
+  <p>The following example supplies alt text information for both
+  the model content and fallback content, in the event that model
+  is not supported on the target user agent.</p>
+
+  <pre class="language-html">
+    &lt;model&gt;
+      &lt;source src="3d-assets/teapot.usdz" type="model/vnd.usdz+zip"&gt;
+      &lt;source src="3d-assets/teapot.glb" type="model/gltf-binary"&gt;
+      &lt;img src="image-assets/teapot.png" alt="A teapot"&gt;
+    &lt;/model&gt;
+  </pre>
+</div>
+
+<h2 id="the-model-element">The <code><dfn element>model</dfn></code> element</h2>
+
+<dl>
+  <dt>Categories</dt>
+  <dd>[=Flow content=].</dd>
+  <dd>[=Phrasing content=].</dd>
+  <dd>[=Embedded content=].</dd>
+  <dd>If the element's <code>stagemode</code> attribute is set to anything other than
+  <code>none</code>: [=interactive content=].</dd>
+  <dd>[=Palpable content=].</dd>
+  <dt>Contexts in which this element can be used:</dt>
+  <dd>Where [=embedded content=] is expected.</dd>
+  <dt>Content model:</dt>
+  <dd>If the element has a <code>src</code> attribute: transparent, a <{picture}> or
+  <{img}>, or a [=media element=] descendant.</dd>
+  <dd>If the element has no <code>src</code> attribute: Zero or more source elements,
+  then transparent, optionally intermixed with script-supporting
+  elements.</dd>
+  <dt>Tag omission in text/html:</dt>
+  <dd>Neither tag is omissible.</dd>
+  <dt>Content Attributes:</dt>
+  <dd><a spec="html">Global attributes</a></dd>
+  <dd><{model/autoplay}> — Hint that the resource can be started
+  automatically when the page is loaded</dd>
+  <dd><{model/stagemode}> — Allows the user to interact with the model in a specified mode</dd>
+  <dd><{model/crossorigin}> — How the element handles crossorigin requests</dd>
+  <dd><{model/height}> — Vertical dimension</dd>
+  <dd><{model/loading}> — Used when determining loading deferral</dd>
+  <dd><{model/loop}> — Whether to loop the media resource</dd>
+  <dd><{model/poster}> — Poster frame to show while the resource is loading</dd>
+  <dd><{model/src}> — Address of the resource</dd>
+  <dd><{model/width}> — Horizontal dimension</dd>
+  <dt>DOM Interface</dt>
+  <dd>The {{HTMLModelElement}} interface provides a means to interface with
+  the embedded resource.</dd>
+</dl>
+
+The <{model}> element is used for embedding 3D models into a document.
+
+Content may be provided inside the <{model}> element. User agents
+should not show this content to the user; it is intended for web
+browsers which do not support <{model}>, to be shown as <a spec="html">fallback content</a>.
+
+<div id="issue-14">
+
+ISSUE: HTML defines an algorithm to determine the &#91;=poster frame=&#93;, but it&#x27;s
+  <code>&lt;video&gt;</code> specific. Should we accommodate it support <code>&lt;model&gt;</code>
+  or specify our own?<br><br>We also need to consider what happens if the animation resets and the
+  model is paused: does the poster show again? (i.e., do we follow video&#x27;s behavior?) <a
+  href="https://github.com/immersive-web/model-element/issues/14">GitHub issue #14: Update poster
+  algorithm for model?</a>.
+
+</div>
+
+<h3 id="autoplay-attribute"><code><dfn element-attr for="model">autoplay</dfn></code> attribute</h3>
+
+Hint that the model can start its animation automatically, if present, when the asset is loaded.
+
+<h3 id="stagemode-attribute"><code><dfn element-attr for="model">stagemode</dfn></code> attribute</h3>
+
+<h3 id="controls-attribute"><code><dfn element-attr for="model">controls</dfn></code> attribute</h3>
+
+<h3 id="crossorigin-attribute"><code><dfn element-attr for="model">crossorigin</dfn></code> attribute</h3>
+
+<h3 id="height-attribute"><code><dfn element-attr for="model">height</dfn></code> attribute</h3>
+
+<h3 id="loading-attribute"><code><dfn element-attr for="model">loading</dfn></code> attribute</h3>
+
+<div id="issue-44">
+
+ISSUE: Some <code>&lt;model&gt;</code>&#x27;s resources can be significant in size. As such, it
+  might be good to support the <code>loading</code> attribute to allow these resources to be
+  lazy-loaded. <a href="https://github.com/immersive-web/model-element/issues/44">GitHub issue #44:
+  Lazy loading</a>.
+
+</div>
+
+<h3 id="loop-attribute"><code><dfn element-attr for="model">loop</dfn></code> attribute</h3>
+
+<h3 id="poster-attribute"><code><dfn element-attr for="model">poster</dfn></code> attribute</h3>
+
+The <{model/poster}> attribute gives the URL of an image file that the
+user agent can show while 3D content is unavailable. The attribute, if
+present, must contain a <a spec="html">valid non-empty URL potentially surrounded by spaces</a>.
+
+<h3 id="src-attribute"><code><dfn element-attr for="model">src</dfn></code> attribute</h3>
+
+<h3 id="width-attribute"><code><dfn element-attr for="model">width</dfn></code> attribute</h3>
+
+<h2 id="htmlmodelelement-interface">The {{HTMLModelElement}} interface</h2>
+
+<pre class="idl">
+[Exposed=Window]
+interface HTMLModelElement : HTMLElement {
+  readonly attribute Promise&lt;HTMLModelElement&gt; ready;
+  readonly attribute DOMPointReadOnly boundingBoxCenter;
+  readonly attribute DOMPointReadOnly boundingBoxExtents;
+
+  attribute DOMMatrixReadOnly entityTransform;
+
+  attribute USVString environmentMap;
+  readonly attribute Promise&lt;undefined&gt; environmentMapReady;
+
+  [Reflect=stagemode] attribute DOMString stageMode;
+};
+</pre>
+
+<h2 id="source-element-integration"><code>source</code> element integration</h2>
+
+<h3 id="source-parent-model">The <code>source</code> element's parent is a <{model}> element</h3>
+
+<div id="issue-24">
+
+ISSUE: The <code>&lt;source&gt;</code> element behaves differently depending on who the parent is.
+  For instance, when the parent is <code>&lt;picture&gt;</code>, the <code>srcset</code> attribute
+  comes into to play. We need to look at the attributes of <code>&lt;source&gt;</code> and figure
+  out what they mean in when used in the context of <code>&lt;model&gt;</code>. <a
+  href="https://github.com/immersive-web/model-element/issues/24">GitHub issue #24: Specify the
+  behavior for when a &lt;source&gt; element&#x27;s parent is a &lt;model&gt; element</a>.
+
+</div>
+
+<h2 id="interaction">Interaction</h2>
+
+In addition to emitting standard input events, model may interpret input events according to
+specific stage modes, including `none` and `orbit`.
+
+<h3 id="stage-mode-none">none</h3>
+
+The default value for {{HTMLModelElement/stageMode}}. In this this mode, input events do not have
+any direct action on the behavior of the element.
+
+<h3 id="stage-mode-orbit">orbit</h3>
+
+In this mode, input events in a horizontal direction result in a rotation of the model about
+the Y axis, and events in a vertical direction result in a rotation about the horizontal axis.
+This is reflected in the model's {{HTMLModelElement/entityTransform}} value.
+
+In this mode, the {{HTMLModelElement/entityTransform}} value is read-only.
+
+Setting the mode to orbit results in a change of the position and scale to the
+<dfn noexport>orbit fit</dfn> mode.
+
+<div id="issue-2">
+
+ISSUE: glTF is not a run-time format. It does not define what an application should do with a model
+  once it is loaded and rendered. It does provide some capabilities that a run-time engine may use
+  to enhance the user experience. glTF currently does not store any interactivity information.
+  Currently that is solely a run-time determination. The run-time determines what parts (if any) of
+  the model may be active and the behavior based on any trigger.<br><br>Like Interactivity,
+  animation is not built-into glTF. glTF files may contain animation parameters that specify the
+  type of animation (e.g., morph, skin &amp; bones, etc.) and the associated parameters needed to
+  perform the animation. There is nothing in the glTF specification that defines how one animation
+  interacts with another. For example, a human model may include walk, jump, and drop animations;
+  but it is unlikely that they should all be played at the same time.<br><br>Any HTML element that
+  wishes to handle animation as stored in a glTF file needs to understand how the content creator
+  intended the animation to play. <a
+  href="https://github.com/immersive-web/model-element/issues/2">GitHub issue #2: Dealing with
+  format specific animations and Interaction</a>.
+
+</div>
+
+<h2 id="controls">Controls</h2>
+
+<div id="issue-43">
+
+ISSUE: As with other media elements (again <a
+  href="https://github.com/immersive-web/model-element/issues/13">#13</a>), having
+  &quot;controls&quot; for media specific things can be extremely helpful for accessibility (and
+  just generally helpful for developers not needing to deal with things like the fullscreen
+  API).<br><br>It would be nice to consider adding support for <code>controls</code> and then
+  leaving it mostly to the UA as to what those controls are... we could figure out a standard set of
+  things, like <code>&lt;video&gt;</code> provides. <a
+  href="https://github.com/immersive-web/model-element/issues/43">GitHub issue #43: Adding
+  &quot;controls&quot; </a>.
+
+</div>
+
+<h2 id="rendering">Rendering</h2>
+
+The model SHOULD be rendered according to a realtime, physically-based rendering (PBR) shading
+model, and lit by an image-based light.
+
+<h3 id="environment-map">Environment map</h3>
+
+If provided, an environment map MUST be interpreted as an equirectangular environment map.
+If an {{HTMLModelElement/environmentMap}} is not specified, the User Agent MUST provide
+an appropriate map.
+
+<div id="issue-1">
+
+ISSUE: I agree that it is very good to make it easy for people to display 3D content in a web page.
+  I completely disagree with the methods and processes described in this proposal to make it an HTML
+  element. HTML elements need to be fully defined so that they can be similarly implemented across
+  browsers and reflect what people would see in applications outside of browsers. The process of
+  rendering a high-quality model requires proper handling and rendering of the model&#x27;s
+  geometry, appearance, animation, and interaction.<br><br>My knowledge is in glTF (and glTF binary)
+  so these comments may or may not reflect on the capabilities of USDZ. I will address the topics as
+  separate issues: Appearance and Animation / interactivity; with respect to 3D models in glTF
+  format. Static geometry is pretty straight-forward and not subject to much
+  interpretation.<br><br>The really difficult part is appearance. The document states that &quot;it
+  is impractical to define a pixel accurate rendering...&quot; for models. However, this is really
+  important. Khronos has done extensive work in the 3D Commerce Working Group towards pixel accurate
+  rendering across multiple 3D viewers (<a
+  href="https://www.khronos.org/3dcommerce/certification/">https://www.khronos.org/3dcommerce/certification/</a>).
+  The accuracy was demanded by retailers so their products would appear visually identical across
+  different web sites. There were so many factors that mattered in producing acceptable renderings
+  that include lighting, rendering calculations (including equation approximations), conversion from
+  GPU to display, and tone mapping.<br><br>The component that caused the most issues and
+  difficulties is lighting. A model built for physically-based rendering looks best in a complex
+  lighting environment. This is usually done with image based lighting, but punctual plus area
+  lights will also work. The statement that &quot;A future version ... will describe the lighting
+  model and environment .... Both items will require community collaboration and some
+  consensus.&quot; makes the process sound much easier that Khronos found it to be.<br><br>Some
+  issues that came from the Certification work. Note that the Certification program did not solve
+  all of these in the initial release.<br><br>• Is lighting done as an 8-bit RGB or 16-bit HDR
+  image<br>• Is lighting done with many point and area lights?<br>• How does the content creator
+  provide for different lighting?<br>• How does the user adjust the lighting to match a particular
+  environment?<br>• What background is used for the model display?<br>• How is the (floating-point)
+  rendering converted to an 8-bit RGB display?<br>• How is the rendering adjusted depending on user
+  environment?<br>• How is the rendering adjusted depending on device (hardware, OS, browser)<br>•
+  How is time-dependent display degradation handled?<br><br>It may be possible to construct an
+  initial release without resolving all of these items. <a
+  href="https://github.com/immersive-web/model-element/issues/1">GitHub issue #1: Consistent
+  presentation/rendering of model resources</a>.
+
+</div>
+<div id="issue-5">
+
+ISSUE: The Oculus browser is displayed on a curved surface.<br> How we envision the display of
+  multiple models? Would we allow them to bump into each other or would there be clipping? <a
+  href="https://github.com/immersive-web/model-element/issues/5">GitHub issue #5: How would the
+  model display on curved screens?</a>.
+
+</div>
+
+<h3 id="model-pose">Model pose</h3>
+
+The The position, rotation, and scale of a displayed model MUST present its contents according
+to its {{HTMLModelElement/entityTransform}} property, a {{DOMMatrixReadOnly}} that can be
+composed using that object's existing API.
+
+Updates to the {{HTMLModelElement/entityTransform}} SHOULD be reflected on the next rendered frame.
+
+On the initial load for a model, the {{HTMLModelElement/entityTransform}} MUST be set so that
+the object is fully in view within the model element's <{model/width}> and <{model/height}>
+on the page.
+
+The <dfn>bounding box calculation algorithm</dfn> consists of the following steps.
+
+1. With the model scene loaded, set the animation to the first frame if present.
+2. let |max| be a new {{DOMPoint}} with values of `-Infinity`.
+3. let |min| be a new {{DOMPoint}} with values of `Infinity`.
+4. let |queue| be an empty list of elements.
+5. Add the model's root object to |queue|.
+6. While |queue| is not empty:
+    1. set |element| to the last element in |queue| and remove it from |queue|.
+    2. If |element| contains any child elements, add them to |queue|.
+    3. If |element| contains renderable geometry, find the minimum and maximum value for
+        the X, Y and Z locations of that geometry.
+    4. Apply the world matrix of |element| to the bounding box of its geometry.
+    5. set each value of |min| to the minimum of its current value and the minimum for
+        this element's bounding box.
+    6. set each value of |max| to the maximum of its current value and the maximum for
+        this element's bounding box.
+7. Set the values of {{HTMLModelElement/boundingBoxCenter}} to be the mean of each values
+    of |min| and |max|.
+8. Set the values of {{HTMLModelElement/boundingBoxExtents}} to be each value of |min|
+    subtracted from |max|.
+
+The initial <dfn noexport>model fit algorithm</dfn> consists of the following steps.
+
+1. Retrieve the bounds of the smallest axis-aligned box that contains the geometry of the
+    object using the [=bounding box calculation algorithm=].
+2. Let |extents| be the {{HTMLModelElement/boundingBoxExtents}} of the resource.
+3. Let |center| be the {{HTMLModelElement/boundingBoxCenter}} of the resource.
+4. Divide |extents|.x by the model's <{model/width}> in the viewport. This is the X-scale.
+5. Divide |extents|.y by the model's <{model/height}> in the viewport. This is the Y-scale.
+6. scale the {{HTMLModelElement/entityTransform}} to be the minimum of the X-scale and Y-scale.
+7. Set the {{HTMLModelElement/entityTransform}} to be centered on <var>center.x</var>, <var>center.y</var> and
+    set back from <var>center.z</var> by <var>extents.z / 2</var>, so that the full extents are visible and
+    set directly behind the viewport.
+
+<div class="note">
+  <p>This algorithm is executed only on the initial load of the element, at its initial page
+  dimensions. Subsequent changes to the model's <{model/width}> or <{model/height}> will not
+  automatically trigger a change in the {{HTMLModelElement/entityTransform}}.</p>
+</div>
+
+<div class="note">
+  <p>Given that the {{HTMLModelElement/entityTransform}} is determinative of the model's fit
+  on the page, resetting to the initial pose can be achieved by storing this initial value
+  and re-applying it at any point in the future.</p>
+</div>
+
+<h4 id="orbit-fit-section">Orbit fit</h4>
+
+The [=orbit fit algorithm=] is triggered when the model's <{model/stagemode}> is set to `orbit`.
+The <dfn>orbit fit algorithm</dfn> consists of the following steps.
+
+1. Retrieve the bounds of the smallest axis-aligned box that contains the geometry of the object.
+2. Let |extents| be the {{HTMLModelElement/boundingBoxExtents}} of the resource.
+3. Let |center| be the {{HTMLModelElement/boundingBoxCenter}} of the resource.
+4. Let |length| be the *length* of the extents of |extents|.
+5. Divide |length| by the model's <{model/width}> in the viewport. This is the X-scale.
+6. Divide |length| by the model's <{model/height}> in the viewport. This is the Y-scale.
+7. scale the {{HTMLModelElement/entityTransform}} to be the minimum of the X-scale and Y-scale.
+8. Set the {{HTMLModelElement/entityTransform}} to be centered on <var>center.x</var>, <var>center.y</var> and
+    set back from <var>center.z</var> by <var>extents.z / 2</var>, so that the full extents are visible and set
+    directly behind the viewport, and will remain in view at any orientation.
+
+<h3 id="embedded-content">Embedded content</h3>
+
+<div id="issue-27">
+
+ISSUE: What&#x27;s the default CSS style for a <code>model</code> element? Should it have a border
+  around it? what about background color? etc. <a
+  href="https://github.com/immersive-web/model-element/issues/27">GitHub issue #27: What&#x27;s the
+  default style?</a>.
+
+</div>
+
+Whether a <{model}> element is <a spec="html" lt="expose a user interface to the user">exposing a user interface</a> is not expected to affect the size
+of the rendering; controls are expected to be overlaid above the page content without
+causing any layout changes, and may disappear when the user does not need them.
+
+When a <{model}> element represents a poster frame, the poster frame is expected to be rendered
+at the largest size that maintains the aspect ratio of that poster frame without being
+taller or wider than the <{model}> element itself, and is expected to be centered in the
+<{model}> element.
+
+<h2 id="events">Events</h2>
+
+The {{HTMLModelElement/environmentMapReady}} <code>Promise</code> resolves when an environment map
+resource has been loaded, or is rejected if the resource is unable to be loaded.
+
+The <{model}> element emits a {{HTMLModelElement/ready}} <code>Promise</code> when the model is
+processed and ready to display. The Promise is rejected if the model source cannot be loaded.
+
+<h2 id="formats">Formats</h2>
+
+<div id="issue-18">
+
+ISSUE: Need to investigate what formats are suitable for <code>model</code>. We might need some kind
+  of evaluation matrix. Model can support multiple formats out of the box, but it might be good to
+  evaluate what is best of users and developers and why. <a
+  href="https://github.com/immersive-web/model-element/issues/18">GitHub issue #18: Which
+  formats?</a>.
+
+</div>
+
+<h2 id="overlap-with-media-elements">Overlap with "media elements"</h2>
+
+<div id="issue-13">
+
+ISSUE: The <code>&lt;model&gt;</code> element shares a lot of similarities with the
+  <code>&lt;audio&gt;</code> and <code>&lt;video&gt;</code> elements, yet it&#x27;s distinct in some
+  ways (we need to tease these out). It&#x27;s similar in being potentially temporal multimedia
+  content (i.e., it has audio, it potentially animates over time). We need to figure out if model
+  sufficiently different to warrant being its own element class, or if it can reuse much of
+  &quot;media element&quot;&#x27;s infrastructure. <a
+  href="https://github.com/immersive-web/model-element/issues/13">GitHub issue #13: Is model a
+  &quot;media element&quot;?</a>.
+
+</div>
+
+<h2 id="html-integrations">HTML Integrations</h2>
+
+Additional integrations into HTML:
+
+<div id="issue-28">
+
+ISSUE: Need same behavior as <code>audio</code> and <code>video</code> when including into a
+  <code>p</code> element with no end tag. <a
+  href="https://github.com/immersive-web/model-element/issues/28">GitHub issue #28: HTML parser
+  integration </a>.
+
+</div>
+<div id="issue-29">
+
+ISSUE: Need to specify that model is an appropriate child of <code>&lt;figure&gt;</code>. <a
+  href="https://github.com/immersive-web/model-element/issues/29">GitHub issue #29: model is an
+  appropriate child of figure</a>.
+
+</div>
+
+<h3 id="preload-link-relationship">Preload link relationship</h3>
+
+<div id="issue-30">
+
+ISSUE: Need to specify Integration with <a
+  href="https://html.spec.whatwg.org/multipage/links.html#link-type-preload">preload</a> link
+  relationships. <a href="https://github.com/immersive-web/model-element/issues/30">GitHub issue
+  #30: Integration with `preload`</a>.
+
+</div>
+
+<h3 id="integrations-with-source-element">Integrations with <code>source</code> element</h3>
+
+<div id="issue-source-attributes">
+
+ISSUE: Some attributes on <code>source</code> are currently restricted to <{picture}>.
+  We need to figure out which apply to <{model}>.
+
+</div>
+
+<h2 id="css-integrations">CSS integrations</h2>
+
+<h3 id="media-playback-states">Media Playback States (<code>:playing</code>, <code>:paused</code>, <code>:seeking</code>)</h3>
+
+<div id="issue-31-css">
+
+ISSUE: If <a href="https://github.com/immersive-web/model-element/issues/13">#13</a> holds, how does
+  the <code>&lt;model&gt;</code> work with Media Playback States <code>:playing</code>,
+  <code>:paused</code>? <a href="https://github.com/immersive-web/model-element/issues/31">GitHub
+  issue #31: CSS integrations: Media Playback States</a>.
+
+</div>
+
+<h3 id="fullscreen-presentation-state">Fullscreen Presentation State: the <code>:fullscreen</code> pseudo-class</h3>
+
+<h2 id="fullscreen-integration">Fullscreen integration</h2>
+
+<div id="issue-31-fullscreen">
+
+ISSUE: If <a href="https://github.com/immersive-web/model-element/issues/13">#13</a> holds, how does
+  the <code>&lt;model&gt;</code> work with Media Playback States <code>:playing</code>,
+  <code>:paused</code>? <a href="https://github.com/immersive-web/model-element/issues/31">GitHub
+  issue #31: CSS integrations: Media Playback States</a>.
+
+</div>
+
+<h2 id="fetch-integration">Fetch integration</h2>
+
+<h3 id="model-destination"><code>"model"</code> destination</h3>
+
+<div id="issue-35">
+
+ISSUE: The formats that model support can fetch a lot of other resources. We probably need a new
+  fetch destination (&quot;model&quot;). <a
+  href="https://github.com/immersive-web/model-element/issues/35">GitHub issue #35: Fetch
+  integration: new destination?</a>.
+
+</div>
+
+<h2 id="privacy-considerations">Privacy considerations</h2>
+
+<div id="issue-36">
+
+ISSUE: We need to investigate what the privacy implications are of each model format we will
+  recommend. The model formats themselves can fetch resources, so we need to put a privacy and
+  security framework around what schemes they can fetch (https only, for instance). We also need to
+  say what all the fetch policies are. Need to investigate if the formats provide any guidance here,
+  or if they leave it up to the implementation. If they do, we need to specify it (i.e., don&#x27;t
+  send cookies, don&#x27;t leak the referrer, etc.). <a
+  href="https://github.com/immersive-web/model-element/issues/36">GitHub issue #36: Formats: privacy
+  considerations</a>.
+
+</div>
+
+<h2 id="security-considerations">Security considerations</h2>
+
+<h3 id="cors">CORS</h3>
+
+<h3 id="formats-and-cors">Formats and CORS</h3>
+
+<div id="issue-15">
+
+ISSUE: Need to clarify that 3D resources can fetch resources, and as such need to be subject the
+  document&#x27;s CSP (probably &quot;media-src&quot;). However, we need to clarify what this means
+  in relation to, say, &quot;img-src&quot;, for example... as models can load png/jpg textures. <a
+  href="https://github.com/immersive-web/model-element/issues/15">GitHub issue #15: Formats and
+  CSP</a>.
+
+</div>
+
+<h3 id="content-security-policy">Content Security Policy</h3>
+
+<div id="issue-16">
+
+ISSUE: Given the close relationship to media elements, and given the reliance on
+  <code>&lt;source&gt;</code> elements, we could just say that <code>media-src</code> applies to
+  <code>&lt;model&gt;</code> too. <a
+  href="https://github.com/immersive-web/model-element/issues/16">GitHub issue #16: Reuse
+  media-src?</a>.
+
+</div>
+
+<h3 id="format-concerns">Format concerns</h3>
+
+<div id="issue-17">
+
+ISSUE: Need to describe that each format will come with its own security considerations (and link to
+  the appropriate security considerations in their respective specs). <a
+  href="https://github.com/immersive-web/model-element/issues/17">GitHub issue #17: Format security
+  concerns</a>.
+
+</div>
+
+<h2 id="accessibility">Accessibility</h2>
+
+<div id="issue-50">
+
+ISSUE: We need to figure out how to make <code>&lt;model&gt;</code> accessible on a number of
+  different fronts:<br><br>• Visual: describe what is being presented over time.<br>• Interaction:
+  describe what can interacted with (regions, buttons, etc.).<br>• auditory: describe audio and
+  possibly spoke sounds, potentially over time.<br><br>Usually, this would be provide by the
+  embedded format... however, it appears that both glTF and USDZ are quite limited when it comes to
+  accessibility.<br><br>As such, it may be that we need to leverage what we can from HTML + ARIA to
+  overcome the shortcomings of these formats. We have quite a bit of precedent (e.g., from the
+  humble, yet limited, <code>alt</code> attribute, to how <code>&lt;canvas&gt;</code> can be made
+  accessibly, to the potential inclusion of <code>&lt;track&gt;</code> elements, and so on). <a
+  href="https://github.com/immersive-web/model-element/issues/50">GitHub issue #50: Accessibility of
+  model</a>.
+
+</div>
+<div id="issue-39">
+
+ISSUE: We need to define how what the ARIA semantics are and what is exposed (application probably).
+  We need to coordinate with the accessibility folks + get this added to the HTML Accessibility API
+  Mappings. <a href="https://github.com/immersive-web/model-element/issues/39">GitHub issue #39:
+  Accessibility: ARIA integration and HTML Accessibility API Mappings</a>.
+
+</div>
+
+<h3 id="text-alternatives-for-3d-content">Requirements for providing text to act as an alternative for 3D content</h3>
+
+<h3 id="accessibility-for-authors">For authors</h3>
+
+<div class="note">
+  <p>This section would eventually be moved to [[HTML-ARIA]].</p>
+</div>
+
+<table class="data">
+  <caption>Rules of ARIA attribute usage by HTML element ([[HTML-ARIA]])</caption>
+  <thead>
+    <tr>
+      <th>HTML element</th>
+      <th>Implicit ARIA semantics</th>
+      <th>ARIA roles, states and properties which MAY be used</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><{model}></td>
+      <td>TBD</td>
+      <td>TBD</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="accessibility-for-implementers">For implementers</h3>
+
+<div class="note">
+  <p>This section would eventually move to [[HTML-AAM-1.0]].</p>
+</div>
+
+<table class="data">
+  <caption><{model}></caption>
+  <tbody>
+    <tr>
+      <th>[[wai-aria-1.2]]</th>
+      <td>No corresponding role</td>
+    </tr>
+    <tr>
+      <th><a href="https://msdn.microsoft.com/en-us/library/dd373608%28v=VS.85%29.aspx">MSAA</a> +
+      <a href="http://accessibility.linuxfoundation.org/a11yspecs/ia2/docs/html/">IAccessible2</a></th>
+      <td>Not mapped</td>
+    </tr>
+    <tr>
+      <th><a href="https://msdn.microsoft.com/en-us/library/ms726297%28v=VS.85%29.aspx">UIA</a></th>
+      <td>Not mapped</td>
+    </tr>
+    <tr>
+      <th><a href="https://gnome.pages.gitlab.gnome.org/atk/">ATK</a></th>
+      <td>Not mapped</td>
+    </tr>
+    <tr>
+      <th><a href="https://developer.apple.com/reference/appkit/nsaccessibility">AX</a></th>
+      <td>Not mapped</td>
+    </tr>
+    <tr>
+      <th>Comments</th>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="mime">MIME</h2>
+
+<div id="issue-37">
+
+ISSUE: We need to check if there are any relevant MIME parameters for <code>model/*</code> content
+  (if any). <a href="https://github.com/immersive-web/model-element/issues/37">GitHub issue #37:
+  MIME integration</a>.
+
+</div>
+
+<h3 id="mime-sniffing">MIME Sniffing</h3>
+
+<div id="issue-38">
+
+ISSUE: Need to describe how we sniff for MIME types in [[MIMESNIFF]]. See also IANA &quot;<a
+  href="https://www.iana.org/assignments/media-types/media-types.xhtml#model">model</a>&quot; types.
+  We might need specific rules for sniffing. <a
+  href="https://github.com/immersive-web/model-element/issues/38">GitHub issue #38: Enforce MIME
+  types</a>.
+
+</div>
+
+<div id="issue-summary" data-fill-with="issues-index"></div>
+
+<section class="non-normative">
+<h2 id="change-log">Change log</h2>
+
+The following are some significant changes that were made since the initial proposal:
+
+<!-- Snapshot of the ReSpec change log through d7f8e9a, using index.html's
+     removeCommits filter to omit editorial, chore, fix, refactor, test, doc,
+     typo, and nit commits. -->
+<table class="data" data-opaque>
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Change</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><time datetime="2026-09-10">2026-09-10</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/d7f8e9a85bab6f050c34a1e96163f547778134ed">202609 repository fixup (#154)</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2026-03-19">2026-03-19</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/f7f0ec3c00c16e1e7542bd6a446c2b0838069cfa">Add autoplay hint information (#149)</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2026-03-16">2026-03-16</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/2ba681656e4da225574f82c5a1d39d7fe74c45be">Redefines camera to pose (#144)</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2026-03-13">2026-03-13</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/33d49e52d4180f2a3346e94a395a904f9ef9d206">Introduces lighting (#146)</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2026-03-13">2026-03-13</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/ee03ade4598c2fcb0ae782a38be45a45b5ee695e">Introduces stagemode and orbit concepts (#147)</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2026-03-01">2026-03-01</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/d8bce55be60cbf8632c600886afe12fe9473d89d">defines ready Promise role (#145)</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2026-03-01">2026-03-01</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/57dc49d83e7c706cd1f77a494cdb8274e9d61eee">Withdraws from AR Quick Look-related concerns (#148)</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2026-01-07">2026-01-07</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/973ad0e2670d95dfd468e543f958c0257d0208bc">Add example for fallback content (#138)</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2026-01-07">2026-01-07</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/6d6bea21b4078075faa219339f4edacecf9209ea">Update accessibility example (#139)</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2026-01-06">2026-01-06</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/d4a62b91a4662cf6d08c136c4c25590b58bdaeee">Add loading and dimensional IDL entries (#137)</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2026-01-06">2026-01-06</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/ca73fb94e90e98ff628f131496797bef15812b63">Remove references to muted (#136)</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2026-01-06">2026-01-06</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/7e1b395481f494509dc301b3d6a15836b30c576f">Update terminology in example (#135)</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2025-12-19">2025-12-19</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/1a4f45f80fc32b6a19071e3ea02dbea548d4f5f5">errata. removing extra closing tag. (#134)</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2025-05-27">2025-05-27</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/c070efdac41ce26c448f08eebebe162998a48071">camelCase property names (but retain lowercase when referring to the equivalent element attributes) (#122)</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2025-05-17">2025-05-17</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/d835e2936fb908003939c6df8d73e18442618834">corrected 'boundinging', which is not a word.</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2025-05-17">2025-05-17</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/9d82ed59bcebb480da5266129012da220c7f4cfd">clean up the remaining references to singular `extent`</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2025-05-02">2025-05-02</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/e15f5c32fa7ee45f440775b1d41f1103c14d26d6">Change to boundingBoxExtents (#116)</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2025-04-04">2025-04-04</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/cc405d984093c1c8423a70b5c4f05ad578138e25">Update explainer.md with Accessibility notes and video fallback example. (#111)</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2025-01-10">2025-01-10</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/7d27fbf4c721f5b20b815153ff5910168eca1758">Add cabanier as editor (#105)</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2024-12-23">2024-12-23</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/1bac4fcb70ed1cf2510604c69ed3ab6a6939f313">Events to promises (#104)</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2024-11-19">2024-11-19</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/810e556ead58fc19b811d752719513689a531975">Wrapped the element name in the required backticks for mentioning it in prose (#101)</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2024-11-19">2024-11-19</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/f793552a66676313fafc34cf0c528a00f54dc3a1">Remove bounding sphere description, Change the &quot;first frame&quot; bounding box information to function based on bind-pose instead.</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2024-11-19">2024-11-19</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/32eb475d36eca8f65146df89092621712d7530e5">Tweak the language (numbers clarified to be Doubles use the current mediatype for USDZ) Remove the discussion of Media element</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2024-11-19">2024-11-19</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/5f2dbdf00b3556ad2b7964bf7843be9930ce4093">Updated the explainer and added a demo to view for discussion.</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2024-10-07">2024-10-07</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/7d48b5e4c3b5c28351d86b5001cfbdd3b73433c9">Add the example for multiple formats for issue 21 (#96)</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2024-09-23">2024-09-23</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/ec2f47fc9c9fc2d90acf1726f17fa9d91e2cbd78">Add myself as an additional editor. (#94)</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2024-07-17">2024-07-17</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/80b1514144b31c8d257c7c0f9ae53f2dbeb65315">Fresh run at the introduction section (#88)</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2024-07-15">2024-07-15</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/8d81ab1b1e329c8bfef00ae5b9ef43459c4e70fa">Adding the stipulation about subresource loading to &quot;out of scope&quot; (#90)</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2024-04-23">2024-04-23</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/1b25a02892d9adf04c780340f236543d791d431d">Link content attribute dfns back to the model element (#77)</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2024-04-23">2024-04-23</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/fa2bf50618332766ff347e0e615eefb00631d5b5">Define out-of-scope concepts for the specificaiton (#84)</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2024-04-22">2024-04-22</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/4f209ac1f7f3b3ce1d72cf07a365f4a920864046">Update index.html</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2024-04-22">2024-04-22</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/62b52e1f8d9368a13b7e1344b03f148bcd32fbac">Update index.html</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2022-08-11">2022-08-11</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/60ea2c3789a5844801f5ec16bfe24a95d8c1694b">Remove alt attr, better define a11y problem</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2022-08-09">2022-08-09</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/ba1937abeaeae33a39e71141ba3dd9ee854aa26c">Initial spec draft</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2022-07-21">2022-07-21</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/a1f541806fa4517446f324ea1eadf783de1052dd">update dead link and fix a typo</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2022-07-20">2022-07-20</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/b89c4c4202d5bfc5f6a0e71038861b879e714303">Merge pull request #6 from marcoscaceres/patch-1</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2022-02-15">2022-02-15</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/57fc5f8f6dfc959a26d7117e9173208bcd9ec8ed">Embedded &lt;model&gt; documentation (#4)</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2021-12-14">2021-12-14</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/98b5c4ea83ea0212b4083928af6e5081a3d2dbda">Update w3c.json</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2021-12-14">2021-12-14</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/26f4683eef5391b31dfe08481a2fe0e7f682fb2e">Update README.md</a></td>
+    </tr>
+    <tr>
+      <td><time datetime="2021-12-14">2021-12-14</time></td>
+      <td><a href="https://github.com/immersive-web/model-element/commit/c30243a6a3752a6d69a6a4563a4ec87374afdef1">Initial commit</a></td>
+    </tr>
+  </tbody>
+</table>
+
+See the <a href="https://github.com/immersive-web/model-element/commits/main/">repository commit history</a>.
+</section>
+
+<div data-fill-with="index"></div>
