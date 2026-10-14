@@ -360,6 +360,8 @@ The position, rotation, and scale of a displayed model MUST present its contents
 to its {{HTMLModelElement/entityTransform}} property, a {{DOMMatrixReadOnly}} that can be
 composed using that object's existing API.
 
+The point and matrix interfaces and their operations are defined in [[GEOMETRY-1]].
+
 Updates to the {{HTMLModelElement/entityTransform}} SHOULD be reflected on the next rendered frame.
 
 <h4 id="model-coordinate-spaces">Coordinate spaces and length units</h4>
@@ -373,7 +375,8 @@ The model APIs distinguish the following coordinate spaces:
   represents one meter of the asset's geometry. Normalization preserves the resource's
   origin; fitting does not modify this coordinate space.</dd>
   <dt><dfn>element space</dfn></dt>
-  <dd>The coordinate space of the model element's content box. Its origin is the center of
+  <dd>The coordinate space of the model element's <a spec="css-box-3">content box</a>,
+  as defined in [[CSS-BOX-3]]. Its origin is the center of
   the viewport plane, with positive X pointing right, positive Y pointing up, and positive
   Z pointing toward the viewer. One unit of length in this space is one
   <dfn>CSS-derived meter</dfn>, equal to 100 CSS centimeters. The fixed ratios between
@@ -393,6 +396,11 @@ to [=model space=] using the length units and axis conventions declared by the r
 format, including any defaults specified by that format. If the format neither declares
 nor specifies default length units, one resource length unit MUST be treated as one meter.
 
+ISSUE: The one-meter fallback for formats that neither declare length units nor specify
+  default length units needs further discussion. Is one meter an appropriate default,
+  or should a different fallback be used? See <a
+  href="https://github.com/immersive-web/model-element/issues/155">GitHub issue #155</a>.
+
 {{HTMLModelElement/boundingBoxCenter}} and {{HTMLModelElement/boundingBoxExtents}} MUST
 report their X, Y, and Z components in meters in [=model space=]; the homogeneous W
 component is dimensionless. These values MUST NOT include automatic
@@ -403,6 +411,10 @@ mapping to [=physical presentation space=].
 translation components are expressed in [=CSS-derived meters=], while scale factors and
 rotation coefficients are dimensionless. This mapping precedes CSS transforms on the
 element and the mapping to [=physical presentation space=].
+
+Point transformation uses the <a spec="geometry-1">transform a point with a matrix</a>
+algorithm in [[GEOMETRY-1]]. This specification defines the coordinate spaces and
+length units used by the model APIs.
 
 For fitting, the user agent MUST convert the content box's width and height from CSS
 pixels to [=CSS-derived meters=] by multiplying each dimension by <code>0.0254 / 96</code>.
@@ -486,9 +498,12 @@ The <dfn>bounding box calculation algorithm</dfn> consists of the following step
 8. Set the values of {{HTMLModelElement/boundingBoxExtents}} to be each value of |min|
     subtracted from |max|.
 
-The fitting algorithms MUST use the width and height of the element's laid-out content box,
-converted to [=CSS-derived meters=] in [=element space=]. These are the used CSS dimensions,
-not the numerical values of the <{model/width}> and <{model/height}> attributes. CSS sizing
+The fitting algorithms MUST use the width and height of the element's laid-out
+<a spec="css-box-3">content box</a>, converted to [=CSS-derived meters=] in [=element space=].
+These dimensions result from CSS layout, using the
+<a spec="css-cascade-5" lt="used value">used values</a> defined in [[CSS-CASCADE-5]] and
+the <a spec="css-sizing-3">sizing properties</a> defined in [[CSS-SIZING-3]]. They are not
+the numerical values of the <{model/width}> and <{model/height}> attributes. CSS sizing
 and layout constraints can cause them to differ from the desired dimensions given by
 those attributes. The bounds remain in
 [=model space=], before {{HTMLModelElement/entityTransform}} is applied. Subsequent fitting
