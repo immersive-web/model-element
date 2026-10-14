@@ -459,7 +459,7 @@ model-space bounds, or the conversion from CSS pixels to [=element space=].
 On the initial load for a model, the user agent MUST run the
 [=bounding box calculation algorithm=] and store the resulting model-space bounds.
 The {{HTMLModelElement/entityTransform}} MUST be set so that
-the object is fully in view within the model element's <{model/width}> and <{model/height}>
+the object is fully in view within the model element's laid-out content box
 on the page. Initial fitting uses the [=model fit algorithm=] with an identity rotation
 in `none` mode, or the [=orbit fit algorithm=] in `orbit` mode.
 
@@ -486,8 +486,11 @@ The <dfn>bounding box calculation algorithm</dfn> consists of the following step
 8. Set the values of {{HTMLModelElement/boundingBoxExtents}} to be each value of |min|
     subtracted from |max|.
 
-The fitting algorithms use the width and height of the element's laid-out content box,
-converted to [=CSS-derived meters=] in [=element space=]. The bounds remain in
+The fitting algorithms MUST use the width and height of the element's laid-out content box,
+converted to [=CSS-derived meters=] in [=element space=]. These are the used CSS dimensions,
+not the numerical values of the <{model/width}> and <{model/height}> attributes. CSS sizing
+and layout constraints can cause them to differ from the desired dimensions given by
+those attributes. The bounds remain in
 [=model space=], before {{HTMLModelElement/entityTransform}} is applied. Subsequent fitting
 updates MUST use the stored bounds of the loaded resource; they MUST NOT repeat the
 [=bounding box calculation algorithm=] or restart or seek the animation.
