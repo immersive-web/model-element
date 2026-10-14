@@ -8,7 +8,7 @@
   <meta content="Bikeshed version 49e9fdd4f, updated Tue Oct 13 14:27:53 2026 -0700" name="generator">
   <link href="https://immersive-web.github.io/model-element/" rel="canonical">
   <link href="https://www.w3.org/2008/site/images/favicon.ico" rel="icon">
-  <meta content="116f5676e7b60c21926ceac73de34ecf9239d65d" name="revision">
+  <meta content="165f49511cce52323afb02b7b0e66f633fb60cd7" name="revision">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
 <style>/* Boilerplate: style-autolinks */
@@ -820,7 +820,10 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
       <li>
        <a href="#model-pose"><span class="secno">9.2</span> <span class="content">Model pose</span></a>
        <ol class="toc">
-        <li><a href="#orbit-fit-section"><span class="secno">9.2.1</span> <span class="content">Orbit fit</span></a>
+        <li><a href="#model-coordinate-spaces"><span class="secno">9.2.1</span> <span class="content">Coordinate spaces and length units</span></a>
+        <li><a href="#model-bounds-and-fitting"><span class="secno">9.2.2</span> <span class="content">Model bounds and fitting</span></a>
+        <li><a href="#automatic-fitting"><span class="secno">9.2.3</span> <span class="content">Automatic fitting after resize</span></a>
+        <li><a href="#orbit-fit-section"><span class="secno">9.2.4</span> <span class="content">Orbit fit</span></a>
        </ol>
       <li><a href="#embedded-content"><span class="secno">9.3</span> <span class="content">Embedded content</span></a>
      </ol>
@@ -1139,57 +1142,110 @@ model, and lit by an image-based light.</p>
    <p>If provided, an environment map MUST be interpreted as an equirectangular environment map.
 If an <code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-environmentmap" id="ref-for-dom-htmlmodelelement-environmentmap">environmentMap</a></code> is not specified, the User Agent MUST provide
 an appropriate map.</p>
-   <div id="issue-1">
-    <p class="issue" id="issue-6bd3deef"><a class="self-link" href="#issue-6bd3deef"></a> I agree that it is very good to make it easy for people to display 3D content in a web page.
-  I completely disagree with the methods and processes described in this proposal to make it an HTML
-  element. HTML elements need to be fully defined so that they can be similarly implemented across
-  browsers and reflect what people would see in applications outside of browsers. The process of
-  rendering a high-quality model requires proper handling and rendering of the model's
-  geometry, appearance, animation, and interaction.<br><br>My knowledge is in glTF (and glTF binary)
-  so these comments may or may not reflect on the capabilities of USDZ. I will address the topics as
-  separate issues: Appearance and Animation / interactivity; with respect to 3D models in glTF
-  format. Static geometry is pretty straight-forward and not subject to much
-  interpretation.<br><br>The really difficult part is appearance. The document states that "it
-  is impractical to define a pixel accurate rendering..." for models. However, this is really
-  important. Khronos has done extensive work in the 3D Commerce Working Group towards pixel accurate
-  rendering across multiple 3D viewers (<a href="https://www.khronos.org/3dcommerce/certification/">https://www.khronos.org/3dcommerce/certification/</a>).
-  The accuracy was demanded by retailers so their products would appear visually identical across
-  different web sites. There were so many factors that mattered in producing acceptable renderings
-  that include lighting, rendering calculations (including equation approximations), conversion from
-  GPU to display, and tone mapping.<br><br>The component that caused the most issues and
-  difficulties is lighting. A model built for physically-based rendering looks best in a complex
-  lighting environment. This is usually done with image based lighting, but punctual plus area
-  lights will also work. The statement that "A future version ... will describe the lighting
-  model and environment .... Both items will require community collaboration and some
-  consensus." makes the process sound much easier that Khronos found it to be.<br><br>Some
-  issues that came from the Certification work. Note that the Certification program did not solve
-  all of these in the initial release.<br><br>• Is lighting done as an 8-bit RGB or 16-bit HDR
-  image<br>• Is lighting done with many point and area lights?<br>• How does the content creator
-  provide for different lighting?<br>• How does the user adjust the lighting to match a particular
-  environment?<br>• What background is used for the model display?<br>• How is the (floating-point)
-  rendering converted to an 8-bit RGB display?<br>• How is the rendering adjusted depending on user
-  environment?<br>• How is the rendering adjusted depending on device (hardware, OS, browser)<br>•
-  How is time-dependent display degradation handled?<br><br>It may be possible to construct an
-  initial release without resolving all of these items. <a href="https://github.com/immersive-web/model-element/issues/1">GitHub issue #1: Consistent
-  presentation/rendering of model resources</a>.</p>
-   </div>
-   <div id="issue-5">
-    <p class="issue" id="issue-a444376b"><a class="self-link" href="#issue-a444376b"></a> The Oculus browser is displayed on a curved surface.<br> How we envision the display of
-  multiple models? Would we allow them to bump into each other or would there be clipping? <a href="https://github.com/immersive-web/model-element/issues/5">GitHub issue #5: How would the
-  model display on curved screens?</a>.</p>
-   </div>
    <h3 class="heading settled" data-level="9.2" id="model-pose"><span class="secno">9.2. </span><span class="content">Model pose</span><a class="self-link" href="#model-pose"></a></h3>
-   <p>The The position, rotation, and scale of a displayed model MUST present its contents according
+   <p>The position, rotation, and scale of a displayed model MUST present its contents according
 to its <code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-entitytransform" id="ref-for-dom-htmlmodelelement-entitytransform②">entityTransform</a></code> property, a <code class="idl"><a data-link-type="idl" href="https://drafts.csswg.org/geometry-1/#dommatrixreadonly" id="ref-for-dommatrixreadonly①">DOMMatrixReadOnly</a></code> that can be
 composed using that object’s existing API.</p>
+   <p>The point and matrix interfaces and their operations are defined in <a data-link-type="biblio" href="#biblio-geometry-1" title="Geometry Interfaces Module Level 1">[GEOMETRY-1]</a>.</p>
    <p>Updates to the <code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-entitytransform" id="ref-for-dom-htmlmodelelement-entitytransform③">entityTransform</a></code> SHOULD be reflected on the next rendered frame.</p>
-   <p>On the initial load for a model, the <code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-entitytransform" id="ref-for-dom-htmlmodelelement-entitytransform④">entityTransform</a></code> MUST be set so that
-the object is fully in view within the model element’s <code><a data-link-type="element-sub" href="#element-attrdef-model-width" id="ref-for-element-attrdef-model-width②">width</a></code> and <code><a data-link-type="element-sub" href="#element-attrdef-model-height" id="ref-for-element-attrdef-model-height②">height</a></code>
-on the page.</p>
+   <h4 class="heading settled" data-level="9.2.1" id="model-coordinate-spaces"><span class="secno">9.2.1. </span><span class="content">Coordinate spaces and length units</span><a class="self-link" href="#model-coordinate-spaces"></a></h4>
+   <p>The model APIs distinguish the following coordinate spaces:</p>
+   <dl>
+    <dt><dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="model-space">model space</dfn>
+    <dd>The resource’s coordinate space before <code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-entitytransform" id="ref-for-dom-htmlmodelelement-entitytransform④">entityTransform</a></code> is applied,
+  normalized to a right-handed, Y-up coordinate system. One unit of length in this space
+  represents one meter of the asset’s geometry. Normalization preserves the resource’s
+  origin; fitting does not modify this coordinate space.
+    <dt><dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="element-space">element space</dfn>
+    <dd>The coordinate space of the model element’s <a data-link-type="dfn" href="https://drafts.csswg.org/css-box-3/#content-box" id="ref-for-content-box">content box</a>,
+  as defined in <a data-link-type="biblio" href="#biblio-css-box-3" title="CSS Box Model Module Level 3">[CSS-BOX-3]</a>. Its origin is the center of
+  the viewport plane, with positive X pointing right, positive Y pointing up, and positive
+  Z pointing toward the viewer. One unit of length in this space is one
+  <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="css-derived-meter">CSS-derived meter</dfn>, equal to 100 CSS centimeters. The fixed ratios between
+  <a data-link-type="dfn" href="https://drafts.csswg.org/css-values-4/#absolute-length" id="ref-for-absolute-length">absolute length units</a> in <a data-link-type="biblio" href="#biblio-css-values-4" title="CSS Values and Units Module Level 4">[CSS-VALUES-4]</a>,
+  <code>1in = 96px = 2.54cm</code>, give the conversion
+  <code>1 CSS px = 0.0254 / 96 CSS-derived meters</code>. This specification defines
+  the term "CSS-derived meter"; CSS does not define an <code>m</code> unit.
+    <dt><dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="physical-presentation-space">physical presentation space</dfn>
+    <dd>The device-dependent space in which the user agent presents the page, including any
+  spatial or stereoscopic presentation. Its mapping from <a data-link-type="dfn" href="#element-space" id="ref-for-element-space">element space</a> may depend on
+  zoom, display characteristics, and the user agent’s presentation policy. The model APIs
+  do not expose this mapping or guarantee a model’s physical size on the device.
+   </dl>
+   <p>The user agent MUST convert the resource’s geometry and internal transform translations
+to <a data-link-type="dfn" href="#model-space" id="ref-for-model-space">model space</a> using the length units and axis conventions declared by the resource
+format, including any defaults specified by that format. If the format neither declares
+nor specifies default length units, one resource length unit MUST be treated as one meter.</p>
+   <p class="issue" id="issue-a3b5523a"><a class="self-link" href="#issue-a3b5523a"></a> The one-meter fallback for formats that neither declare length units nor specify
+  default length units needs further discussion. Is one meter an appropriate default,
+  or should a different fallback be used? See <a href="https://github.com/immersive-web/model-element/issues/155">GitHub issue #155</a>.</p>
+   <p><code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-boundingboxcenter" id="ref-for-dom-htmlmodelelement-boundingboxcenter">boundingBoxCenter</a></code> and <code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-boundingboxextents" id="ref-for-dom-htmlmodelelement-boundingboxextents">boundingBoxExtents</a></code> MUST
+report their X, Y, and Z components in meters in <a data-link-type="dfn" href="#model-space" id="ref-for-model-space①">model space</a>; the homogeneous W
+component is dimensionless. These values MUST NOT include automatic
+fitting, <code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-entitytransform" id="ref-for-dom-htmlmodelelement-entitytransform⑤">entityTransform</a></code>, CSS transforms on the element, or the
+mapping to <a data-link-type="dfn" href="#physical-presentation-space" id="ref-for-physical-presentation-space">physical presentation space</a>.</p>
+   <p><code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-entitytransform" id="ref-for-dom-htmlmodelelement-entitytransform⑥">entityTransform</a></code> MUST map <a data-link-type="dfn" href="#model-space" id="ref-for-model-space②">model space</a> to <a data-link-type="dfn" href="#element-space" id="ref-for-element-space①">element space</a>. Its
+translation components are expressed in <a data-link-type="dfn" href="#css-derived-meter" id="ref-for-css-derived-meter">CSS-derived meters</a>, while scale factors and
+rotation coefficients are dimensionless. This mapping precedes CSS transforms on the
+element and the mapping to <a data-link-type="dfn" href="#physical-presentation-space" id="ref-for-physical-presentation-space①">physical presentation space</a>.</p>
+   <p>Point transformation uses the <a data-link-type="dfn" href="https://drafts.csswg.org/geometry-1/#transform-a-point-with-a-matrix" id="ref-for-transform-a-point-with-a-matrix">transform a point with a matrix</a>
+algorithm in <a data-link-type="biblio" href="#biblio-geometry-1" title="Geometry Interfaces Module Level 1">[GEOMETRY-1]</a>. This specification defines the coordinate spaces and
+length units used by the model APIs.</p>
+   <p>For fitting, the user agent MUST convert the content box’s width and height from CSS
+pixels to <a data-link-type="dfn" href="#css-derived-meter" id="ref-for-css-derived-meter①">CSS-derived meters</a> by multiplying each dimension by <code>0.0254 / 96</code>.
+Device pixels MUST NOT be used for this calculation.</p>
+   <p>Browser zoom in this section refers to <a data-link-type="dfn" href="https://drafts.csswg.org/cssom-view-1/#page-zoom" id="ref-for-page-zoom">page zoom</a> and visual
+viewport scaling, as distinguished in the <a href="https://drafts.csswg.org/cssom-view-1/#zooming">Zooming section</a> of <a data-link-type="biblio" href="#biblio-cssom-view-1" title="CSSOM View Module">[CSSOM-VIEW-1]</a>.
+Page zoom affects the size of the initial viewport. Visual viewport scaling, exposed by
+<code class="idl"><a data-link-type="idl" href="https://drafts.csswg.org/cssom-view-1/#dom-visualviewport-scale" id="ref-for-dom-visualviewport-scale">scale</a></code>, magnifies the page without affecting the initial viewport.</p>
+   <p>Page zoom and visual viewport scaling MUST NOT change the units defined above or the
+model-space bounds of a resource. If page zoom changes the layout dimensions used by a
+fitting algorithm, those dimensions MUST be converted using the same CSS-pixel conversion.
+This does not change when the fitting algorithms run.</p>
+   <p>The <code class="idl"><a data-link-type="idl" href="https://drafts.csswg.org/cssom-view-1/#dom-window-devicepixelratio" id="ref-for-dom-window-devicepixelratio">devicePixelRatio</a></code> algorithm in <a data-link-type="biblio" href="#biblio-cssom-view-1" title="CSSOM View Module">[CSSOM-VIEW-1]</a> uses the size of a CSS pixel
+at the current page zoom, with a visual viewport scale factor of 1.0, divided by the size
+of a device pixel. Page zoom can therefore change <code class="idl"><a data-link-type="idl" href="https://drafts.csswg.org/cssom-view-1/#dom-window-devicepixelratio" id="ref-for-dom-window-devicepixelratio①">devicePixelRatio</a></code>; visual
+viewport scaling is excluded from that calculation. Changes to
+<code class="idl"><a data-link-type="idl" href="https://drafts.csswg.org/cssom-view-1/#dom-window-devicepixelratio" id="ref-for-dom-window-devicepixelratio②">devicePixelRatio</a></code> or rasterization resolution MUST NOT change the API units,
+model-space bounds, or the conversion from CSS pixels to <a data-link-type="dfn" href="#element-space" id="ref-for-element-space②">element space</a>.</p>
+   <div class="note" id="issue-155" role="note">
+    <a class="self-link" href="#issue-155"></a>
+
+    <p>These distinctions address the default length-unit question raised in <a href="https://github.com/immersive-web/model-element/issues/155">GitHub issue #155</a>.
+  A meter of asset geometry and a CSS-derived meter of element space are not guarantees
+  of one physical meter in the device’s presentation. The absolute-unit anchoring rules
+  and <a data-link-type="dfn" href="https://drafts.csswg.org/css-values-4/#reference-pixel" id="ref-for-reference-pixel">reference pixel</a> in <a data-link-type="biblio" href="#biblio-css-values-4" title="CSS Values and Units Module Level 4">[CSS-VALUES-4]</a> explain why CSS
+  physical units need not match physical measurements on a screen. Authors should not multiply
+  element-space translations by <code>devicePixelRatio</code>.</p>
+   </div>
+   <div class="example" id="model-unit-conversion-example">
+    <a class="self-link" href="#model-unit-conversion-example"></a>
+
+    <p>A model-space bounding-box width of 2 represents a two-meter-wide asset, independent
+  of fitting or zoom. A 300 CSS-pixel-wide viewport is
+  <code>300 × 0.0254 / 96 = 0.079375</code> CSS-derived meters wide. If width limits the
+  fit, the uniform scale is <code>0.079375 / 2 = 0.0396875</code>.</p>
+    <p>To move an already fitted model one CSS pixel to the right in element space,
+  apply the translation after the existing model-to-element mapping:</p>
+<pre class="highlight language-js"><c- a>const</c-> cssPixelsToMeters <c- o>=</c-> <c- mf>0.0254</c-> <c- o>/</c-> <c- mf>96</c-><c- p>;</c->
+<c- a>const</c-> translation <c- o>=</c-> <c- ow>new</c-> DOMMatrix<c- p>().</c->translate<c- p>(</c->cssPixelsToMeters<c- p>,</c-> <c- mf>0</c-><c- p>,</c-> <c- mf>0</c-><c- p>);</c->
+model<c- p>.</c->entityTransform <c- o>=</c-> translation<c- p>.</c->multiply<c- p>(</c->model<c- p>.</c->entityTransform<c- p>);</c->
+</pre>
+    <p>Pre-multiplying by the translation makes it element-relative rather than scaling
+  it by the existing model fit. No device-pixel-ratio adjustment is needed.</p>
+   </div>
+   <h4 class="heading settled" data-level="9.2.2" id="model-bounds-and-fitting"><span class="secno">9.2.2. </span><span class="content">Model bounds and fitting</span><a class="self-link" href="#model-bounds-and-fitting"></a></h4>
+   <p>On the initial load for a model, the user agent MUST run the
+<a data-link-type="dfn" href="#bounding-box-calculation-algorithm" id="ref-for-bounding-box-calculation-algorithm">bounding box calculation algorithm</a> and store the resulting model-space bounds.
+The <code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-entitytransform" id="ref-for-dom-htmlmodelelement-entitytransform⑦">entityTransform</a></code> MUST be set so that
+the object is fully in view within the model element’s laid-out content box
+on the page. Initial fitting uses the <a data-link-type="dfn" href="#model-fit-algorithm" id="ref-for-model-fit-algorithm">model fit algorithm</a> with an identity rotation
+in <code>none</code> mode, or the <a data-link-type="dfn" href="#orbit-fit-algorithm" id="ref-for-orbit-fit-algorithm">orbit fit algorithm</a> in <code>orbit</code> mode.</p>
    <p>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="bounding-box-calculation-algorithm">bounding box calculation algorithm</dfn> consists of the following steps.</p>
    <ol>
     <li data-md>
-     <p>With the model scene loaded, set the animation to the first frame if present.</p>
+     <p>With the model scene loaded and normalized to <a data-link-type="dfn" href="#model-space" id="ref-for-model-space③">model space</a>, set the animation to
+the first frame if present.</p>
     <li data-md>
      <p>let <var>max</var> be a new <code class="idl"><a data-link-type="idl" href="https://drafts.csswg.org/geometry-1/#dompoint" id="ref-for-dompoint">DOMPoint</a></code> with values of <code>-Infinity</code>.</p>
     <li data-md>
@@ -1218,64 +1274,126 @@ this element’s bounding box.</p>
 this element’s bounding box.</p>
      </ol>
     <li data-md>
-     <p>Set the values of <code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-boundingboxcenter" id="ref-for-dom-htmlmodelelement-boundingboxcenter">boundingBoxCenter</a></code> to be the mean of each values
+     <p>Set the values of <code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-boundingboxcenter" id="ref-for-dom-htmlmodelelement-boundingboxcenter①">boundingBoxCenter</a></code> to be the mean of each values
 of <var>min</var> and <var>max</var>.</p>
     <li data-md>
-     <p>Set the values of <code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-boundingboxextents" id="ref-for-dom-htmlmodelelement-boundingboxextents">boundingBoxExtents</a></code> to be each value of <var>min</var>
+     <p>Set the values of <code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-boundingboxextents" id="ref-for-dom-htmlmodelelement-boundingboxextents①">boundingBoxExtents</a></code> to be each value of <var>min</var>
 subtracted from <var>max</var>.</p>
    </ol>
-   <p>The initial <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="model-fit-algorithm">model fit algorithm</dfn> consists of the following steps.</p>
+   <p>The fitting algorithms MUST use the width and height of the element’s laid-out
+<a data-link-type="dfn" href="https://drafts.csswg.org/css-box-3/#content-box" id="ref-for-content-box①">content box</a>, converted to <a data-link-type="dfn" href="#css-derived-meter" id="ref-for-css-derived-meter②">CSS-derived meters</a> in <a data-link-type="dfn" href="#element-space" id="ref-for-element-space③">element space</a>.
+These dimensions result from CSS layout, using the
+<a data-link-type="dfn" href="https://drafts.csswg.org/css-cascade-5/#used-value" id="ref-for-used-value">used values</a> defined in <a data-link-type="biblio" href="#biblio-css-cascade-5" title="CSS Cascading and Inheritance Level 5">[CSS-CASCADE-5]</a> and
+the <a data-link-type="dfn" href="https://drafts.csswg.org/css-sizing-3/#sizing-property" id="ref-for-sizing-property">sizing properties</a> defined in <a data-link-type="biblio" href="#biblio-css-sizing-3" title="CSS Box Sizing Module Level 3">[CSS-SIZING-3]</a>. They are not
+the numerical values of the <code><a data-link-type="element-sub" href="#element-attrdef-model-width" id="ref-for-element-attrdef-model-width②">width</a></code> and <code><a data-link-type="element-sub" href="#element-attrdef-model-height" id="ref-for-element-attrdef-model-height②">height</a></code> attributes. CSS sizing
+and layout constraints can cause them to differ from the desired dimensions given by
+those attributes. The bounds remain in
+<a data-link-type="dfn" href="#model-space" id="ref-for-model-space④">model space</a>, before <code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-entitytransform" id="ref-for-dom-htmlmodelelement-entitytransform⑧">entityTransform</a></code> is applied. Subsequent fitting
+updates MUST use the stored bounds of the loaded resource; they MUST NOT repeat the
+<a data-link-type="dfn" href="#bounding-box-calculation-algorithm" id="ref-for-bounding-box-calculation-algorithm①">bounding box calculation algorithm</a> or restart or seek the animation.</p>
+   <p>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="model-fit-algorithm">model fit algorithm</dfn> takes a <var>rotation</var> argument and consists of the
+following steps.</p>
    <ol>
     <li data-md>
-     <p>Retrieve the bounds of the smallest axis-aligned box that contains the geometry of the
-object using the <a data-link-type="dfn" href="#bounding-box-calculation-algorithm" id="ref-for-bounding-box-calculation-algorithm">bounding box calculation algorithm</a>.</p>
-    <li data-md>
-     <p>Let <var>extents</var> be the <code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-boundingboxextents" id="ref-for-dom-htmlmodelelement-boundingboxextents①">boundingBoxExtents</a></code> of the resource.</p>
-    <li data-md>
-     <p>Let <var>center</var> be the <code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-boundingboxcenter" id="ref-for-dom-htmlmodelelement-boundingboxcenter①">boundingBoxCenter</a></code> of the resource.</p>
-    <li data-md>
-     <p>Divide <var>extents</var>.x by the model’s <code><a data-link-type="element-sub" href="#element-attrdef-model-width" id="ref-for-element-attrdef-model-width③">width</a></code> in the viewport. This is the X-scale.</p>
-    <li data-md>
-     <p>Divide <var>extents</var>.y by the model’s <code><a data-link-type="element-sub" href="#element-attrdef-model-height" id="ref-for-element-attrdef-model-height③">height</a></code> in the viewport. This is the Y-scale.</p>
-    <li data-md>
-     <p>scale the <code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-entitytransform" id="ref-for-dom-htmlmodelelement-entitytransform⑤">entityTransform</a></code> to be the minimum of the X-scale and Y-scale.</p>
-    <li data-md>
-     <p>Set the <code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-entitytransform" id="ref-for-dom-htmlmodelelement-entitytransform⑥">entityTransform</a></code> to be centered on <var>center.x</var>, <var>center.y</var> and
-set back from <var>center.z</var> by <var>extents.z / 2</var>, so that the full extents are visible and
-set directly behind the viewport.</p>
-   </ol>
-   <div class="note" role="note">
-    <p>This algorithm is executed only on the initial load of the element, at its initial page
-  dimensions. Subsequent changes to the model’s <code><a data-link-type="element-sub" href="#element-attrdef-model-width" id="ref-for-element-attrdef-model-width④">width</a></code> or <code><a data-link-type="element-sub" href="#element-attrdef-model-height" id="ref-for-element-attrdef-model-height④">height</a></code> will not
-  automatically trigger a change in the <code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-entitytransform" id="ref-for-dom-htmlmodelelement-entitytransform⑦">entityTransform</a></code>.</p>
-   </div>
-   <div class="note" role="note">
-    <p>Given that the <code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-entitytransform" id="ref-for-dom-htmlmodelelement-entitytransform⑧">entityTransform</a></code> is determinative of the model’s fit
-  on the page, resetting to the initial pose can be achieved by storing this initial value
-  and re-applying it at any point in the future.</p>
-   </div>
-   <h4 class="heading settled" data-level="9.2.1" id="orbit-fit-section"><span class="secno">9.2.1. </span><span class="content">Orbit fit</span><a class="self-link" href="#orbit-fit-section"></a></h4>
-   <p>The <a data-link-type="dfn" href="#orbit-fit-algorithm" id="ref-for-orbit-fit-algorithm">orbit fit algorithm</a> is triggered when the model’s <code><a data-link-type="element-sub" href="#element-attrdef-model-stagemode" id="ref-for-element-attrdef-model-stagemode①">stagemode</a></code> is set to <code>orbit</code>.
-The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="orbit-fit-algorithm">orbit fit algorithm</dfn> consists of the following steps.</p>
-   <ol>
-    <li data-md>
-     <p>Retrieve the bounds of the smallest axis-aligned box that contains the geometry of the object.</p>
+     <p>Retrieve the resource’s stored bounds, previously calculated using the
+<a data-link-type="dfn" href="#bounding-box-calculation-algorithm" id="ref-for-bounding-box-calculation-algorithm②">bounding box calculation algorithm</a>.</p>
     <li data-md>
      <p>Let <var>extents</var> be the <code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-boundingboxextents" id="ref-for-dom-htmlmodelelement-boundingboxextents②">boundingBoxExtents</a></code> of the resource.</p>
     <li data-md>
      <p>Let <var>center</var> be the <code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-boundingboxcenter" id="ref-for-dom-htmlmodelelement-boundingboxcenter②">boundingBoxCenter</a></code> of the resource.</p>
     <li data-md>
-     <p>Let <var>length</var> be the <em>length</em> of the extents of <var>extents</var>.</p>
+     <p>Let <var>width</var> and <var>height</var> be the laid-out content-box dimensions in CSS pixels, each
+multiplied by <code>0.0254 / 96</code> to obtain <a data-link-type="dfn" href="#css-derived-meter" id="ref-for-css-derived-meter③">CSS-derived meters</a> in <a data-link-type="dfn" href="#element-space" id="ref-for-element-space④">element space</a>.</p>
     <li data-md>
-     <p>Divide <var>length</var> by the model’s <code><a data-link-type="element-sub" href="#element-attrdef-model-width" id="ref-for-element-attrdef-model-width⑤">width</a></code> in the viewport. This is the X-scale.</p>
+     <p>Let <var>xScale</var> be <var>width</var> divided by <var>extents</var>.x, or positive infinity if <var>extents</var>.x is zero.</p>
     <li data-md>
-     <p>Divide <var>length</var> by the model’s <code><a data-link-type="element-sub" href="#element-attrdef-model-height" id="ref-for-element-attrdef-model-height⑤">height</a></code> in the viewport. This is the Y-scale.</p>
+     <p>Let <var>yScale</var> be <var>height</var> divided by <var>extents</var>.y, or positive infinity if <var>extents</var>.y is zero.</p>
     <li data-md>
-     <p>scale the <code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-entitytransform" id="ref-for-dom-htmlmodelelement-entitytransform⑨">entityTransform</a></code> to be the minimum of the X-scale and Y-scale.</p>
+     <p>Let <var>scale</var> be the minimum of <var>xScale</var> and <var>yScale</var>. If both are positive infinity, set
+<var>scale</var> to 1. If either viewport dimension is zero, set <var>scale</var> to 0.</p>
     <li data-md>
-     <p>Set the <code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-entitytransform" id="ref-for-dom-htmlmodelelement-entitytransform①⓪">entityTransform</a></code> to be centered on <var>center.x</var>, <var>center.y</var> and
-set back from <var>center.z</var> by <var>extents.z / 2</var>, so that the full extents are visible and set
-directly behind the viewport, and will remain in view at any orientation.</p>
+     <p>Set <code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-entitytransform" id="ref-for-dom-htmlmodelelement-entitytransform⑨">entityTransform</a></code> to a uniform scale of <var>scale</var> and the supplied
+<var>rotation</var>.</p>
+    <li data-md>
+     <p>Translate the model so that <var>center</var>, after applying the scale and rotation, is aligned
+with the center of the viewport in X and Y, and is <var>scale</var> × <var>extents</var>.z / 2 behind
+the viewport plane. The translation must account for the scaled and rotated position
+of <var>center</var>. With the identity rotation used for initial fitting, the front face of
+the scaled bounding box lies on the viewport plane and the rest lies behind it.</p>
+   </ol>
+   <div class="note" role="note">
+    <p>For initial fitting with an identity rotation, the translation in element space is
+  <code>(-scale × center.x, -scale × center.y,
+  -scale × (center.z + extents.z / 2))</code>. Scaling a model around its own origin
+  without compensating for its scaled center would not center an off-origin asset.</p>
+   </div>
+   <h4 class="heading settled" data-level="9.2.3" id="automatic-fitting"><span class="secno">9.2.3. </span><span class="content">Automatic fitting after resize</span><a class="self-link" href="#automatic-fitting"></a></h4>
+   <p>Each model element has an <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="automatic-fitting-enabled">automatic fitting enabled</dfn> flag, initially true.
+Beginning to load a new model resource MUST set this flag to true.</p>
+   <p>A successful script assignment to <code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-entitytransform" id="ref-for-dom-htmlmodelelement-entitytransform①⓪">entityTransform</a></code> in <code>none</code> mode
+MUST set <a data-link-type="dfn" href="#automatic-fitting-enabled" id="ref-for-automatic-fitting-enabled">automatic fitting enabled</a> to false. An update made by a fitting algorithm
+MUST NOT disable automatic fitting.</p>
+   <p>Entering <code>orbit</code> mode MUST set <a data-link-type="dfn" href="#automatic-fitting-enabled" id="ref-for-automatic-fitting-enabled①">automatic fitting enabled</a> to true and apply the
+<a data-link-type="dfn" href="#orbit-fit-algorithm" id="ref-for-orbit-fit-algorithm①">orbit fit algorithm</a>. Returning from <code>orbit</code> to <code>none</code> MUST preserve the current
+<code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-entitytransform" id="ref-for-dom-htmlmodelelement-entitytransform①①">entityTransform</a></code> and leave automatic fitting enabled; changing modes
+back to <code>none</code> does not itself refit the model.</p>
+   <p>When either dimension of the loaded model element’s content box changes after layout,
+the user agent MUST perform the following steps:</p>
+   <ol>
+    <li data-md>
+     <p>If <a data-link-type="dfn" href="#automatic-fitting-enabled" id="ref-for-automatic-fitting-enabled②">automatic fitting enabled</a> is false, preserve
+<code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-entitytransform" id="ref-for-dom-htmlmodelelement-entitytransform①②">entityTransform</a></code> and return.</p>
+    <li data-md>
+     <p>If the element is in <code>orbit</code> mode, apply the <a data-link-type="dfn" href="#orbit-fit-algorithm" id="ref-for-orbit-fit-algorithm②">orbit fit algorithm</a>, preserving the
+current rotation.</p>
+    <li data-md>
+     <p>Otherwise, apply the <a data-link-type="dfn" href="#model-fit-algorithm" id="ref-for-model-fit-algorithm①">model fit algorithm</a> with the current rotation as its <var>rotation</var>
+argument.</p>
+   </ol>
+   <p>These updates SHOULD be reflected on the next rendered frame. The trigger is a change
+to the laid-out content-box dimensions, whether caused by <code><a data-link-type="element-sub" href="#element-attrdef-model-width" id="ref-for-element-attrdef-model-width③">width</a></code> or
+<code><a data-link-type="element-sub" href="#element-attrdef-model-height" id="ref-for-element-attrdef-model-height③">height</a></code> attributes, CSS sizing, or another layout change. Changing an attribute
+without changing those dimensions does not itself trigger a refit.</p>
+   <div class="note" role="note">
+    <p>Given that the <code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-entitytransform" id="ref-for-dom-htmlmodelelement-entitytransform①③">entityTransform</a></code> is determinative of the model’s fit
+  on the page, resetting to the initial pose can be achieved by storing this initial value
+  and re-applying it at any point in the future. In <code>none</code> mode, re-applying that value
+  through script also disables automatic fitting until <code>orbit</code> mode is entered or a
+  new model resource begins loading.</p>
+   </div>
+   <h4 class="heading settled" data-level="9.2.4" id="orbit-fit-section"><span class="secno">9.2.4. </span><span class="content">Orbit fit</span><a class="self-link" href="#orbit-fit-section"></a></h4>
+   <p>The <a data-link-type="dfn" href="#orbit-fit-algorithm" id="ref-for-orbit-fit-algorithm③">orbit fit algorithm</a> is used when the model’s <code><a data-link-type="element-sub" href="#element-attrdef-model-stagemode" id="ref-for-element-attrdef-model-stagemode①">stagemode</a></code> enters <code>orbit</code>
+mode and for automatic fitting while that mode is active.
+The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="orbit-fit-algorithm">orbit fit algorithm</dfn> consists of the following steps.</p>
+   <ol>
+    <li data-md>
+     <p>Retrieve the resource’s stored bounds, previously calculated using the
+<a data-link-type="dfn" href="#bounding-box-calculation-algorithm" id="ref-for-bounding-box-calculation-algorithm③">bounding box calculation algorithm</a>.</p>
+    <li data-md>
+     <p>Let <var>extents</var> be the <code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-boundingboxextents" id="ref-for-dom-htmlmodelelement-boundingboxextents③">boundingBoxExtents</a></code> of the resource.</p>
+    <li data-md>
+     <p>Let <var>center</var> be the <code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-boundingboxcenter" id="ref-for-dom-htmlmodelelement-boundingboxcenter③">boundingBoxCenter</a></code> of the resource.</p>
+    <li data-md>
+     <p>Let <var>diameter</var> be the Euclidean length of <var>extents</var>:
+<code>sqrt(extents.x² + extents.y² + extents.z²)</code>. This is the diameter of a sphere
+centered on <var>center</var> that encloses the bounding box.</p>
+    <li data-md>
+     <p>Let <var>width</var> and <var>height</var> be the laid-out content-box dimensions in CSS pixels, each
+multiplied by <code>0.0254 / 96</code> to obtain <a data-link-type="dfn" href="#css-derived-meter" id="ref-for-css-derived-meter④">CSS-derived meters</a> in <a data-link-type="dfn" href="#element-space" id="ref-for-element-space⑤">element space</a>.</p>
+    <li data-md>
+     <p>Let <var>scale</var> be the minimum of <var>width</var> and <var>height</var>, divided by <var>diameter</var>. If <var>diameter</var>
+is zero, set <var>scale</var> to 1. If either viewport dimension is zero, set <var>scale</var> to 0.</p>
+    <li data-md>
+     <p>Preserve the model’s current rotation and replace the scale in
+<code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-entitytransform" id="ref-for-dom-htmlmodelelement-entitytransform①④">entityTransform</a></code> with a uniform scale of <var>scale</var>.</p>
+    <li data-md>
+     <p>Translate the model so that <var>center</var>, after applying the scale and rotation, is aligned
+with the center of the viewport in X and Y, and is <var>scale</var> × <var>diameter</var> / 2 behind
+the viewport plane. The translation must account for the scaled and rotated position
+of <var>center</var>, so that the enclosing sphere lies entirely behind the viewport plane.</p>
+    <li data-md>
+     <p>Apply subsequent orbit rotations about this fitted center, preserving its position.
+The enclosing sphere then remains within the viewport at any orientation.</p>
    </ol>
    <h3 class="heading settled" data-level="9.3" id="embedded-content"><span class="secno">9.3. </span><span class="content">Embedded content</span><a class="self-link" href="#embedded-content"></a></h3>
    <div id="issue-27">
@@ -1502,41 +1620,9 @@ processed and ready to display. The Promise is rejected if the model source cann
   leaving it mostly to the UA as to what those controls are... we could figure out a standard set of
   things, like <code>&lt;video></code> provides. <a href="https://github.com/immersive-web/model-element/issues/43">GitHub issue #43: Adding
   "controls" </a>. <a class="issue-return" href="#issue-db5c2c69" title="Jump to section">↵</a></div>
-     <div class="issue"> I agree that it is very good to make it easy for people to display 3D content in a web page.
-  I completely disagree with the methods and processes described in this proposal to make it an HTML
-  element. HTML elements need to be fully defined so that they can be similarly implemented across
-  browsers and reflect what people would see in applications outside of browsers. The process of
-  rendering a high-quality model requires proper handling and rendering of the model's
-  geometry, appearance, animation, and interaction.<br><br>My knowledge is in glTF (and glTF binary)
-  so these comments may or may not reflect on the capabilities of USDZ. I will address the topics as
-  separate issues: Appearance and Animation / interactivity; with respect to 3D models in glTF
-  format. Static geometry is pretty straight-forward and not subject to much
-  interpretation.<br><br>The really difficult part is appearance. The document states that "it
-  is impractical to define a pixel accurate rendering..." for models. However, this is really
-  important. Khronos has done extensive work in the 3D Commerce Working Group towards pixel accurate
-  rendering across multiple 3D viewers (<a href="https://www.khronos.org/3dcommerce/certification/">https://www.khronos.org/3dcommerce/certification/</a>).
-  The accuracy was demanded by retailers so their products would appear visually identical across
-  different web sites. There were so many factors that mattered in producing acceptable renderings
-  that include lighting, rendering calculations (including equation approximations), conversion from
-  GPU to display, and tone mapping.<br><br>The component that caused the most issues and
-  difficulties is lighting. A model built for physically-based rendering looks best in a complex
-  lighting environment. This is usually done with image based lighting, but punctual plus area
-  lights will also work. The statement that "A future version ... will describe the lighting
-  model and environment .... Both items will require community collaboration and some
-  consensus." makes the process sound much easier that Khronos found it to be.<br><br>Some
-  issues that came from the Certification work. Note that the Certification program did not solve
-  all of these in the initial release.<br><br>• Is lighting done as an 8-bit RGB or 16-bit HDR
-  image<br>• Is lighting done with many point and area lights?<br>• How does the content creator
-  provide for different lighting?<br>• How does the user adjust the lighting to match a particular
-  environment?<br>• What background is used for the model display?<br>• How is the (floating-point)
-  rendering converted to an 8-bit RGB display?<br>• How is the rendering adjusted depending on user
-  environment?<br>• How is the rendering adjusted depending on device (hardware, OS, browser)<br>•
-  How is time-dependent display degradation handled?<br><br>It may be possible to construct an
-  initial release without resolving all of these items. <a href="https://github.com/immersive-web/model-element/issues/1">GitHub issue #1: Consistent
-  presentation/rendering of model resources</a>. <a class="issue-return" href="#issue-6bd3deef" title="Jump to section">↵</a></div>
-     <div class="issue"> The Oculus browser is displayed on a curved surface.<br> How we envision the display of
-  multiple models? Would we allow them to bump into each other or would there be clipping? <a href="https://github.com/immersive-web/model-element/issues/5">GitHub issue #5: How would the
-  model display on curved screens?</a>. <a class="issue-return" href="#issue-a444376b" title="Jump to section">↵</a></div>
+     <div class="issue"> The one-meter fallback for formats that neither declare length units nor specify
+  default length units needs further discussion. Is one meter an appropriate default,
+  or should a different fallback be used? See <a href="https://github.com/immersive-web/model-element/issues/155">GitHub issue #155</a>. <a class="issue-return" href="#issue-a3b5523a" title="Jump to section">↵</a></div>
      <div class="issue"> What's the default CSS style for a <code>model</code> element? Should it have a border
   around it? what about background color? etc. <a href="https://github.com/immersive-web/model-element/issues/27">GitHub issue #27: What's the
   default style?</a>. <a class="issue-return" href="#issue-e9cab92e" title="Jump to section">↵</a></div>
@@ -1748,12 +1834,15 @@ processed and ready to display. The Promise is rejected if the model source cann
     <h2 class="heading no-num no-ref settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
     <h3 class="heading no-num no-ref settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
     <ul class="index">
+     <li><a href="#automatic-fitting-enabled">automatic fitting enabled</a><span>, in § 9.2.3</span>
      <li><a href="#element-attrdef-model-autoplay">autoplay</a><span>, in § 4.1</span>
-     <li><a href="#bounding-box-calculation-algorithm">bounding box calculation algorithm</a><span>, in § 9.2</span>
+     <li><a href="#bounding-box-calculation-algorithm">bounding box calculation algorithm</a><span>, in § 9.2.2</span>
      <li><a href="#dom-htmlmodelelement-boundingboxcenter">boundingBoxCenter</a><span>, in § 5</span>
      <li><a href="#dom-htmlmodelelement-boundingboxextents">boundingBoxExtents</a><span>, in § 5</span>
      <li><a href="#element-attrdef-model-controls">controls</a><span>, in § 4.3</span>
      <li><a href="#element-attrdef-model-crossorigin">crossorigin</a><span>, in § 4.4</span>
+     <li><a href="#css-derived-meter">CSS-derived meter</a><span>, in § 9.2.1</span>
+     <li><a href="#element-space">element space</a><span>, in § 9.2.1</span>
      <li><a href="#dom-htmlmodelelement-entitytransform">entityTransform</a><span>, in § 5</span>
      <li><a href="#dom-htmlmodelelement-environmentmap">environmentMap</a><span>, in § 5</span>
      <li><a href="#dom-htmlmodelelement-environmentmapready">environmentMapReady</a><span>, in § 5</span>
@@ -1762,9 +1851,11 @@ processed and ready to display. The Promise is rejected if the model source cann
      <li><a href="#element-attrdef-model-loading">loading</a><span>, in § 4.6</span>
      <li><a href="#element-attrdef-model-loop">loop</a><span>, in § 4.7</span>
      <li><a href="#elementdef-model">model</a><span>, in § 4</span>
-     <li><a href="#model-fit-algorithm">model fit algorithm</a><span>, in § 9.2</span>
+     <li><a href="#model-fit-algorithm">model fit algorithm</a><span>, in § 9.2.2</span>
+     <li><a href="#model-space">model space</a><span>, in § 9.2.1</span>
      <li><a href="#orbit-fit">orbit fit</a><span>, in § 7.2</span>
-     <li><a href="#orbit-fit-algorithm">orbit fit algorithm</a><span>, in § 9.2.1</span>
+     <li><a href="#orbit-fit-algorithm">orbit fit algorithm</a><span>, in § 9.2.4</span>
+     <li><a href="#physical-presentation-space">physical presentation space</a><span>, in § 9.2.1</span>
      <li><a href="#element-attrdef-model-poster">poster</a><span>, in § 4.8</span>
      <li><a href="#dom-htmlmodelelement-ready">ready</a><span>, in § 5</span>
      <li><a href="#element-attrdef-model-src">src</a><span>, in § 4.9</span>
@@ -1775,11 +1866,40 @@ processed and ready to display. The Promise is rejected if the model source cann
     <h3 class="heading no-num no-ref settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
     <ul class="index">
      <li>
+      <a data-link-type="biblio">[CSS-BOX-3]</a> defines the following terms:
+      <ul>
+       <li><span class="dfn-paneled" id="576ed880">content box</span>
+      </ul>
+     <li>
+      <a data-link-type="biblio">[CSS-CASCADE-5]</a> defines the following terms:
+      <ul>
+       <li><span class="dfn-paneled" id="a4eb3c57">used value</span>
+      </ul>
+     <li>
+      <a data-link-type="biblio">[CSS-SIZING-3]</a> defines the following terms:
+      <ul>
+       <li><span class="dfn-paneled" id="a0e35b6d">sizing property</span>
+      </ul>
+     <li>
+      <a data-link-type="biblio">[CSS-VALUES-4]</a> defines the following terms:
+      <ul>
+       <li><span class="dfn-paneled" id="3e3b4747">absolute length</span>
+       <li><span class="dfn-paneled" id="2c239fd0">reference pixel</span>
+      </ul>
+     <li>
+      <a data-link-type="biblio">[CSSOM-VIEW-1]</a> defines the following terms:
+      <ul>
+       <li><span class="dfn-paneled" id="c0159396">devicePixelRatio</span>
+       <li><span class="dfn-paneled" id="16789bc0">page zoom</span>
+       <li><span class="dfn-paneled" id="19686e21">scale</span>
+      </ul>
+     <li>
       <a data-link-type="biblio">[GEOMETRY-1]</a> defines the following terms:
       <ul>
        <li><span class="dfn-paneled" id="7adbeb50">DOMMatrixReadOnly</span>
        <li><span class="dfn-paneled" id="d219732a">DOMPoint</span>
        <li><span class="dfn-paneled" id="864d601e">DOMPointReadOnly</span>
+       <li><span class="dfn-paneled" id="3d9fa2e0">transform a point with a matrix</span>
       </ul>
      <li>
       <a data-link-type="biblio">[HTML]</a> defines the following terms:
@@ -1853,6 +1973,16 @@ processed and ready to display. The Promise is rejected if the model source cann
   <h2 class="heading no-num no-ref settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
   <h3 class="heading no-num no-ref settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
   <dl>
+   <dt id="biblio-css-box-3">[CSS-BOX-3]
+   <dd>Elika Etemad. <a href="https://drafts.csswg.org/css-box-3/"><cite>CSS Box Model Module Level 3</cite></a>. URL: <a href="https://drafts.csswg.org/css-box-3/">https://drafts.csswg.org/css-box-3/</a>
+   <dt id="biblio-css-cascade-5">[CSS-CASCADE-5]
+   <dd>Elika Etemad; Miriam Suzanne; Tab Atkins Jr.. <a href="https://drafts.csswg.org/css-cascade-5/"><cite>CSS Cascading and Inheritance Level 5</cite></a>. URL: <a href="https://drafts.csswg.org/css-cascade-5/">https://drafts.csswg.org/css-cascade-5/</a>
+   <dt id="biblio-css-sizing-3">[CSS-SIZING-3]
+   <dd>Tab Atkins Jr.; Elika Etemad. <a href="https://drafts.csswg.org/css-sizing-3/"><cite>CSS Box Sizing Module Level 3</cite></a>. URL: <a href="https://drafts.csswg.org/css-sizing-3/">https://drafts.csswg.org/css-sizing-3/</a>
+   <dt id="biblio-css-values-4">[CSS-VALUES-4]
+   <dd>Tab Atkins Jr.; Elika Etemad. <a href="https://drafts.csswg.org/css-values-4/"><cite>CSS Values and Units Module Level 4</cite></a>. URL: <a href="https://drafts.csswg.org/css-values-4/">https://drafts.csswg.org/css-values-4/</a>
+   <dt id="biblio-cssom-view-1">[CSSOM-VIEW-1]
+   <dd>Simon Fraser; Emilio Cobos Álvarez. <a href="https://drafts.csswg.org/cssom-view/"><cite>CSSOM View Module</cite></a>. URL: <a href="https://drafts.csswg.org/cssom-view/">https://drafts.csswg.org/cssom-view/</a>
    <dt id="biblio-geometry-1">[GEOMETRY-1]
    <dd>Sebastian Zartner; Yehonatan Daniv. <a href="https://drafts.csswg.org/geometry/"><cite>Geometry Interfaces Module Level 1</cite></a>. URL: <a href="https://drafts.csswg.org/geometry/">https://drafts.csswg.org/geometry/</a>
    <dt id="biblio-html">[HTML]
@@ -2091,27 +2221,38 @@ function parseHTML(markup) {
 let dfnPanelData = {
 "03499e48": {"dfnID":"03499e48","dfnText":"media element","external":true,"refSections":[{"refs":[{"id":"ref-for-media-element"}],"title":"4. The model element"}],"url":"https://html.spec.whatwg.org/multipage/media.html#media-element"},
 "1236ac1a": {"dfnID":"1236ac1a","dfnText":"flow content","external":true,"refSections":[{"refs":[{"id":"ref-for-flow-content-2"}],"title":"4. The model element"}],"url":"https://html.spec.whatwg.org/multipage/dom.html#flow-content-2"},
+"16789bc0": {"dfnID":"16789bc0","dfnText":"page zoom","external":true,"refSections":[{"refs":[{"id":"ref-for-page-zoom"}],"title":"9.2.1. Coordinate spaces and length units"}],"url":"https://drafts.csswg.org/cssom-view-1/#page-zoom"},
+"19686e21": {"dfnID":"19686e21","dfnText":"scale","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-visualviewport-scale"}],"title":"9.2.1. Coordinate spaces and length units"}],"url":"https://drafts.csswg.org/cssom-view-1/#dom-visualviewport-scale"},
 "29399d44": {"dfnID":"29399d44","dfnText":"picture","external":true,"refSections":[{"refs":[{"id":"ref-for-the-picture-element"}],"title":"4. The model element"},{"refs":[{"id":"ref-for-the-picture-element\u2460"}],"title":"13.2. Integrations with source element"}],"url":"https://html.spec.whatwg.org/multipage/embedded-content.html#the-picture-element"},
+"2c239fd0": {"dfnID":"2c239fd0","dfnText":"reference pixel","external":true,"refSections":[{"refs":[{"id":"ref-for-reference-pixel"}],"title":"9.2.1. Coordinate spaces and length units"}],"url":"https://drafts.csswg.org/css-values-4/#reference-pixel"},
 "38c8ba2c": {"dfnID":"38c8ba2c","dfnText":"embedded content","external":true,"refSections":[{"refs":[{"id":"ref-for-embedded-content-category"}],"title":"1. Introduction"},{"refs":[{"id":"ref-for-embedded-content-category\u2460"},{"id":"ref-for-embedded-content-category\u2461"}],"title":"4. The model element"}],"url":"https://html.spec.whatwg.org/multipage/dom.html#embedded-content-category"},
+"3d9fa2e0": {"dfnID":"3d9fa2e0","dfnText":"transform a point with a matrix","external":true,"refSections":[{"refs":[{"id":"ref-for-transform-a-point-with-a-matrix"}],"title":"9.2.1. Coordinate spaces and length units"}],"url":"https://drafts.csswg.org/geometry-1/#transform-a-point-with-a-matrix"},
+"3e3b4747": {"dfnID":"3e3b4747","dfnText":"absolute length","external":true,"refSections":[{"refs":[{"id":"ref-for-absolute-length"}],"title":"9.2.1. Coordinate spaces and length units"}],"url":"https://drafts.csswg.org/css-values-4/#absolute-length"},
+"576ed880": {"dfnID":"576ed880","dfnText":"content box","external":true,"refSections":[{"refs":[{"id":"ref-for-content-box"}],"title":"9.2.1. Coordinate spaces and length units"},{"refs":[{"id":"ref-for-content-box\u2460"}],"title":"9.2.2. Model bounds and fitting"}],"url":"https://drafts.csswg.org/css-box-3/#content-box"},
 "5f90bbfb": {"dfnID":"5f90bbfb","dfnText":"undefined","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-undefined"}],"title":"5. The HTMLModelElement interface"}],"url":"https://webidl.spec.whatwg.org/#idl-undefined"},
 "7adbeb50": {"dfnID":"7adbeb50","dfnText":"DOMMatrixReadOnly","external":true,"refSections":[{"refs":[{"id":"ref-for-dommatrixreadonly"}],"title":"5. The HTMLModelElement interface"},{"refs":[{"id":"ref-for-dommatrixreadonly\u2460"}],"title":"9.2. Model pose"}],"url":"https://drafts.csswg.org/geometry-1/#dommatrixreadonly"},
 "864d601e": {"dfnID":"864d601e","dfnText":"DOMPointReadOnly","external":true,"refSections":[{"refs":[{"id":"ref-for-dompointreadonly"},{"id":"ref-for-dompointreadonly\u2460"}],"title":"5. The HTMLModelElement interface"}],"url":"https://drafts.csswg.org/geometry-1/#dompointreadonly"},
 "8855a9aa": {"dfnID":"8855a9aa","dfnText":"DOMString","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-DOMString"}],"title":"5. The HTMLModelElement interface"}],"url":"https://webidl.spec.whatwg.org/#idl-DOMString"},
 "889e932f": {"dfnID":"889e932f","dfnText":"Exposed","external":true,"refSections":[{"refs":[{"id":"ref-for-Exposed"}],"title":"5. The HTMLModelElement interface"}],"url":"https://webidl.spec.whatwg.org/#Exposed"},
 "8fc74046": {"dfnID":"8fc74046","dfnText":"global attributes","external":true,"refSections":[{"refs":[{"id":"ref-for-global-attributes"}],"title":"4. The model element"}],"url":"https://html.spec.whatwg.org/multipage/dom.html#global-attributes"},
+"a0e35b6d": {"dfnID":"a0e35b6d","dfnText":"sizing property","external":true,"refSections":[{"refs":[{"id":"ref-for-sizing-property"}],"title":"9.2.2. Model bounds and fitting"}],"url":"https://drafts.csswg.org/css-sizing-3/#sizing-property"},
+"a4eb3c57": {"dfnID":"a4eb3c57","dfnText":"used value","external":true,"refSections":[{"refs":[{"id":"ref-for-used-value"}],"title":"9.2.2. Model bounds and fitting"}],"url":"https://drafts.csswg.org/css-cascade-5/#used-value"},
+"automatic-fitting-enabled": {"dfnID":"automatic-fitting-enabled","dfnText":"automatic fitting enabled","external":false,"refSections":[{"refs":[{"id":"ref-for-automatic-fitting-enabled"},{"id":"ref-for-automatic-fitting-enabled\u2460"},{"id":"ref-for-automatic-fitting-enabled\u2461"}],"title":"9.2.3. Automatic fitting after resize"}],"url":"#automatic-fitting-enabled"},
 "b08d0bb2": {"dfnID":"b08d0bb2","dfnText":"HTMLElement","external":true,"refSections":[{"refs":[{"id":"ref-for-htmlelement"}],"title":"5. The HTMLModelElement interface"}],"url":"https://html.spec.whatwg.org/multipage/dom.html#htmlelement"},
 "b0d7f3c3": {"dfnID":"b0d7f3c3","dfnText":"USVString","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-USVString"}],"title":"5. The HTMLModelElement interface"}],"url":"https://webidl.spec.whatwg.org/#idl-USVString"},
 "bd7d36d0": {"dfnID":"bd7d36d0","dfnText":"interactive content","external":true,"refSections":[{"refs":[{"id":"ref-for-interactive-content-2"}],"title":"4. The model element"}],"url":"https://html.spec.whatwg.org/multipage/dom.html#interactive-content-2"},
 "bdbd19d1": {"dfnID":"bdbd19d1","dfnText":"Promise","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-promise"},{"id":"ref-for-idl-promise\u2460"}],"title":"5. The HTMLModelElement interface"}],"url":"https://webidl.spec.whatwg.org/#idl-promise"},
-"bounding-box-calculation-algorithm": {"dfnID":"bounding-box-calculation-algorithm","dfnText":"bounding box calculation algorithm","external":false,"refSections":[{"refs":[{"id":"ref-for-bounding-box-calculation-algorithm"}],"title":"9.2. Model pose"}],"url":"#bounding-box-calculation-algorithm"},
+"bounding-box-calculation-algorithm": {"dfnID":"bounding-box-calculation-algorithm","dfnText":"bounding box calculation algorithm","external":false,"refSections":[{"refs":[{"id":"ref-for-bounding-box-calculation-algorithm"},{"id":"ref-for-bounding-box-calculation-algorithm\u2460"},{"id":"ref-for-bounding-box-calculation-algorithm\u2461"}],"title":"9.2.2. Model bounds and fitting"},{"refs":[{"id":"ref-for-bounding-box-calculation-algorithm\u2462"}],"title":"9.2.4. Orbit fit"}],"url":"#bounding-box-calculation-algorithm"},
+"c0159396": {"dfnID":"c0159396","dfnText":"devicePixelRatio","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-window-devicepixelratio"},{"id":"ref-for-dom-window-devicepixelratio\u2460"},{"id":"ref-for-dom-window-devicepixelratio\u2461"}],"title":"9.2.1. Coordinate spaces and length units"}],"url":"https://drafts.csswg.org/cssom-view-1/#dom-window-devicepixelratio"},
 "c207bdef": {"dfnID":"c207bdef","dfnText":"Reflect","external":true,"refSections":[{"refs":[{"id":"ref-for-xattr-reflect"}],"title":"5. The HTMLModelElement interface"}],"url":"https://html.spec.whatwg.org/multipage/common-dom-interfaces.html#xattr-reflect"},
 "c7740004": {"dfnID":"c7740004","dfnText":"fallback content","external":true,"refSections":[{"refs":[{"id":"ref-for-fallback-content"}],"title":"4. The model element"}],"url":"https://html.spec.whatwg.org/multipage/dom.html#fallback-content"},
 "cad61a81": {"dfnID":"cad61a81","dfnText":"valid non-empty URL potentially surrounded by spaces","external":true,"refSections":[{"refs":[{"id":"ref-for-valid-non-empty-url-potentially-surrounded-by-spaces"}],"title":"4.8. poster attribute"}],"url":"https://html.spec.whatwg.org/multipage/urls-and-fetching.html#valid-non-empty-url-potentially-surrounded-by-spaces"},
-"d219732a": {"dfnID":"d219732a","dfnText":"DOMPoint","external":true,"refSections":[{"refs":[{"id":"ref-for-dompoint"},{"id":"ref-for-dompoint\u2460"}],"title":"9.2. Model pose"}],"url":"https://drafts.csswg.org/geometry-1/#dompoint"},
+"css-derived-meter": {"dfnID":"css-derived-meter","dfnText":"CSS-derived meter","external":false,"refSections":[{"refs":[{"id":"ref-for-css-derived-meter"},{"id":"ref-for-css-derived-meter\u2460"}],"title":"9.2.1. Coordinate spaces and length units"},{"refs":[{"id":"ref-for-css-derived-meter\u2461"},{"id":"ref-for-css-derived-meter\u2462"}],"title":"9.2.2. Model bounds and fitting"},{"refs":[{"id":"ref-for-css-derived-meter\u2463"}],"title":"9.2.4. Orbit fit"}],"url":"#css-derived-meter"},
+"d219732a": {"dfnID":"d219732a","dfnText":"DOMPoint","external":true,"refSections":[{"refs":[{"id":"ref-for-dompoint"},{"id":"ref-for-dompoint\u2460"}],"title":"9.2.2. Model bounds and fitting"}],"url":"https://drafts.csswg.org/geometry-1/#dompoint"},
 "d54eeea2": {"dfnID":"d54eeea2","dfnText":"palpable content","external":true,"refSections":[{"refs":[{"id":"ref-for-palpable-content-2"}],"title":"4. The model element"}],"url":"https://html.spec.whatwg.org/multipage/dom.html#palpable-content-2"},
-"dom-htmlmodelelement-boundingboxcenter": {"dfnID":"dom-htmlmodelelement-boundingboxcenter","dfnText":"boundingBoxCenter","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-htmlmodelelement-boundingboxcenter"},{"id":"ref-for-dom-htmlmodelelement-boundingboxcenter\u2460"}],"title":"9.2. Model pose"},{"refs":[{"id":"ref-for-dom-htmlmodelelement-boundingboxcenter\u2461"}],"title":"9.2.1. Orbit fit"}],"url":"#dom-htmlmodelelement-boundingboxcenter"},
-"dom-htmlmodelelement-boundingboxextents": {"dfnID":"dom-htmlmodelelement-boundingboxextents","dfnText":"boundingBoxExtents","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-htmlmodelelement-boundingboxextents"},{"id":"ref-for-dom-htmlmodelelement-boundingboxextents\u2460"}],"title":"9.2. Model pose"},{"refs":[{"id":"ref-for-dom-htmlmodelelement-boundingboxextents\u2461"}],"title":"9.2.1. Orbit fit"}],"url":"#dom-htmlmodelelement-boundingboxextents"},
-"dom-htmlmodelelement-entitytransform": {"dfnID":"dom-htmlmodelelement-entitytransform","dfnText":"entityTransform","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-htmlmodelelement-entitytransform"},{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2460"}],"title":"7.2. orbit"},{"refs":[{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2461"},{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2462"},{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2463"},{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2464"},{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2465"},{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2466"},{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2467"}],"title":"9.2. Model pose"},{"refs":[{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2468"},{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2460\u24ea"}],"title":"9.2.1. Orbit fit"}],"url":"#dom-htmlmodelelement-entitytransform"},
+"dom-htmlmodelelement-boundingboxcenter": {"dfnID":"dom-htmlmodelelement-boundingboxcenter","dfnText":"boundingBoxCenter","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-htmlmodelelement-boundingboxcenter"}],"title":"9.2.1. Coordinate spaces and length units"},{"refs":[{"id":"ref-for-dom-htmlmodelelement-boundingboxcenter\u2460"},{"id":"ref-for-dom-htmlmodelelement-boundingboxcenter\u2461"}],"title":"9.2.2. Model bounds and fitting"},{"refs":[{"id":"ref-for-dom-htmlmodelelement-boundingboxcenter\u2462"}],"title":"9.2.4. Orbit fit"}],"url":"#dom-htmlmodelelement-boundingboxcenter"},
+"dom-htmlmodelelement-boundingboxextents": {"dfnID":"dom-htmlmodelelement-boundingboxextents","dfnText":"boundingBoxExtents","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-htmlmodelelement-boundingboxextents"}],"title":"9.2.1. Coordinate spaces and length units"},{"refs":[{"id":"ref-for-dom-htmlmodelelement-boundingboxextents\u2460"},{"id":"ref-for-dom-htmlmodelelement-boundingboxextents\u2461"}],"title":"9.2.2. Model bounds and fitting"},{"refs":[{"id":"ref-for-dom-htmlmodelelement-boundingboxextents\u2462"}],"title":"9.2.4. Orbit fit"}],"url":"#dom-htmlmodelelement-boundingboxextents"},
+"dom-htmlmodelelement-entitytransform": {"dfnID":"dom-htmlmodelelement-entitytransform","dfnText":"entityTransform","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-htmlmodelelement-entitytransform"},{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2460"}],"title":"7.2. orbit"},{"refs":[{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2461"},{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2462"}],"title":"9.2. Model pose"},{"refs":[{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2463"},{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2464"},{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2465"}],"title":"9.2.1. Coordinate spaces and length units"},{"refs":[{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2466"},{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2467"},{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2468"}],"title":"9.2.2. Model bounds and fitting"},{"refs":[{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2460\u24ea"},{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2460\u2460"},{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2460\u2461"},{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2460\u2462"}],"title":"9.2.3. Automatic fitting after resize"},{"refs":[{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2460\u2463"}],"title":"9.2.4. Orbit fit"}],"url":"#dom-htmlmodelelement-entitytransform"},
 "dom-htmlmodelelement-environmentmap": {"dfnID":"dom-htmlmodelelement-environmentmap","dfnText":"environmentMap","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-htmlmodelelement-environmentmap"}],"title":"9.1. Environment map"}],"url":"#dom-htmlmodelelement-environmentmap"},
 "dom-htmlmodelelement-environmentmapready": {"dfnID":"dom-htmlmodelelement-environmentmapready","dfnText":"environmentMapReady","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-htmlmodelelement-environmentmapready"}],"title":"10. Events"}],"url":"#dom-htmlmodelelement-environmentmapready"},
 "dom-htmlmodelelement-ready": {"dfnID":"dom-htmlmodelelement-ready","dfnText":"ready","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-htmlmodelelement-ready"}],"title":"10. Events"}],"url":"#dom-htmlmodelelement-ready"},
@@ -2120,21 +2261,24 @@ let dfnPanelData = {
 "element-attrdef-model-autoplay": {"dfnID":"element-attrdef-model-autoplay","dfnText":"autoplay","external":false,"refSections":[{"refs":[{"id":"ref-for-element-attrdef-model-autoplay"}],"title":"4. The model element"}],"url":"#element-attrdef-model-autoplay"},
 "element-attrdef-model-controls": {"dfnID":"element-attrdef-model-controls","dfnText":"controls","external":false,"refSections":[],"url":"#element-attrdef-model-controls"},
 "element-attrdef-model-crossorigin": {"dfnID":"element-attrdef-model-crossorigin","dfnText":"crossorigin","external":false,"refSections":[{"refs":[{"id":"ref-for-element-attrdef-model-crossorigin"}],"title":"4. The model element"}],"url":"#element-attrdef-model-crossorigin"},
-"element-attrdef-model-height": {"dfnID":"element-attrdef-model-height","dfnText":"height","external":false,"refSections":[{"refs":[{"id":"ref-for-element-attrdef-model-height"}],"title":"4. The model element"},{"refs":[{"id":"ref-for-element-attrdef-model-height\u2460"}],"title":"4.5. height attribute"},{"refs":[{"id":"ref-for-element-attrdef-model-height\u2461"},{"id":"ref-for-element-attrdef-model-height\u2462"},{"id":"ref-for-element-attrdef-model-height\u2463"}],"title":"9.2. Model pose"},{"refs":[{"id":"ref-for-element-attrdef-model-height\u2464"}],"title":"9.2.1. Orbit fit"}],"url":"#element-attrdef-model-height"},
+"element-attrdef-model-height": {"dfnID":"element-attrdef-model-height","dfnText":"height","external":false,"refSections":[{"refs":[{"id":"ref-for-element-attrdef-model-height"}],"title":"4. The model element"},{"refs":[{"id":"ref-for-element-attrdef-model-height\u2460"}],"title":"4.5. height attribute"},{"refs":[{"id":"ref-for-element-attrdef-model-height\u2461"}],"title":"9.2.2. Model bounds and fitting"},{"refs":[{"id":"ref-for-element-attrdef-model-height\u2462"}],"title":"9.2.3. Automatic fitting after resize"}],"url":"#element-attrdef-model-height"},
 "element-attrdef-model-loading": {"dfnID":"element-attrdef-model-loading","dfnText":"loading","external":false,"refSections":[{"refs":[{"id":"ref-for-element-attrdef-model-loading"}],"title":"4. The model element"}],"url":"#element-attrdef-model-loading"},
 "element-attrdef-model-loop": {"dfnID":"element-attrdef-model-loop","dfnText":"loop","external":false,"refSections":[{"refs":[{"id":"ref-for-element-attrdef-model-loop"}],"title":"4. The model element"}],"url":"#element-attrdef-model-loop"},
 "element-attrdef-model-poster": {"dfnID":"element-attrdef-model-poster","dfnText":"poster","external":false,"refSections":[{"refs":[{"id":"ref-for-element-attrdef-model-poster"}],"title":"4. The model element"},{"refs":[{"id":"ref-for-element-attrdef-model-poster\u2460"}],"title":"4.8. poster attribute"}],"url":"#element-attrdef-model-poster"},
 "element-attrdef-model-src": {"dfnID":"element-attrdef-model-src","dfnText":"src","external":false,"refSections":[{"refs":[{"id":"ref-for-element-attrdef-model-src"}],"title":"4. The model element"}],"url":"#element-attrdef-model-src"},
-"element-attrdef-model-stagemode": {"dfnID":"element-attrdef-model-stagemode","dfnText":"stagemode","external":false,"refSections":[{"refs":[{"id":"ref-for-element-attrdef-model-stagemode"}],"title":"4. The model element"},{"refs":[{"id":"ref-for-element-attrdef-model-stagemode\u2460"}],"title":"9.2.1. Orbit fit"}],"url":"#element-attrdef-model-stagemode"},
-"element-attrdef-model-width": {"dfnID":"element-attrdef-model-width","dfnText":"width","external":false,"refSections":[{"refs":[{"id":"ref-for-element-attrdef-model-width"}],"title":"4. The model element"},{"refs":[{"id":"ref-for-element-attrdef-model-width\u2460"}],"title":"4.10. width attribute"},{"refs":[{"id":"ref-for-element-attrdef-model-width\u2461"},{"id":"ref-for-element-attrdef-model-width\u2462"},{"id":"ref-for-element-attrdef-model-width\u2463"}],"title":"9.2. Model pose"},{"refs":[{"id":"ref-for-element-attrdef-model-width\u2464"}],"title":"9.2.1. Orbit fit"}],"url":"#element-attrdef-model-width"},
+"element-attrdef-model-stagemode": {"dfnID":"element-attrdef-model-stagemode","dfnText":"stagemode","external":false,"refSections":[{"refs":[{"id":"ref-for-element-attrdef-model-stagemode"}],"title":"4. The model element"},{"refs":[{"id":"ref-for-element-attrdef-model-stagemode\u2460"}],"title":"9.2.4. Orbit fit"}],"url":"#element-attrdef-model-stagemode"},
+"element-attrdef-model-width": {"dfnID":"element-attrdef-model-width","dfnText":"width","external":false,"refSections":[{"refs":[{"id":"ref-for-element-attrdef-model-width"}],"title":"4. The model element"},{"refs":[{"id":"ref-for-element-attrdef-model-width\u2460"}],"title":"4.10. width attribute"},{"refs":[{"id":"ref-for-element-attrdef-model-width\u2461"}],"title":"9.2.2. Model bounds and fitting"},{"refs":[{"id":"ref-for-element-attrdef-model-width\u2462"}],"title":"9.2.3. Automatic fitting after resize"}],"url":"#element-attrdef-model-width"},
+"element-space": {"dfnID":"element-space","dfnText":"element space","external":false,"refSections":[{"refs":[{"id":"ref-for-element-space"},{"id":"ref-for-element-space\u2460"},{"id":"ref-for-element-space\u2461"}],"title":"9.2.1. Coordinate spaces and length units"},{"refs":[{"id":"ref-for-element-space\u2462"},{"id":"ref-for-element-space\u2463"}],"title":"9.2.2. Model bounds and fitting"},{"refs":[{"id":"ref-for-element-space\u2464"}],"title":"9.2.4. Orbit fit"}],"url":"#element-space"},
 "elementdef-model": {"dfnID":"elementdef-model","dfnText":"model","external":false,"refSections":[{"refs":[{"id":"ref-for-elementdef-model"},{"id":"ref-for-elementdef-model\u2460"},{"id":"ref-for-elementdef-model\u2461"}],"title":"4. The model element"},{"refs":[{"id":"ref-for-elementdef-model\u2462"}],"title":"4.5. height attribute"},{"refs":[{"id":"ref-for-elementdef-model\u2463"}],"title":"4.10. width attribute"},{"refs":[{"id":"ref-for-elementdef-model\u2464"}],"title":"6.1. The source element\u2019s parent is a model element"},{"refs":[{"id":"ref-for-elementdef-model\u2465"},{"id":"ref-for-elementdef-model\u2466"},{"id":"ref-for-elementdef-model\u2467"},{"id":"ref-for-elementdef-model\u2468"}],"title":"9.3. Embedded content"},{"refs":[{"id":"ref-for-elementdef-model\u2460\u24ea"}],"title":"10. Events"},{"refs":[{"id":"ref-for-elementdef-model\u2460\u2460"}],"title":"13.2. Integrations with source element"},{"refs":[{"id":"ref-for-elementdef-model\u2460\u2461"}],"title":"19.2. For authors"},{"refs":[{"id":"ref-for-elementdef-model\u2460\u2462"}],"title":"19.3. For implementers"}],"url":"#elementdef-model"},
 "f0811ff8": {"dfnID":"f0811ff8","dfnText":"img","external":true,"refSections":[{"refs":[{"id":"ref-for-the-img-element"}],"title":"4. The model element"}],"url":"https://html.spec.whatwg.org/multipage/embedded-content.html#the-img-element"},
 "f49edb73": {"dfnID":"f49edb73","dfnText":"expose a user interface to the user","external":true,"refSections":[{"refs":[{"id":"ref-for-expose-a-user-interface-to-the-user"}],"title":"9.3. Embedded content"}],"url":"https://html.spec.whatwg.org/multipage/media.html#expose-a-user-interface-to-the-user"},
 "fb5883a3": {"dfnID":"fb5883a3","dfnText":"valid non-negative integer","external":true,"refSections":[{"refs":[{"id":"ref-for-valid-non-negative-integer"}],"title":"4.5. height attribute"},{"refs":[{"id":"ref-for-valid-non-negative-integer\u2460"}],"title":"4.10. width attribute"}],"url":"https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-non-negative-integer"},
 "htmlmodelelement": {"dfnID":"htmlmodelelement","dfnText":"HTMLModelElement","external":false,"refSections":[{"refs":[{"id":"ref-for-htmlmodelelement\u2460"}],"title":"4. The model element"},{"refs":[{"id":"ref-for-htmlmodelelement\u2461"},{"id":"ref-for-htmlmodelelement\u2462"}],"title":"5. The HTMLModelElement interface"}],"url":"#htmlmodelelement"},
-"model-fit-algorithm": {"dfnID":"model-fit-algorithm","dfnText":"model fit algorithm","external":false,"refSections":[],"url":"#model-fit-algorithm"},
+"model-fit-algorithm": {"dfnID":"model-fit-algorithm","dfnText":"model fit algorithm","external":false,"refSections":[{"refs":[{"id":"ref-for-model-fit-algorithm"}],"title":"9.2.2. Model bounds and fitting"},{"refs":[{"id":"ref-for-model-fit-algorithm\u2460"}],"title":"9.2.3. Automatic fitting after resize"}],"url":"#model-fit-algorithm"},
+"model-space": {"dfnID":"model-space","dfnText":"model space","external":false,"refSections":[{"refs":[{"id":"ref-for-model-space"},{"id":"ref-for-model-space\u2460"},{"id":"ref-for-model-space\u2461"}],"title":"9.2.1. Coordinate spaces and length units"},{"refs":[{"id":"ref-for-model-space\u2462"},{"id":"ref-for-model-space\u2463"}],"title":"9.2.2. Model bounds and fitting"}],"url":"#model-space"},
 "orbit-fit": {"dfnID":"orbit-fit","dfnText":"orbit fit","external":false,"refSections":[],"url":"#orbit-fit"},
-"orbit-fit-algorithm": {"dfnID":"orbit-fit-algorithm","dfnText":"orbit fit algorithm","external":false,"refSections":[{"refs":[{"id":"ref-for-orbit-fit-algorithm"}],"title":"9.2.1. Orbit fit"}],"url":"#orbit-fit-algorithm"},
+"orbit-fit-algorithm": {"dfnID":"orbit-fit-algorithm","dfnText":"orbit fit algorithm","external":false,"refSections":[{"refs":[{"id":"ref-for-orbit-fit-algorithm"}],"title":"9.2.2. Model bounds and fitting"},{"refs":[{"id":"ref-for-orbit-fit-algorithm\u2460"},{"id":"ref-for-orbit-fit-algorithm\u2461"}],"title":"9.2.3. Automatic fitting after resize"},{"refs":[{"id":"ref-for-orbit-fit-algorithm\u2462"}],"title":"9.2.4. Orbit fit"}],"url":"#orbit-fit-algorithm"},
+"physical-presentation-space": {"dfnID":"physical-presentation-space","dfnText":"physical presentation space","external":false,"refSections":[{"refs":[{"id":"ref-for-physical-presentation-space"},{"id":"ref-for-physical-presentation-space\u2460"}],"title":"9.2.1. Coordinate spaces and length units"}],"url":"#physical-presentation-space"},
 };
 
 document.addEventListener("DOMContentLoaded", ()=>{
@@ -2523,7 +2667,9 @@ function genLinkingSyntaxes(dfn) {
 "use strict";
 {
 let refsData = {
+"#automatic-fitting-enabled": {"displayText":"automatic fitting enabled","export":true,"for_":[],"level":"","normative":true,"shortname":"model-element","spec":"model-element","status":"local","text":"automatic fitting enabled","type":"dfn","url":"#automatic-fitting-enabled"},
 "#bounding-box-calculation-algorithm": {"displayText":"bounding box calculation algorithm","export":true,"for_":[],"level":"","normative":true,"shortname":"model-element","spec":"model-element","status":"local","text":"bounding box calculation algorithm","type":"dfn","url":"#bounding-box-calculation-algorithm"},
+"#css-derived-meter": {"displayText":"css-derived meter","export":true,"for_":[],"level":"","normative":true,"shortname":"model-element","spec":"model-element","status":"local","text":"css-derived meter","type":"dfn","url":"#css-derived-meter"},
 "#dom-htmlmodelelement-boundingboxcenter": {"displayText":"boundingBoxCenter","export":true,"for_":["HTMLModelElement"],"level":"","normative":true,"shortname":"model-element","spec":"model-element","status":"local","text":"boundingBoxCenter","type":"attribute","url":"#dom-htmlmodelelement-boundingboxcenter"},
 "#dom-htmlmodelelement-boundingboxextents": {"displayText":"boundingBoxExtents","export":true,"for_":["HTMLModelElement"],"level":"","normative":true,"shortname":"model-element","spec":"model-element","status":"local","text":"boundingBoxExtents","type":"attribute","url":"#dom-htmlmodelelement-boundingboxextents"},
 "#dom-htmlmodelelement-entitytransform": {"displayText":"entityTransform","export":true,"for_":["HTMLModelElement"],"level":"","normative":true,"shortname":"model-element","spec":"model-element","status":"local","text":"entityTransform","type":"attribute","url":"#dom-htmlmodelelement-entitytransform"},
@@ -2540,12 +2686,25 @@ let refsData = {
 "#element-attrdef-model-src": {"displayText":"src","export":true,"for_":["model"],"level":"","normative":true,"shortname":"model-element","spec":"model-element","status":"local","text":"src","type":"element-attr","url":"#element-attrdef-model-src"},
 "#element-attrdef-model-stagemode": {"displayText":"stagemode","export":true,"for_":["model"],"level":"","normative":true,"shortname":"model-element","spec":"model-element","status":"local","text":"stagemode","type":"element-attr","url":"#element-attrdef-model-stagemode"},
 "#element-attrdef-model-width": {"displayText":"width","export":true,"for_":["model"],"level":"","normative":true,"shortname":"model-element","spec":"model-element","status":"local","text":"width","type":"element-attr","url":"#element-attrdef-model-width"},
+"#element-space": {"displayText":"element space","export":true,"for_":[],"level":"","normative":true,"shortname":"model-element","spec":"model-element","status":"local","text":"element space","type":"dfn","url":"#element-space"},
 "#elementdef-model": {"displayText":"model","export":true,"for_":[],"level":"","normative":true,"shortname":"model-element","spec":"model-element","status":"local","text":"model","type":"element","url":"#elementdef-model"},
 "#htmlmodelelement": {"displayText":"HTMLModelElement","export":true,"for_":[],"level":"","normative":true,"shortname":"model-element","spec":"model-element","status":"local","text":"HTMLModelElement","type":"interface","url":"#htmlmodelelement"},
+"#model-fit-algorithm": {"displayText":"model fit algorithm","export":true,"for_":[],"level":"","normative":true,"shortname":"model-element","spec":"model-element","status":"local","text":"model fit algorithm","type":"dfn","url":"#model-fit-algorithm"},
+"#model-space": {"displayText":"model space","export":true,"for_":[],"level":"","normative":true,"shortname":"model-element","spec":"model-element","status":"local","text":"model space","type":"dfn","url":"#model-space"},
 "#orbit-fit-algorithm": {"displayText":"orbit fit algorithm","export":true,"for_":[],"level":"","normative":true,"shortname":"model-element","spec":"model-element","status":"local","text":"orbit fit algorithm","type":"dfn","url":"#orbit-fit-algorithm"},
+"#physical-presentation-space": {"displayText":"physical presentation space","export":true,"for_":[],"level":"","normative":true,"shortname":"model-element","spec":"model-element","status":"local","text":"physical presentation space","type":"dfn","url":"#physical-presentation-space"},
+"https://drafts.csswg.org/css-box-3/#content-box": {"displayText":"content box","export":true,"for_":[],"level":"3","normative":true,"shortname":"css-box","spec":"css-box-3","status":"current","text":"content box","type":"dfn","url":"https://drafts.csswg.org/css-box-3/#content-box"},
+"https://drafts.csswg.org/css-cascade-5/#used-value": {"displayText":"used value","export":true,"for_":[],"level":"5","normative":true,"shortname":"css-cascade","spec":"css-cascade-5","status":"current","text":"used value","type":"dfn","url":"https://drafts.csswg.org/css-cascade-5/#used-value"},
+"https://drafts.csswg.org/css-sizing-3/#sizing-property": {"displayText":"sizing property","export":true,"for_":[],"level":"3","normative":true,"shortname":"css-sizing","spec":"css-sizing-3","status":"current","text":"sizing property","type":"dfn","url":"https://drafts.csswg.org/css-sizing-3/#sizing-property"},
+"https://drafts.csswg.org/css-values-4/#absolute-length": {"displayText":"absolute length","export":false,"for_":[],"level":"4","normative":true,"shortname":"css-values","spec":"css-values-4","status":"current","text":"absolute length","type":"dfn","url":"https://drafts.csswg.org/css-values-4/#absolute-length"},
+"https://drafts.csswg.org/css-values-4/#reference-pixel": {"displayText":"reference pixel","export":true,"for_":[],"level":"4","normative":true,"shortname":"css-values","spec":"css-values-4","status":"current","text":"reference pixel","type":"dfn","url":"https://drafts.csswg.org/css-values-4/#reference-pixel"},
+"https://drafts.csswg.org/cssom-view-1/#dom-visualviewport-scale": {"displayText":"scale","export":true,"for_":["VisualViewport"],"level":"1","normative":true,"shortname":"cssom-view","spec":"cssom-view-1","status":"current","text":"scale","type":"attribute","url":"https://drafts.csswg.org/cssom-view-1/#dom-visualviewport-scale"},
+"https://drafts.csswg.org/cssom-view-1/#dom-window-devicepixelratio": {"displayText":"devicePixelRatio","export":true,"for_":["Window"],"level":"1","normative":true,"shortname":"cssom-view","spec":"cssom-view-1","status":"current","text":"devicePixelRatio","type":"attribute","url":"https://drafts.csswg.org/cssom-view-1/#dom-window-devicepixelratio"},
+"https://drafts.csswg.org/cssom-view-1/#page-zoom": {"displayText":"page zoom","export":false,"for_":[],"level":"1","normative":true,"shortname":"cssom-view","spec":"cssom-view-1","status":"current","text":"page zoom","type":"dfn","url":"https://drafts.csswg.org/cssom-view-1/#page-zoom"},
 "https://drafts.csswg.org/geometry-1/#dommatrixreadonly": {"displayText":"DOMMatrixReadOnly","export":true,"for_":[],"level":"1","normative":true,"shortname":"geometry","spec":"geometry-1","status":"current","text":"DOMMatrixReadOnly","type":"interface","url":"https://drafts.csswg.org/geometry-1/#dommatrixreadonly"},
 "https://drafts.csswg.org/geometry-1/#dompoint": {"displayText":"DOMPoint","export":true,"for_":[],"level":"1","normative":true,"shortname":"geometry","spec":"geometry-1","status":"current","text":"DOMPoint","type":"interface","url":"https://drafts.csswg.org/geometry-1/#dompoint"},
 "https://drafts.csswg.org/geometry-1/#dompointreadonly": {"displayText":"DOMPointReadOnly","export":true,"for_":[],"level":"1","normative":true,"shortname":"geometry","spec":"geometry-1","status":"current","text":"DOMPointReadOnly","type":"interface","url":"https://drafts.csswg.org/geometry-1/#dompointreadonly"},
+"https://drafts.csswg.org/geometry-1/#transform-a-point-with-a-matrix": {"displayText":"transform a point with a matrix","export":true,"for_":[],"level":"1","normative":true,"shortname":"geometry","spec":"geometry-1","status":"current","text":"transform a point with a matrix","type":"dfn","url":"https://drafts.csswg.org/geometry-1/#transform-a-point-with-a-matrix"},
 "https://html.spec.whatwg.org/multipage/common-dom-interfaces.html#xattr-reflect": {"displayText":"Reflect","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"Reflect","type":"extended-attribute","url":"https://html.spec.whatwg.org/multipage/common-dom-interfaces.html#xattr-reflect"},
 "https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-non-negative-integer": {"displayText":"valid non-negative integer","export":false,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"valid non-negative integer","type":"dfn","url":"https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-non-negative-integer"},
 "https://html.spec.whatwg.org/multipage/dom.html#embedded-content-category": {"displayText":"embedded content","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"embedded content","type":"dfn","url":"https://html.spec.whatwg.org/multipage/dom.html#embedded-content-category"},
