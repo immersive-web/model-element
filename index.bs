@@ -26,6 +26,11 @@ Link Defaults: css-sizing-3 (dfn) sizing properties
 Link Defaults: infra (dfn) list
 Link Defaults: webidl (dfn) new
 Link Defaults: fullscreen (selector) :fullscreen
+Link Defaults: dom (dfn) node document
+Link Defaults: html (dfn) relevant settings object
+Link Defaults: html (dfn) secure context
+Link Defaults: dom (dfn) adopting steps
+Link Defaults: dom (dfn) adopt
 Boilerplate: issues-index yes
 Ignored Terms: stagemode
 </pre>
@@ -226,10 +231,13 @@ is not supported on the target user agent.
     the embedded resource.
 
 The <{model}> element is used for embedding 3D models into a document.
+Its model-specific APIs, resource processing, and rendering are restricted to
+[=secure contexts=], as specified in [[#model-secure-contexts]].
 
 Content may be provided inside the <{model}> element. User agents
-should not show this content to the user; it is intended for web
-browsers which do not support <{model}>, to be shown as [=fallback content=].
+should not show this content to the user unless model loading is blocked by
+[[#model-secure-contexts]]; it is also intended for web browsers which do not support
+<{model}>, to be shown as [=fallback content=].
 
 ISSUE: <span id="issue-14"></span> HTML defines an algorithm to determine the &#91;=poster frame=&#93;, but it's
   <{video}> specific. Should we accommodate it support <{model}>
@@ -278,7 +286,7 @@ of the <{model}> element in CSS pixels. Zero is permitted.
 # The {{HTMLModelElement}} interface # {#htmlmodelelement-interface}
 
 <pre class="idl">
-[Exposed=Window]
+[Exposed=Window, SecureContext]
 interface HTMLModelElement : HTMLElement {
   readonly attribute Promise&lt;HTMLModelElement&gt; ready;
   readonly attribute DOMPointReadOnly boundingBoxCenter;
@@ -704,6 +712,93 @@ ISSUE: <span id="issue-36"></span> We need to investigate what the privacy impli
   send cookies, don't leak the referrer, etc.). [GitHub issue #36: Formats: privacy considerations](https://github.com/immersive-web/model-element/issues/36).
 
 # Security considerations # {#security-considerations}
+
+## Secure contexts ## {#model-secure-contexts}
+
+For the secure-context checks in this section,
+<dfn noexport>model resource loading is permitted</dfn> for a <{model}> element
+if and only if its [=node document=]'s
+[=relevant settings object=] is a [=secure context=].
+The user agent MUST use the [=secure context=] definition in
+[[HTML]] to evaluate this condition.
+
+User agents MUST NOT fetch, decode, or render 3D model resources or author-provided
+environment maps for a <{model}> element unless [=model resource loading is permitted=]
+for that element.
+
+Before starting a model or environment-map load for a <{model}> element, the user
+agent MUST check whether [=model resource loading is permitted=] for that element.
+If it is not, the user agent MUST NOT start the load and MUST
+[=block model resource loading=] for the element.
+
+<div class="algorithm" data-algorithm="model-adopting-steps">
+
+The [=adopting steps=] for a <{model}> element, given |node| and
+<var ignore>oldDocument</var>, are:
+
+  1. If [=model resource loading is permitted=] is false for |node|,
+    [=block model resource loading=] for |node|.
+
+</div>
+
+<div class="algorithm" data-algorithm="block-model-resource-loading">
+
+To <dfn noexport>block model resource loading</dfn> for a <{model}> element
+|element|, the user agent MUST run the following steps:
+
+  1. Abort any pending model or environment-map fetch and decoding operations for
+    |element|, and MUST NOT start new ones while loading remains blocked.
+  1. Stop rendering |element|'s model and environment map, including any
+    previously loaded content.
+  1. Reject any unsettled {{HTMLModelElement/ready}} and
+    {{HTMLModelElement/environmentMapReady}} promises of |element|, if they
+    exist, with a {{SecurityError}} exception.
+  1. Make |element| represent its [=fallback content=] instead of
+    the model.
+
+</div>
+
+<div class="note" id="model-secure-context-adoption">
+
+Before an initial load, an insecure context prevents fetching and decoding
+from starting; there are no pending operations to abort. The cancellation and
+rendering-stop requirements also cover a model that began loading in a secure
+document and was subsequently adopted into an insecure document.
+
+Same-origin documents can have different secure-context status. For example,
+an HTTPS iframe embedded in an HTTP page is not a secure context because of its
+insecure ancestor. That iframe can open a same-origin HTTPS popup, which is a
+secure context because it is top-level. If opener access is retained, the popup
+can move an already-loading model into the iframe using
+`window.opener.document.body.append(model)`. DOM
+[=adopt|adoption=] changes the model's node document to the iframe's
+document, so loading that was initially permitted must now be stopped.
+See [[SECURE-CONTEXTS]] for the distinction between secure contexts and
+potentially trustworthy origins.
+
+</div>
+
+The restriction does not prevent fallback descendants from rendering or loading
+their own resources under the normal rules for those HTML elements.
+
+The [SecureContext] annotation on {{HTMLModelElement}} restricts exposure of the
+interface and its members according to [[WEBIDL]]. It does not replace the
+loading and rendering checks above. In particular, a model created in a secure
+document MUST NOT continue loading or rendering after being adopted into an
+insecure document. These checks MUST also be applied before rendering a model.
+
+Requests for model resources and author-provided environment maps MUST follow
+[[FETCH]] and be subject to the mixed-content checks in [[MIX]]. Being in a secure
+context does not bypass those checks or other applicable resource-loading policies.
+The secure-context requirement itself is not a scheme whitelist for resource URLs.
+
+Note: Secure contexts normally use HTTPS, but the standard also recognizes
+  potentially trustworthy local origins. For example,
+  `http://localhost`, `http://127.0.0.1`, and
+  `http://[::1]` can qualify without a development certificate.
+  The usual secure-context rules, including ancestor-context checks, still apply.
+  Authors can check {{WindowOrWorkerGlobalScope/isSecureContext}} rather than
+  inspecting the URL scheme.
 
 ## CORS ## {#cors}
 
