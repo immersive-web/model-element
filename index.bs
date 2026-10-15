@@ -26,6 +26,17 @@ Link Defaults: css-sizing-3 (dfn) sizing properties
 Link Defaults: infra (dfn) list
 Link Defaults: webidl (dfn) new
 Link Defaults: fullscreen (selector) :fullscreen
+Link Defaults: html (dfn) fully active
+Link Defaults: html (dfn) top-level traversable
+Link Defaults: dom (dfn) retarget
+Link Defaults: dom (dfn) node document
+Link Defaults: html (dfn) relevant global object
+Link Defaults: html (dfn) transient activation
+Link Defaults: html (dfn) consume user activation
+Link Defaults: dom (dfn) connected
+Link Defaults: html (dfn) queue a global task
+Link Defaults: dom (dfn) fire an event
+Link Defaults: html (dfn) event handler IDL attribute
 Boilerplate: issues-index yes
 Ignored Terms: stagemode
 </pre>
@@ -290,6 +301,10 @@ interface HTMLModelElement : HTMLElement {
   readonly attribute Promise&lt;undefined&gt; environmentMapReady;
 
   [Reflect=stagemode] attribute DOMString stageMode;
+
+  Promise&lt;undefined&gt; requestImmersive();
+  attribute EventHandler onimmersivechange;
+  attribute EventHandler onimmersiveerror;
 };
 </pre>
 
@@ -314,13 +329,15 @@ any direct action on the behavior of the element.
 
 ## orbit ## {#stage-mode-orbit}
 
-In this mode, input events in a horizontal direction result in a rotation of the model about
+When the model is not in [=immersive presentation=], input events in a horizontal direction
+in this mode result in a rotation of the model about
 the Y axis, and events in a vertical direction result in a rotation about the horizontal axis.
 This is reflected in the model's {{HTMLModelElement/entityTransform}} value.
 
 In this mode, the {{HTMLModelElement/entityTransform}} value is read-only.
 
-Setting the mode to orbit results in a change of the position and scale to the
+When the model is not in [=immersive presentation=], setting the mode to orbit results
+in a change of the position and scale to the
 <dfn noexport>orbit fit</dfn> mode.
 
 ISSUE: <span id="issue-2"></span> glTF is not a run-time format. It does not define what an application should do with a model
@@ -394,7 +411,7 @@ The model APIs distinguish the following coordinate spaces:
 :: The device-dependent space in which the user agent presents the page, including any
     spatial or stereoscopic presentation. Its mapping from [=element space=] may depend on
     zoom, display characteristics, and the user agent's presentation policy. The model APIs
-    do not expose this mapping or guarantee a model's physical size on the device.
+    do not expose this mapping or guarantee an inline model's physical size on the device.
 
 The user agent MUST convert the resource's geometry and internal transform translations
 to [=model space=] using the length units and axis conventions declared by the resource
@@ -403,7 +420,7 @@ nor specifies default length units, one resource length unit MUST be treated as 
 
 ISSUE: The one-meter fallback for formats that neither declare length units nor specify
   default length units needs further discussion. Is one meter an appropriate default,
-  or should a different fallback be used? See [GitHub issue #155](https://github.com/immersive-web/model-element/issues/155).
+  or should a different fallback be used? See [GitHub issue #163](https://github.com/immersive-web/model-element/issues/163).
 
 {{HTMLModelElement/boundingBoxCenter}} and {{HTMLModelElement/boundingBoxExtents}} MUST
 report their X, Y, and Z components in meters in [=model space=]; the homogeneous W
@@ -411,8 +428,9 @@ component is dimensionless. These values MUST NOT include automatic
 fitting, {{HTMLModelElement/entityTransform}}, CSS transforms on the element, or the
 mapping to [=physical presentation space=].
 
+When the model is not in [=immersive presentation=],
 {{HTMLModelElement/entityTransform}} MUST map [=model space=] to [=element space=]. Its
-translation components are expressed in [=CSS-derived meters=], while scale factors and
+translation components are then expressed in [=CSS-derived meters=], while scale factors and
 rotation coefficients are dimensionless. This mapping precedes CSS transforms on the
 element and the mapping to [=physical presentation space=].
 
@@ -442,8 +460,8 @@ viewport scaling is excluded from that calculation. Changes to
 model-space bounds, or the conversion from CSS pixels to [=element space=].
 
 Note: <span id="issue-155"></span>These distinctions address the default length-unit question raised in [GitHub issue #155](https://github.com/immersive-web/model-element/issues/155).
-A meter of asset geometry and a CSS-derived meter of element space are not guarantees
-of one physical meter in the device's presentation. The absolute-unit anchoring rules
+In inline presentation, a meter of asset geometry and a CSS-derived meter of element
+space are not guarantees of one physical meter in the device's presentation. The absolute-unit anchoring rules
 and [=reference pixel=] in [[CSS-VALUES-4]] explain why CSS
 physical units need not match physical measurements on a screen. Authors should not multiply
 element-space translations by {{Window/devicePixelRatio}}.
@@ -472,7 +490,8 @@ it by the existing model fit. No device-pixel-ratio adjustment is needed.
 
 On the initial load for a model, the user agent MUST run the
 [=bounding box calculation algorithm=] and store the resulting model-space bounds.
-The {{HTMLModelElement/entityTransform}} MUST be set so that
+If the model is not being prepared for or displayed in [=immersive presentation=],
+the {{HTMLModelElement/entityTransform}} MUST be set so that
 the object is fully in view within the model element's laid-out content box
 on the page. Initial fitting uses the [=model fit algorithm=] with an identity rotation
 in `none` mode, or the [=orbit fit algorithm=] in `orbit` mode.
@@ -554,8 +573,9 @@ A successful script assignment to {{HTMLModelElement/entityTransform}} in `none`
 MUST set [=automatic fitting enabled=] to false. An update made by a fitting algorithm
 MUST NOT disable automatic fitting.
 
-Entering `orbit` mode MUST set [=automatic fitting enabled=] to true and apply the
-[=orbit fit algorithm=]. Returning from `orbit` to `none` MUST preserve the current
+Entering `orbit` mode MUST set [=automatic fitting enabled=] to true and, if the
+model is not in [=immersive presentation=], apply the [=orbit fit algorithm=].
+Returning from `orbit` to `none` MUST preserve the current
 {{HTMLModelElement/entityTransform}} and leave automatic fitting enabled; changing modes
 back to `none` does not itself refit the model.
 
@@ -564,8 +584,8 @@ back to `none` does not itself refit the model.
 When either dimension of the loaded model element's content box changes after layout,
 the user agent MUST perform the following steps:
 
-  1. If [=automatic fitting enabled=] is false, preserve
-    {{HTMLModelElement/entityTransform}} and return.
+  1. If the element is in [=immersive presentation=] or [=automatic fitting enabled=]
+    is false, preserve {{HTMLModelElement/entityTransform}} and return.
   1. If the element is in `orbit` mode, apply the [=orbit fit algorithm=], preserving the
     current rotation.
   1. Otherwise, apply the [=model fit algorithm=] with the current rotation as its <var ignore>rotation</var>
@@ -586,8 +606,9 @@ new model resource begins loading.
 
 ### Orbit fit ### {#orbit-fit-section}
 
-The [=orbit fit algorithm=] is used when the model's <{model/stagemode}> enters `orbit`
-mode and for automatic fitting while that mode is active.
+When the model is not in [=immersive presentation=], the [=orbit fit algorithm=]
+is used when the model's <{model/stagemode}> enters `orbit` mode and for automatic
+fitting while that mode is active.
 
 <div class="algorithm" data-algorithm="orbit-fit">
 
@@ -628,6 +649,330 @@ When a <{model}> element represents a poster frame, the poster frame is expected
 at the largest size that maintains the aspect ratio of that poster frame without being
 taller or wider than the <{model}> element itself, and is expected to be centered in the
 <{model}> element.
+
+# Immersive presentation # {#immersive-presentation}
+
+<dfn id="immersive-presentation-mode">Immersive presentation</dfn> displays a model in a user-agent-managed scene,
+independently of the element's inline viewport. The user agent determines the scene's
+placement, projection, lighting, background, and presentation on the available device.
+It MUST satisfy the size and transform requirements in [[#immersive-model-rendering]].
+Immersive presentation MUST NOT create a WebXR session or expose device tracking data.
+
+Entering or leaving immersive presentation MUST NOT, by itself, change the fullscreen
+state defined in [[FULLSCREEN]].
+
+## Document interface ## {#immersive-document-interface}
+
+ISSUE: <span id="issue-immersive-api-location"></span> Should the immersive presentation API be defined on {{Document}}, as proposed
+  below, or on {{Navigator}}, possibly through a dedicated interface? The ownership
+  of availability, presentation control, state, and events needs discussion. See [GitHub issue #161](https://github.com/immersive-web/model-element/issues/161).
+
+
+<pre class="idl">
+partial interface Document {
+  readonly attribute boolean immersiveEnabled;
+  readonly attribute Element? immersiveElement;
+  Promise&lt;undefined&gt; exitImmersive();
+  attribute EventHandler onimmersivechange;
+  attribute EventHandler onimmersiveerror;
+};
+</pre>
+
+ISSUE: <span id="issue-immersive-element"></span> Is {{Document/immersiveElement}} necessary? Should authors identify the current
+  immersive model through this attribute, or could per-model state or richer
+  [=immersivechange=] events provide the necessary information? See [GitHub issue #162](https://github.com/immersive-web/model-element/issues/162).
+
+
+Each {{Document}} has an <dfn noexport>immersive model</dfn>, initially null, a
+<dfn noexport>pending immersive request</dfn>, initially null, and an
+<dfn noexport>immersive exit in progress</dfn> flag, initially false.
+The immersive model is a <{model}> element. There MUST be at most one current
+immersive model per document.
+
+Immersive event tasks use the <dfn noexport>immersive presentation task source</dfn>.
+
+An <dfn noexport>immersive request</dfn> is a record containing a target <{model}>
+element and the promise returned by {{HTMLModelElement/requestImmersive()}}.
+
+<dfn>Immersive presentation is available</dfn> for a document if all of the following
+conditions hold:
+
+* The document is [=fully active=].
+* The document is the active document of a [=/top-level traversable=].
+* The user agent supports immersive model presentation on the current device and
+    has enabled it for the document.
+
+The {{Document/immersiveEnabled}} getter MUST return true if
+[=immersive presentation is available=] for this document, and false otherwise.
+This does not require transient activation or imply that a particular request will
+be approved.
+
+The {{Document/immersiveElement}} getter MUST return null if this document's
+[=immersive model=] is null. Otherwise, it MUST return the result of
+[=retarget|retargeting=] that model against this document.
+For a model inside a shadow tree, the result can therefore be its shadow host.
+
+## Model size and transforms ## {#immersive-model-rendering}
+
+An immersive model MUST be displayed using the actual dimensions of its resource,
+including the resource's internal transforms and declared or format-default length
+units, before applying an explicit {{HTMLModelElement/entityTransform}}.
+The user agent MUST NOT scale the model to fit the inline element, its <{model/width}>
+or <{model/height}> attributes, a CSS box, or an arbitrary target size in the immersive
+scene. Camera projection can change the apparent image size without changing these
+scene dimensions.
+
+Immersive presentation MUST use resource geometry normalized to [=model space=]
+as defined in [[#model-coordinate-spaces]].
+While the model is immersive, {{HTMLModelElement/entityTransform}} MUST map
+[=model space=] into an <dfn>immersive model coordinate space</dfn>.
+[=Immersive model coordinate space=] has a user-agent-chosen placement in the immersive
+scene, with one unit of length equal to one meter. Translation components of the matrix are in meters; scale
+factors and rotation coefficients are dimensionless. The point and matrix operations
+are defined in [[GEOMETRY-1]].
+
+On entry, the user agent MUST remove the inline fitting transform by setting
+{{HTMLModelElement/entityTransform}} to a transform with unit scale and zero
+translation. It MAY preserve the current rotation or reset it to the identity
+rotation. The resulting matrix MUST be exposed by
+{{HTMLModelElement/entityTransform}} before the request promise resolves.
+This resets inline scaling and positioning, including values previously assigned by
+script; it does not rescale the resource geometry.
+
+After entry, the user agent MUST apply successful script assignments to
+{{HTMLModelElement/entityTransform}} to the immersive content, subject to the
+existing restrictions on modifying the property. An explicit scale in that matrix
+changes the displayed dimensions; it MUST NOT be counteracted by automatic fitting.
+The user agent's placement of the transformed model MUST preserve its metric scale,
+although its position and orientation in the scene are user-agent-defined.
+
+The [=model fit algorithm=] and [=orbit fit algorithm=] MUST NOT run for immersive
+content. Changes to inline layout, CSS sizing, <{model/width}>, or <{model/height}>
+MUST NOT change its immersive transform or size. Inline stage-mode pointer interaction
+MUST NOT operate on immersive content, and changing {{HTMLModelElement/stageMode}}
+MUST NOT invoke inline fitting while the model is immersive.
+
+On exit, the user agent MUST re-establish the inline transform using the
+[=model fit algorithm=] with a preserved or identity rotation, or the
+[=orbit fit algorithm=] if the element is in `orbit` mode.
+It MUST NOT reuse a meter-based immersive matrix as an inline fitting matrix.
+The user agent MAY preserve the current rotation or reset it to the identity rotation.
+If the model is no longer connected to the original document, its subsequent inline
+rendering is instead governed by its current document and loading state.
+
+<div class="example" id="immersive-model-size-example">
+
+A resource describing a two-meter-long object is two meters long in the immersive
+scene before an explicit author scale is applied, regardless of whether the inline
+element is 200 or 600 CSS pixels wide. After entry, assigning
+`new DOMMatrix().translate(0.25, 0, 0)` moves the model by a quarter meter
+along the X axis of its immersive model coordinate space. Assigning
+`new DOMMatrix().scale(2, 2, 2)` makes the object four meters long.
+
+</div>
+
+## Requesting immersive presentation ## {#requesting-immersive-presentation}
+
+<div class="algorithm" data-algorithm="request-immersive-presentation">
+
+The {{HTMLModelElement/requestImmersive()}} method MUST run the following steps:
+
+  1. Let |element| be this <{model}> element, |document| its
+    [=node document=], and |promise| a new promise.
+  1. If [=immersive presentation is available=] is false for |document|,
+    [=fail an immersive request=] with |document|, |element|, |promise|, and
+    an {{InvalidAccessError}} exception, then return |promise|.
+  1. If |document|'s [=relevant global object=] does not have
+    [=transient activation=], [=fail an immersive request=] with
+    |document|, |element|, |promise|, and a {{NotAllowedError}} exception,
+    then return |promise|.
+  1. [=consume user activation|Consume user activation=] for |document|'s relevant global object.
+  1. If |document|'s [=immersive model=] is |element| and
+    [=immersive exit in progress=] is false, resolve |promise| with undefined and
+    return it without firing another change event.
+  1. If |document|'s [=pending immersive request=] is not null and targets |element|,
+    reject |promise| with an {{AbortError}} exception and return it. This MUST NOT
+    cancel the existing request for that element.
+  1. If |document| has a pending immersive request for another element,
+    [=fail an immersive request=] for that request with an {{AbortError}} exception.
+  1. Set |document|'s [=pending immersive request=] to a new [=immersive request=]
+    containing |element| and |promise|.
+  1. Return |promise| and run the remaining steps asynchronously, serialized with
+    any immersive exit already in progress for |document|.
+  1. Obtain user-agent approval for the presentation. The user agent MAY ask the user
+    for permission, use an existing permission decision, or decline the request.
+    If approval is denied, [=fail an immersive request=] with |document|, |element|,
+    |promise|, and an {{AbortError}} exception, and abort these steps.
+  1. Ensure that |element|'s selected model resource is loaded and processed, initiating
+    loading if necessary. If no supported resource can be selected, or the resource
+    cannot be loaded or decoded, [=fail an immersive request=] with
+    |document|, |element|, |promise|, and a {{TypeError}} exception, and abort these steps.
+  1. Prepare and present the model according to [[#immersive-model-rendering]], waiting
+    until the immersive content is ready for display. If the presentation fails,
+    undo this request's preparation, restore inline rendering,
+    [=fail an immersive request=] with |document|, |element|, |promise|, and an
+    {{AbortError}} exception, and abort these steps.
+  1. Let |previous| be |document|'s [=immersive model=]. If |previous| is not null and
+    differs from |element|, end its immersive presentation, restore its inline
+    rendering, and [=queue an immersive event=] named [=immersivechange=] for
+    |document| and |previous|.
+  1. Set |document|'s [=immersive model=] to |element| and its
+    [=pending immersive request=] to null. [=Queue an immersive event=] named
+    [=immersivechange=] for |document| and |element|.
+  1. Resolve |promise| with undefined.
+
+ISSUE: <span id="issue-immersive-approval"></span> Is a separate user-agent approval step necessary in addition to availability
+  and transient user activation? If retained, clarify whether it is a browser or
+  operating-system policy decision, a user permission, or both, and how denial is
+  reported. This step does not require a permission prompt. See [GitHub issue #166](https://github.com/immersive-web/model-element/issues/166).
+
+
+ISSUE: <span id="issue-immersive-loading"></span> Does "loaded and processed" require all referenced textures and other
+  dependencies to finish loading and decoding before immersive presentation begins?
+  Or may presentation begin progressively while some resources are still loading?
+  Clarify the entry readiness requirement and when
+  {{HTMLModelElement/requestImmersive()}} resolves. See [GitHub issue #164](https://github.com/immersive-web/model-element/issues/164).
+
+
+Until step 14 commits the current model, before each asynchronous step and after
+each asynchronous operation, the user agent MUST verify that |document| remains eligible, |element| remains
+[=connected=] and its [=node document=] is |document|,
+and the pending request is still this request.
+If any check fails, it MUST abort that request, reject its promise with an
+{{AbortError}} exception if it is still pending, and undo only the presentation work
+belonging to that request. An obsolete request MUST NOT replace a newer immersive
+model or clear a newer pending request.
+
+These validity checks apply while waiting for user approval, loading, and presentation;
+an aborted operation MUST NOT later resume when its asynchronous result arrives.
+
+The user agent MAY animate the transition between models, temporarily keeping the
+previous model visible. Only one model is reported as current by
+{{Document/immersiveElement}}. A failed request MUST NOT leave that attribute referring
+to a model whose immersive presentation has failed or ended.
+If a failed transition also ends the previous model's presentation, the user agent
+MUST clear that model's current state and queue its change event as well.
+
+</div>
+
+<div class="algorithm" data-algorithm="fail-immersive-request">
+
+To <dfn noexport>fail an immersive request</dfn> given a |document|, |element|, |promise|,
+and |exception|, reject |promise| with |exception|. Clear |document|'s pending
+request only if it contains |promise|. If |document| is [=fully active=] and
+|element| is [=connected=] to it, [=queue an immersive event=] named [=immersiveerror=]
+for |document| and |element|.
+
+</div>
+
+## Exiting immersive presentation ## {#exiting-immersive-presentation}
+
+<div class="algorithm" data-algorithm="exit-immersive-presentation">
+
+The {{Document/exitImmersive()}} method MUST run the following steps:
+
+  1. Let |document| be this document and |promise| a new promise.
+  1. If |document| is not [=fully active=], reject |promise| with a
+    {{TypeError}} exception and return it.
+  1. If |document| has a pending immersive request, [=fail an immersive request=]
+    for that request with an {{AbortError}} exception.
+  1. If [=immersive exit in progress=] is true for |document|, reject |promise| with
+    an {{AbortError}} exception and return it.
+  1. If |document|'s [=immersive model=] is null, reject |promise| with a
+    {{TypeError}} exception and return it.
+  1. Set |document|'s [=immersive exit in progress=] flag to true. Let |element| be
+    |document|'s [=immersive model=]. Return |promise| and run the remaining steps
+    asynchronously.
+  1. Dismiss |element|'s immersive presentation and restore inline rendering as
+    specified in [[#immersive-model-rendering]].
+  1. Set |document|'s [=immersive model=] to null and
+    [=immersive exit in progress=] to false. [=Queue an immersive event=] named
+    [=immersivechange=] for |document| and |element|.
+  1. Resolve |promise| with undefined. A new request received while exit was in
+    progress can now continue.
+
+</div>
+
+Entry and exit operations for a document MUST be serialized. An implicit exit that
+occurs during an explicit exit MUST complete the same exit operation, rather than
+starting a second one. A completion from an obsolete presentation MUST NOT clear a
+newer immersive model, reset its transform, or dismiss its scene.
+
+The user agent MUST provide a user-controlled way to leave immersive presentation.
+It MUST also end the presentation if the model is disconnected or adopted into
+another document, its document ceases to be fully active, or presentation support
+is lost. These exits do not require user activation. They MUST clear the old
+document's immersive model, abort outstanding requests, and queue a change event
+for the model that left immersive presentation. A document restored from a
+back-forward cache MUST NOT resume immersive presentation without a new request.
+
+## Immersive events ## {#immersive-events}
+
+The <dfn>`immersivechange`</dfn> event is fired when a model enters or
+leaves immersive presentation. The <dfn>`immersiveerror`</dfn> event
+reports a failed request as specified above. Both events MUST use the {{Event}}
+interface, bubble, be composed, and not be cancelable.
+
+<div class="algorithm" data-algorithm="queue-immersive-event">
+
+To <dfn noexport>queue an immersive event</dfn> given a |name|, |document|, and |element|,
+[=queue a global task=] on the [=immersive presentation task source=],
+given |document|'s [=relevant global object=], to:
+
+  1. Let |target| be |element| if it remains [=connected=] and its [=node document=] is
+    |document|; otherwise, let |target| be |document|.
+  1. [=fire an event|Fire an event=] with |name| at |target|, with
+    `bubbles` and `composed` initialized to true.
+
+</div>
+
+The {{HTMLModelElement/onimmersivechange}}, {{HTMLModelElement/onimmersiveerror}},
+{{Document/onimmersivechange}}, and {{Document/onimmersiveerror}} attributes are
+[=event handler IDL attribute|event handler IDL attributes=] for their respective events.
+Event listeners MUST observe the updated {{Document/immersiveElement}} state.
+When switching models, this can identify the new model when the previous model's
+change event is delivered.
+
+<div class="example" id="immersive-model-api-example">
+
+```html
+<model id="teapot" src="3d-assets/teapot.usdz"></model>
+<button id="enter">View immersively</button>
+<button id="exit">Return to the page</button>
+```
+
+```js
+const model = document.querySelector("#teapot");
+const enter = document.querySelector("#enter");
+const exit = document.querySelector("#exit");
+enter.disabled = !document.immersiveEnabled;
+
+enter.addEventListener("click", async () => {
+  try {
+    await model.requestImmersive();
+    model.entityTransform = new DOMMatrix().translate(0.25, 0, 0);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+exit.addEventListener("click", async () => {
+  try {
+    if (document.immersiveElement) {
+      await document.exitImmersive();
+    }
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+document.addEventListener("immersivechange", () => {
+  exit.disabled = document.immersiveElement === null;
+});
+exit.disabled = true;
+```
+
+</div>
 
 # Events # {#events}
 
