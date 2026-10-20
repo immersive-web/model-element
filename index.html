@@ -8,7 +8,7 @@
   <meta content="Bikeshed version 49e9fdd4f, updated Tue Oct 13 14:27:53 2026 -0700" name="generator">
   <link href="https://immersive-web.github.io/model-element/" rel="canonical">
   <link href="https://www.w3.org/2008/site/images/favicon.ico" rel="icon">
-  <meta content="42fbfebc1e0d0dc6220a3fee0e3908d05aedc677" name="revision">
+  <meta content="bce284fb23fd1d89e698c706b33d58fcbbb8f666" name="revision">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
 <style>/* Boilerplate: style-autolinks */
@@ -774,7 +774,7 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
 </p>
    <h1 class="no-ref p-name" id="title">The &lt;model> element</h1>
    <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>,
-    <time class="dt-updated" datetime="2026-10-15">15 October 2026</time></p>
+    <time class="dt-updated" datetime="2026-10-20">20 October 2026</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -895,10 +895,11 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
     <li>
      <a href="#security-considerations"><span class="secno">18</span> <span class="content">Security considerations</span></a>
      <ol class="toc">
-      <li><a href="#cors"><span class="secno">18.1</span> <span class="content">CORS</span></a>
-      <li><a href="#formats-and-cors"><span class="secno">18.2</span> <span class="content">Formats and CORS</span></a>
-      <li><a href="#content-security-policy"><span class="secno">18.3</span> <span class="content">Content Security Policy</span></a>
-      <li><a href="#format-concerns"><span class="secno">18.4</span> <span class="content">Format concerns</span></a>
+      <li><a href="#model-secure-contexts"><span class="secno">18.1</span> <span class="content">Secure contexts</span></a>
+      <li><a href="#cors"><span class="secno">18.2</span> <span class="content">CORS</span></a>
+      <li><a href="#formats-and-cors"><span class="secno">18.3</span> <span class="content">Formats and CORS</span></a>
+      <li><a href="#content-security-policy"><span class="secno">18.4</span> <span class="content">Content Security Policy</span></a>
+      <li><a href="#format-concerns"><span class="secno">18.5</span> <span class="content">Format concerns</span></a>
      </ol>
     <li>
      <a href="#accessibility"><span class="secno">19</span> <span class="content">Accessibility</span></a>
@@ -1104,10 +1105,13 @@ automatically when the page is loaded</p>
      <p>The <code class="idl"><a data-link-type="idl" href="#htmlmodelelement" id="ref-for-htmlmodelelement①">HTMLModelElement</a></code> interface provides a means to interface with
 the embedded resource.</p>
    </dl>
-   <p>The <code><a data-link-type="element" href="#elementdef-model" id="ref-for-elementdef-model⑨">model</a></code> element is used for embedding 3D models into a document.</p>
+   <p>The <code><a data-link-type="element" href="#elementdef-model" id="ref-for-elementdef-model⑨">model</a></code> element is used for embedding 3D models into a document.
+Its model-specific APIs, resource processing, and rendering are restricted to
+<a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#secure-context" id="ref-for-secure-context">secure contexts</a>, as specified in <a href="#model-secure-contexts">§ 18.1 Secure contexts</a>.</p>
    <p>Content may be provided inside the <code><a data-link-type="element" href="#elementdef-model" id="ref-for-elementdef-model①⓪">model</a></code> element. User agents
-should not show this content to the user; it is intended for web
-browsers which do not support <code><a data-link-type="element" href="#elementdef-model" id="ref-for-elementdef-model①①">model</a></code>, to be shown as <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#fallback-content" id="ref-for-fallback-content">fallback content</a>.</p>
+should not show this content to the user unless model loading is blocked by
+<a href="#model-secure-contexts">§ 18.1 Secure contexts</a>; it is also intended for web browsers which do not support
+<code><a data-link-type="element" href="#elementdef-model" id="ref-for-elementdef-model①①">model</a></code>, to be shown as <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#fallback-content" id="ref-for-fallback-content">fallback content</a>.</p>
    <p class="issue" id="issue-6c0d8b4b"><a class="self-link" href="#issue-6c0d8b4b"></a> <span id="issue-14"></span> HTML defines an algorithm to determine the [=poster frame=], but it’s
   <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/media.html#video" id="ref-for-video①">video</a></code> specific. Should we accommodate it support <code><a data-link-type="element" href="#elementdef-model" id="ref-for-elementdef-model①②">model</a></code>
   or specify our own?
@@ -1137,7 +1141,7 @@ present, must contain a <a data-link-type="dfn" href="https://html.spec.whatwg.o
 <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-non-negative-integer" id="ref-for-valid-non-negative-integer①">valid non-negative integer</a>. It gives the desired horizontal dimension
 of the <code><a data-link-type="element" href="#elementdef-model" id="ref-for-elementdef-model①⑤">model</a></code> element in CSS pixels. Zero is permitted.</p>
    <h2 class="heading settled" data-level="5" id="htmlmodelelement-interface"><span class="secno">5. </span><span class="content">The <code class="idl"><a data-link-type="idl" href="#htmlmodelelement" id="ref-for-htmlmodelelement②">HTMLModelElement</a></code> interface</span><a class="self-link" href="#htmlmodelelement-interface"></a></h2>
-<pre class="def highlight idl">[<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed" id="ref-for-Exposed"><c- g>Exposed</c-></a>=<c- n>Window</c->]
+<pre class="def highlight idl">[<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed" id="ref-for-Exposed"><c- g>Exposed</c-></a>=<c- n>Window</c->, <a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#SecureContext" id="ref-for-SecureContext"><c- g>SecureContext</c-></a>]
 <c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="htmlmodelelement"><code><c- g>HTMLModelElement</c-></code></dfn> : <a data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement" id="ref-for-htmlelement"><c- n>HTMLElement</c-></a> {
   <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise"><c- b>Promise</c-></a>&lt;<a data-link-type="idl-name" href="#htmlmodelelement" id="ref-for-htmlmodelelement③"><c- n>HTMLModelElement</c-></a>> <dfn class="dfn-paneled idl-code" data-dfn-for="HTMLModelElement" data-dfn-type="attribute" data-export data-readonly data-type="Promise<HTMLModelElement>" id="dom-htmlmodelelement-ready"><code><c- g>ready</c-></code></dfn>;
   <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="https://drafts.csswg.org/geometry-1/#dompointreadonly" id="ref-for-dompointreadonly"><c- n>DOMPointReadOnly</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="HTMLModelElement" data-dfn-type="attribute" data-export data-readonly data-type="DOMPointReadOnly" id="dom-htmlmodelelement-boundingboxcenter"><code><c- g>boundingBoxCenter</c-></code></dfn>;
@@ -1514,20 +1518,99 @@ processed and ready to display. The <code class="idl"><a data-link-type="idl" hr
   or if they leave it up to the implementation. If they do, we need to specify it (i.e., don’t
   send cookies, don’t leak the referrer, etc.). <a href="https://github.com/immersive-web/model-element/issues/36">GitHub issue #36: Formats: privacy considerations</a>.</p>
    <h2 class="heading settled" data-level="18" id="security-considerations"><span class="secno">18. </span><span class="content">Security considerations</span><a class="self-link" href="#security-considerations"></a></h2>
-   <h3 class="heading settled" data-level="18.1" id="cors"><span class="secno">18.1. </span><span class="content">CORS</span><a class="self-link" href="#cors"></a></h3>
-   <h3 class="heading settled" data-level="18.2" id="formats-and-cors"><span class="secno">18.2. </span><span class="content">Formats and CORS</span><a class="self-link" href="#formats-and-cors"></a></h3>
+   <h3 class="heading settled" data-level="18.1" id="model-secure-contexts"><span class="secno">18.1. </span><span class="content">Secure contexts</span><a class="self-link" href="#model-secure-contexts"></a></h3>
+   <p>For the secure-context checks in this section,
+<dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="model-resource-loading-is-permitted">model resource loading is permitted</dfn> for a <code><a data-link-type="element" href="#elementdef-model" id="ref-for-elementdef-model②⑨">model</a></code> element
+if and only if its <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document">node document</a>’s
+<a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object">relevant settings object</a> is a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#secure-context" id="ref-for-secure-context①">secure context</a>.
+The user agent MUST use the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#secure-context" id="ref-for-secure-context②">secure context</a> definition in
+<a data-link-type="biblio" href="#biblio-html" title="HTML Standard">[HTML]</a> to evaluate this condition.</p>
+   <p>User agents MUST NOT fetch, decode, or render 3D model resources or author-provided
+environment maps for a <code><a data-link-type="element" href="#elementdef-model" id="ref-for-elementdef-model③⓪">model</a></code> element unless <a data-link-type="dfn" href="#model-resource-loading-is-permitted" id="ref-for-model-resource-loading-is-permitted">model resource loading is permitted</a>
+for that element.</p>
+   <p>Before starting a model or environment-map load for a <code><a data-link-type="element" href="#elementdef-model" id="ref-for-elementdef-model③①">model</a></code> element, the user
+agent MUST check whether <a data-link-type="dfn" href="#model-resource-loading-is-permitted" id="ref-for-model-resource-loading-is-permitted①">model resource loading is permitted</a> for that element.
+If it is not, the user agent MUST NOT start the load and MUST
+<a data-link-type="dfn" href="#block-model-resource-loading" id="ref-for-block-model-resource-loading">block model resource loading</a> for the element.</p>
+   <div class="algorithm" data-algorithm="model-adopting-steps">
+    <p>The <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-adopt-ext" id="ref-for-concept-node-adopt-ext">adopting steps</a> for a <code><a data-link-type="element" href="#elementdef-model" id="ref-for-elementdef-model③②">model</a></code> element, given <var>node</var> and
+<var>oldDocument</var>, are:</p>
+    <ol>
+     <li data-md>
+      <p>If <a data-link-type="dfn" href="#model-resource-loading-is-permitted" id="ref-for-model-resource-loading-is-permitted②">model resource loading is permitted</a> is false for <var>node</var>,
+<a data-link-type="dfn" href="#block-model-resource-loading" id="ref-for-block-model-resource-loading①">block model resource loading</a> for <var>node</var>.</p>
+    </ol>
+   </div>
+   <div class="algorithm" data-algorithm="block-model-resource-loading">
+    <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="block-model-resource-loading">block model resource loading</dfn> for a <code><a data-link-type="element" href="#elementdef-model" id="ref-for-elementdef-model③③">model</a></code> element
+<var>element</var>, the user agent MUST run the following steps:</p>
+    <ol>
+     <li data-md>
+      <p>Abort any pending model or environment-map fetch and decoding operations for
+<var>element</var>, and MUST NOT start new ones while loading remains blocked.</p>
+     <li data-md>
+      <p>Stop rendering <var>element</var>’s model and environment map, including any
+previously loaded content.</p>
+     <li data-md>
+      <p>Reject any unsettled <code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-ready" id="ref-for-dom-htmlmodelelement-ready①">ready</a></code> and
+<code class="idl"><a data-link-type="idl" href="#dom-htmlmodelelement-environmentmapready" id="ref-for-dom-htmlmodelelement-environmentmapready①">environmentMapReady</a></code> promises of <var>element</var>, if they
+exist, with a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#securityerror" id="ref-for-securityerror">SecurityError</a></code> exception.</p>
+     <li data-md>
+      <p>Make <var>element</var> represent its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#fallback-content" id="ref-for-fallback-content①">fallback content</a> instead of
+the model.</p>
+    </ol>
+   </div>
+   <div class="note" id="model-secure-context-adoption" role="note">
+    <a class="self-link" href="#model-secure-context-adoption"></a>
+
+
+    <p>Before an initial load, an insecure context prevents fetching and decoding
+from starting; there are no pending operations to abort. The cancellation and
+rendering-stop requirements also cover a model that began loading in a secure
+document and was subsequently adopted into an insecure document.</p>
+    <p>Same-origin documents can have different secure-context status. For example,
+an HTTPS iframe embedded in an HTTP page is not a secure context because of its
+insecure ancestor. That iframe can open a same-origin HTTPS popup, which is a
+secure context because it is top-level. If opener access is retained, the popup
+can move an already-loading model into the iframe using
+<code>window.opener.document.body.append(model)</code>. DOM
+<a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-adopt" id="ref-for-concept-node-adopt">adoption</a> changes the model’s node document to the iframe’s
+document, so loading that was initially permitted must now be stopped.
+See <a data-link-type="biblio" href="#biblio-secure-contexts" title="Secure Contexts">[SECURE-CONTEXTS]</a> for the distinction between secure contexts and
+potentially trustworthy origins.</p>
+   </div>
+   <p>The restriction does not prevent fallback descendants from rendering or loading
+their own resources under the normal rules for those HTML elements.</p>
+   <p>The [SecureContext] annotation on <code class="idl"><a data-link-type="idl" href="#htmlmodelelement" id="ref-for-htmlmodelelement④">HTMLModelElement</a></code> restricts exposure of the
+interface and its members according to <a data-link-type="biblio" href="#biblio-webidl" title="Web IDL Standard">[WEBIDL]</a>. It does not replace the
+loading and rendering checks above. In particular, a model created in a secure
+document MUST NOT continue loading or rendering after being adopted into an
+insecure document. These checks MUST also be applied before rendering a model.</p>
+   <p>Requests for model resources and author-provided environment maps MUST follow
+<a data-link-type="biblio" href="#biblio-fetch" title="Fetch Standard">[FETCH]</a> and be subject to the mixed-content checks in <a data-link-type="biblio" href="#biblio-mix" title="Mixed Content">[MIX]</a>. Being in a secure
+context does not bypass those checks or other applicable resource-loading policies.
+The secure-context requirement itself is not a scheme whitelist for resource URLs.</p>
+   <p class="note" role="note"><span class="marker">Note:</span> Secure contexts normally use HTTPS, but the standard also recognizes
+  potentially trustworthy local origins. For example,
+  <code>http://localhost</code>, <code>http://127.0.0.1</code>, and
+  <code>http://[::1]</code> can qualify without a development certificate.
+  The usual secure-context rules, including ancestor-context checks, still apply.
+  Authors can check <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/webappapis.html#dom-issecurecontext" id="ref-for-dom-issecurecontext">isSecureContext</a></code> rather than
+  inspecting the URL scheme.</p>
+   <h3 class="heading settled" data-level="18.2" id="cors"><span class="secno">18.2. </span><span class="content">CORS</span><a class="self-link" href="#cors"></a></h3>
+   <h3 class="heading settled" data-level="18.3" id="formats-and-cors"><span class="secno">18.3. </span><span class="content">Formats and CORS</span><a class="self-link" href="#formats-and-cors"></a></h3>
    <p class="issue" id="issue-7db60aea"><a class="self-link" href="#issue-7db60aea"></a> <span id="issue-15"></span> Need to clarify that 3D resources can fetch resources, and as such need to be subject the
   document’s CSP (probably "media-src"). However, we need to clarify what this means
   in relation to, say, "img-src", for example... as models can load png/jpg textures. <a href="https://github.com/immersive-web/model-element/issues/15">GitHub issue #15: Formats and CSP</a>.</p>
-   <h3 class="heading settled" data-level="18.3" id="content-security-policy"><span class="secno">18.3. </span><span class="content">Content Security Policy</span><a class="self-link" href="#content-security-policy"></a></h3>
+   <h3 class="heading settled" data-level="18.4" id="content-security-policy"><span class="secno">18.4. </span><span class="content">Content Security Policy</span><a class="self-link" href="#content-security-policy"></a></h3>
    <p class="issue" id="issue-47280d23"><a class="self-link" href="#issue-47280d23"></a> <span id="issue-16"></span> Given the close relationship to media elements, and given the reliance on
   <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/embedded-content.html#the-source-element" id="ref-for-the-source-element⑦">source</a></code> elements, we could just say that <code>media-src</code> applies to
-  <code><a data-link-type="element" href="#elementdef-model" id="ref-for-elementdef-model②⑨">model</a></code> too. <a href="https://github.com/immersive-web/model-element/issues/16">GitHub issue #16: Reuse media-src?</a>.</p>
-   <h3 class="heading settled" data-level="18.4" id="format-concerns"><span class="secno">18.4. </span><span class="content">Format concerns</span><a class="self-link" href="#format-concerns"></a></h3>
+  <code><a data-link-type="element" href="#elementdef-model" id="ref-for-elementdef-model③④">model</a></code> too. <a href="https://github.com/immersive-web/model-element/issues/16">GitHub issue #16: Reuse media-src?</a>.</p>
+   <h3 class="heading settled" data-level="18.5" id="format-concerns"><span class="secno">18.5. </span><span class="content">Format concerns</span><a class="self-link" href="#format-concerns"></a></h3>
    <p class="issue" id="issue-e67919df"><a class="self-link" href="#issue-e67919df"></a> <span id="issue-17"></span> Need to describe that each format will come with its own security considerations (and link to
   the appropriate security considerations in their respective specs). <a href="https://github.com/immersive-web/model-element/issues/17">GitHub issue #17: Format security concerns</a>.</p>
    <h2 class="heading settled" data-level="19" id="accessibility"><span class="secno">19. </span><span class="content">Accessibility</span><a class="self-link" href="#accessibility"></a></h2>
-   <p class="issue" id="issue-34dc67ff"><a class="self-link" href="#issue-34dc67ff"></a> <span id="issue-50"></span> We need to figure out how to make <code><a data-link-type="element" href="#elementdef-model" id="ref-for-elementdef-model③⓪">model</a></code> accessible on a number of
+   <p class="issue" id="issue-34dc67ff"><a class="self-link" href="#issue-34dc67ff"></a> <span id="issue-50"></span> We need to figure out how to make <code><a data-link-type="element" href="#elementdef-model" id="ref-for-elementdef-model③⑤">model</a></code> accessible on a number of
   different fronts:
   • Visual: describe what is being presented over time.
   • Interaction:
@@ -1551,7 +1634,7 @@ processed and ready to display. The <code class="idl"><a data-link-type="idl" hr
    <dl>
     <dt data-md>HTML element
     <dd data-md>
-     <p><code><a data-link-type="element" href="#elementdef-model" id="ref-for-elementdef-model③①">model</a></code></p>
+     <p><code><a data-link-type="element" href="#elementdef-model" id="ref-for-elementdef-model③⑥">model</a></code></p>
     <dt data-md>Implicit ARIA semantics
     <dd data-md>
      <p>TBD</p>
@@ -1561,7 +1644,7 @@ processed and ready to display. The <code class="idl"><a data-link-type="idl" hr
    </dl>
    <h3 class="heading settled" data-level="19.3" id="accessibility-for-implementers"><span class="secno">19.3. </span><span class="content">For implementers</span><a class="self-link" href="#accessibility-for-implementers"></a></h3>
    <p class="note" role="note"><span class="marker">Note:</span> This section would eventually move to <a data-link-type="biblio" href="#biblio-html-aam-10" title="HTML Accessibility API Mappings 1.0">[HTML-AAM-1.0]</a>.</p>
-   <p><code><a data-link-type="element" href="#elementdef-model" id="ref-for-elementdef-model③②">model</a></code></p>
+   <p><code><a data-link-type="element" href="#elementdef-model" id="ref-for-elementdef-model③⑦">model</a></code></p>
    <dl>
     <dt data-md><a data-link-type="biblio" href="#biblio-wai-aria-12" title="Accessible Rich Internet Applications (WAI-ARIA) 1.2">[wai-aria-1.2]</a>
     <dd data-md>
@@ -1782,6 +1865,7 @@ processed and ready to display. The <code class="idl"><a data-link-type="idl" hr
     <ul class="index">
      <li><a href="#automatic-fitting-enabled">automatic fitting enabled</a><span>, in § 9.2.3</span>
      <li><a href="#element-attrdef-model-autoplay">autoplay</a><span>, in § 4.1</span>
+     <li><a href="#block-model-resource-loading">block model resource loading</a><span>, in § 18.1</span>
      <li><a href="#bounding-box-calculation-algorithm">bounding box calculation algorithm</a><span>, in § 9.2.2</span>
      <li><a href="#dom-htmlmodelelement-boundingboxcenter">boundingBoxCenter</a><span>, in § 5</span>
      <li><a href="#dom-htmlmodelelement-boundingboxextents">boundingBoxExtents</a><span>, in § 5</span>
@@ -1798,6 +1882,7 @@ processed and ready to display. The <code class="idl"><a data-link-type="idl" hr
      <li><a href="#element-attrdef-model-loop">loop</a><span>, in § 4.7</span>
      <li><a href="#elementdef-model">model</a><span>, in § 4</span>
      <li><a href="#model-fit-algorithm">model fit algorithm</a><span>, in § 9.2.2</span>
+     <li><a href="#model-resource-loading-is-permitted">model resource loading is permitted</a><span>, in § 18.1</span>
      <li><a href="#model-space">model space</a><span>, in § 9.2.1</span>
      <li><a href="#orbit-fit">orbit fit</a><span>, in § 7.2</span>
      <li><a href="#orbit-fit-algorithm">orbit fit algorithm</a><span>, in § 9.2.4</span>
@@ -1840,6 +1925,13 @@ processed and ready to display. The <code class="idl"><a data-link-type="idl" hr
        <li><span class="dfn-paneled" id="19686e21">scale</span>
       </ul>
      <li>
+      <a data-link-type="biblio">[DOM]</a> defines the following terms:
+      <ul>
+       <li><span class="dfn-paneled" id="4fd865ec">adopt</span>
+       <li><span class="dfn-paneled" id="a9910bde">adopting steps</span>
+       <li><span class="dfn-paneled" id="5216e1a0">node document</span>
+      </ul>
+     <li>
       <a data-link-type="biblio">[FULLSCREEN]</a> defines the following terms:
       <ul>
        <li><span class="dfn-paneled" id="af4a7cd3">:fullscreen</span>
@@ -1866,11 +1958,14 @@ processed and ready to display. The <code class="idl"><a data-link-type="idl" hr
        <li><span class="dfn-paneled" id="1236ac1a">flow content</span>
        <li><span class="dfn-paneled" id="f0811ff8">img</span>
        <li><span class="dfn-paneled" id="bd7d36d0">interactive content</span>
+       <li><span class="dfn-paneled" id="db3b2dfc">isSecureContext</span>
        <li><span class="dfn-paneled" id="03499e48">media element</span>
        <li><span class="dfn-paneled" id="b80d76a2">p</span>
        <li><span class="dfn-paneled" id="d54eeea2">palpable content</span>
        <li><span class="dfn-paneled" id="e5a7e26c">phrasing content</span>
        <li><span class="dfn-paneled" id="29399d44">picture</span>
+       <li><span class="dfn-paneled" id="9c4c1e66">relevant settings object</span>
+       <li><span class="dfn-paneled" id="65181da8">secure context</span>
        <li><span class="dfn-paneled" id="e5882acf">source</span>
        <li><span class="dfn-paneled" id="bd20d53e">srcset</span>
        <li><span class="dfn-paneled" id="55282cd3">track</span>
@@ -1899,6 +1994,8 @@ processed and ready to display. The <code class="idl"><a data-link-type="idl" hr
        <li><span class="dfn-paneled" id="8855a9aa">DOMString</span>
        <li><span class="dfn-paneled" id="889e932f">Exposed</span>
        <li><span class="dfn-paneled" id="bdbd19d1">Promise</span>
+       <li><span class="dfn-paneled" id="b75bb3bd">SecureContext</span>
+       <li><span class="dfn-paneled" id="c3e881ef">SecurityError</span>
        <li><span class="dfn-paneled" id="b0d7f3c3">USVString</span>
        <li><span class="dfn-paneled" id="56f81a8e">new</span>
        <li><span class="dfn-paneled" id="5f90bbfb">undefined</span>
@@ -1957,6 +2054,8 @@ processed and ready to display. The <code class="idl"><a data-link-type="idl" hr
    <dd>Tab Atkins Jr.; Elika Etemad. <a href="https://drafts.csswg.org/css-values-4/"><cite>CSS Values and Units Module Level 4</cite></a>. URL: <a href="https://drafts.csswg.org/css-values-4/">https://drafts.csswg.org/css-values-4/</a>
    <dt id="biblio-cssom-view-1">[CSSOM-VIEW-1]
    <dd>Simon Fraser; Emilio Cobos Álvarez. <a href="https://drafts.csswg.org/cssom-view/"><cite>CSSOM View Module</cite></a>. URL: <a href="https://drafts.csswg.org/cssom-view/">https://drafts.csswg.org/cssom-view/</a>
+   <dt id="biblio-dom">[DOM]
+   <dd>Anne van Kesteren. <a href="https://dom.spec.whatwg.org/"><cite>DOM Standard</cite></a>. Living Standard. URL: <a href="https://dom.spec.whatwg.org/">https://dom.spec.whatwg.org/</a>
    <dt id="biblio-fullscreen">[FULLSCREEN]
    <dd>Philip Jägenstedt. <a href="https://fullscreen.spec.whatwg.org/"><cite>Fullscreen API Standard</cite></a>. Living Standard. URL: <a href="https://fullscreen.spec.whatwg.org/">https://fullscreen.spec.whatwg.org/</a>
    <dt id="biblio-geometry-1">[GEOMETRY-1]
@@ -1974,17 +2073,23 @@ processed and ready to display. The <code class="idl"><a data-link-type="idl" hr
   </dl>
   <h3 class="heading no-num no-ref settled" id="informative"><span class="content">Non-Normative References</span><a class="self-link" href="#informative"></a></h3>
   <dl>
+   <dt id="biblio-fetch">[FETCH]
+   <dd>Anne van Kesteren. <a href="https://fetch.spec.whatwg.org/"><cite>Fetch Standard</cite></a>. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
    <dt id="biblio-html-aam-10">[HTML-AAM-1.0]
    <dd>Scott O'Hara; Rahim Abdi. <a href="https://w3c.github.io/aria/html-aam/"><cite>HTML Accessibility API Mappings 1.0</cite></a>. URL: <a href="https://w3c.github.io/aria/html-aam/">https://w3c.github.io/aria/html-aam/</a>
    <dt id="biblio-html-aria">[HTML-ARIA]
    <dd>Patrick Lauke; Scott O'Hara. <a href="https://w3c.github.io/html-aria/"><cite>ARIA in HTML</cite></a>. URL: <a href="https://w3c.github.io/html-aria/">https://w3c.github.io/html-aria/</a>
    <dt id="biblio-mimesniff">[MIMESNIFF]
    <dd>Gordon P. Hemsley. <a href="https://mimesniff.spec.whatwg.org/"><cite>MIME Sniffing Standard</cite></a>. Living Standard. URL: <a href="https://mimesniff.spec.whatwg.org/">https://mimesniff.spec.whatwg.org/</a>
+   <dt id="biblio-mix">[MIX]
+   <dd>Emily Stark; Mike West; Carlos IbarraLopez. <a href="https://w3c.github.io/webappsec-mixed-content/"><cite>Mixed Content</cite></a>. URL: <a href="https://w3c.github.io/webappsec-mixed-content/">https://w3c.github.io/webappsec-mixed-content/</a>
+   <dt id="biblio-secure-contexts">[SECURE-CONTEXTS]
+   <dd>Mike West. <a href="https://w3c.github.io/webappsec-secure-contexts/"><cite>Secure Contexts</cite></a>. URL: <a href="https://w3c.github.io/webappsec-secure-contexts/">https://w3c.github.io/webappsec-secure-contexts/</a>
    <dt id="biblio-wai-aria-12">[WAI-ARIA-1.2]
    <dd>Joanmarie Diggs; et al. <a href="https://w3c.github.io/aria/"><cite>Accessible Rich Internet Applications (WAI-ARIA) 1.2</cite></a>. URL: <a href="https://w3c.github.io/aria/">https://w3c.github.io/aria/</a>
   </dl>
   <h2 class="heading no-num no-ref settled" id="idl-index"><span class="content">IDL Index</span><a class="self-link" href="#idl-index"></a></h2>
-<pre class="def highlight idl">[<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed"><c- g>Exposed</c-></a>=<c- n>Window</c->]
+<pre class="def highlight idl">[<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed"><c- g>Exposed</c-></a>=<c- n>Window</c->, <a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#SecureContext"><c- g>SecureContext</c-></a>]
 <c- b>interface</c-> <a href="#htmlmodelelement"><code><c- g>HTMLModelElement</c-></code></a> : <a data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/dom.html#htmlelement"><c- n>HTMLElement</c-></a> {
   <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise"><c- b>Promise</c-></a>&lt;<a data-link-type="idl-name" href="#htmlmodelelement"><c- n>HTMLModelElement</c-></a>> <a data-readonly data-type="Promise<HTMLModelElement>" href="#dom-htmlmodelelement-ready"><code><c- g>ready</c-></code></a>;
   <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="https://drafts.csswg.org/geometry-1/#dompointreadonly"><c- n>DOMPointReadOnly</c-></a> <a data-readonly data-type="DOMPointReadOnly" href="#dom-htmlmodelelement-boundingboxcenter"><code><c- g>boundingBoxCenter</c-></code></a>;
@@ -2211,47 +2316,56 @@ let dfnPanelData = {
 "38c8ba2c": {"dfnID":"38c8ba2c","dfnText":"embedded content","external":true,"refSections":[{"refs":[{"id":"ref-for-embedded-content-category"}],"title":"1. Introduction"},{"refs":[{"id":"ref-for-embedded-content-category\u2460"},{"id":"ref-for-embedded-content-category\u2461"}],"title":"4. The model element"}],"url":"https://html.spec.whatwg.org/multipage/dom.html#embedded-content-category"},
 "3d9fa2e0": {"dfnID":"3d9fa2e0","dfnText":"transform a point with a matrix","external":true,"refSections":[{"refs":[{"id":"ref-for-transform-a-point-with-a-matrix"}],"title":"9.2.1. Coordinate spaces and length units"}],"url":"https://drafts.csswg.org/geometry-1/#transform-a-point-with-a-matrix"},
 "3e3b4747": {"dfnID":"3e3b4747","dfnText":"absolute length","external":true,"refSections":[{"refs":[{"id":"ref-for-absolute-length"}],"title":"9.2.1. Coordinate spaces and length units"}],"url":"https://drafts.csswg.org/css-values-4/#absolute-length"},
+"4fd865ec": {"dfnID":"4fd865ec","dfnText":"adopt","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-node-adopt"}],"title":"18.1. Secure contexts"}],"url":"https://dom.spec.whatwg.org/#concept-node-adopt"},
+"5216e1a0": {"dfnID":"5216e1a0","dfnText":"node document","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-node-document"}],"title":"18.1. Secure contexts"}],"url":"https://dom.spec.whatwg.org/#concept-node-document"},
 "53275e46": {"dfnID":"53275e46","dfnText":"append","external":true,"refSections":[{"refs":[{"id":"ref-for-list-append"}],"title":"9.2.2. Model bounds and fitting"}],"url":"https://infra.spec.whatwg.org/#list-append"},
 "55282cd3": {"dfnID":"55282cd3","dfnText":"track","external":true,"refSections":[{"refs":[{"id":"ref-for-the-track-element"}],"title":"19. Accessibility"}],"url":"https://html.spec.whatwg.org/multipage/media.html#the-track-element"},
 "56f81a8e": {"dfnID":"56f81a8e","dfnText":"new","external":true,"refSections":[{"refs":[{"id":"ref-for-new"},{"id":"ref-for-new\u2460"}],"title":"9.2.2. Model bounds and fitting"}],"url":"https://webidl.spec.whatwg.org/#new"},
 "576ed880": {"dfnID":"576ed880","dfnText":"content box","external":true,"refSections":[{"refs":[{"id":"ref-for-content-box"}],"title":"9.2.1. Coordinate spaces and length units"},{"refs":[{"id":"ref-for-content-box\u2460"}],"title":"9.2.2. Model bounds and fitting"}],"url":"https://drafts.csswg.org/css-box-3/#content-box"},
 "5f90bbfb": {"dfnID":"5f90bbfb","dfnText":"undefined","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-undefined"}],"title":"5. The HTMLModelElement interface"}],"url":"https://webidl.spec.whatwg.org/#idl-undefined"},
 "649608b9": {"dfnID":"649608b9","dfnText":"list","external":true,"refSections":[{"refs":[{"id":"ref-for-list"}],"title":"9.2.2. Model bounds and fitting"}],"url":"https://infra.spec.whatwg.org/#list"},
+"65181da8": {"dfnID":"65181da8","dfnText":"secure context","external":true,"refSections":[{"refs":[{"id":"ref-for-secure-context"}],"title":"4. The model element"},{"refs":[{"id":"ref-for-secure-context\u2460"},{"id":"ref-for-secure-context\u2461"}],"title":"18.1. Secure contexts"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#secure-context"},
 "6d41ff3b": {"dfnID":"6d41ff3b","dfnText":"figure","external":true,"refSections":[{"refs":[{"id":"ref-for-the-figure-element"}],"title":"13. HTML Integrations"}],"url":"https://html.spec.whatwg.org/multipage/grouping-content.html#the-figure-element"},
 "7adbeb50": {"dfnID":"7adbeb50","dfnText":"DOMMatrixReadOnly","external":true,"refSections":[{"refs":[{"id":"ref-for-dommatrixreadonly"}],"title":"5. The HTMLModelElement interface"},{"refs":[{"id":"ref-for-dommatrixreadonly\u2460"}],"title":"9.2. Model pose"}],"url":"https://drafts.csswg.org/geometry-1/#dommatrixreadonly"},
 "864d601e": {"dfnID":"864d601e","dfnText":"DOMPointReadOnly","external":true,"refSections":[{"refs":[{"id":"ref-for-dompointreadonly"},{"id":"ref-for-dompointreadonly\u2460"}],"title":"5. The HTMLModelElement interface"}],"url":"https://drafts.csswg.org/geometry-1/#dompointreadonly"},
 "8855a9aa": {"dfnID":"8855a9aa","dfnText":"DOMString","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-DOMString"}],"title":"5. The HTMLModelElement interface"}],"url":"https://webidl.spec.whatwg.org/#idl-DOMString"},
 "889e932f": {"dfnID":"889e932f","dfnText":"Exposed","external":true,"refSections":[{"refs":[{"id":"ref-for-Exposed"}],"title":"5. The HTMLModelElement interface"}],"url":"https://webidl.spec.whatwg.org/#Exposed"},
 "99c988d6": {"dfnID":"99c988d6","dfnText":"remove","external":true,"refSections":[{"refs":[{"id":"ref-for-list-remove"}],"title":"9.2.2. Model bounds and fitting"}],"url":"https://infra.spec.whatwg.org/#list-remove"},
+"9c4c1e66": {"dfnID":"9c4c1e66","dfnText":"relevant settings object","external":true,"refSections":[{"refs":[{"id":"ref-for-relevant-settings-object"}],"title":"18.1. Secure contexts"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object"},
 "a0e35b6d": {"dfnID":"a0e35b6d","dfnText":"sizing property","external":true,"refSections":[{"refs":[{"id":"ref-for-sizing-property"}],"title":"9.2.2. Model bounds and fitting"}],"url":"https://drafts.csswg.org/css-sizing-3/#sizing-property"},
 "a4eb3c57": {"dfnID":"a4eb3c57","dfnText":"used value","external":true,"refSections":[{"refs":[{"id":"ref-for-used-value"}],"title":"9.2.2. Model bounds and fitting"}],"url":"https://drafts.csswg.org/css-cascade-5/#used-value"},
+"a9910bde": {"dfnID":"a9910bde","dfnText":"adopting steps","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-node-adopt-ext"}],"title":"18.1. Secure contexts"}],"url":"https://dom.spec.whatwg.org/#concept-node-adopt-ext"},
 "aa7bbf63": {"dfnID":"aa7bbf63","dfnText":"video","external":true,"refSections":[{"refs":[{"id":"ref-for-video"}],"title":"3.3. Supporting multiple formats"},{"refs":[{"id":"ref-for-video\u2460"}],"title":"4. The model element"},{"refs":[{"id":"ref-for-video\u2461"}],"title":"8. Controls"},{"refs":[{"id":"ref-for-video\u2462"}],"title":"12. Overlap with \"media elements\""},{"refs":[{"id":"ref-for-video\u2463"}],"title":"13. HTML Integrations"}],"url":"https://html.spec.whatwg.org/multipage/media.html#video"},
 "af4a7cd3": {"dfnID":"af4a7cd3","dfnText":":fullscreen","external":true,"refSections":[{"refs":[{"id":"ref-for-css-pc-fullscreen"}],"title":"14.2. Fullscreen Presentation State: the :fullscreen pseudo-class"}],"url":"https://fullscreen.spec.whatwg.org/#css-pc-fullscreen"},
 "automatic-fitting-enabled": {"dfnID":"automatic-fitting-enabled","dfnText":"automatic fitting enabled","external":false,"refSections":[{"refs":[{"id":"ref-for-automatic-fitting-enabled"},{"id":"ref-for-automatic-fitting-enabled\u2460"},{"id":"ref-for-automatic-fitting-enabled\u2461"}],"title":"9.2.3. Automatic fitting after resize"}],"url":"#automatic-fitting-enabled"},
 "b08d0bb2": {"dfnID":"b08d0bb2","dfnText":"HTMLElement","external":true,"refSections":[{"refs":[{"id":"ref-for-htmlelement"}],"title":"5. The HTMLModelElement interface"}],"url":"https://html.spec.whatwg.org/multipage/dom.html#htmlelement"},
 "b0d7f3c3": {"dfnID":"b0d7f3c3","dfnText":"USVString","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-USVString"}],"title":"5. The HTMLModelElement interface"}],"url":"https://webidl.spec.whatwg.org/#idl-USVString"},
+"b75bb3bd": {"dfnID":"b75bb3bd","dfnText":"SecureContext","external":true,"refSections":[{"refs":[{"id":"ref-for-SecureContext"}],"title":"5. The HTMLModelElement interface"}],"url":"https://webidl.spec.whatwg.org/#SecureContext"},
 "b80d76a2": {"dfnID":"b80d76a2","dfnText":"p","external":true,"refSections":[{"refs":[{"id":"ref-for-the-p-element"}],"title":"13. HTML Integrations"}],"url":"https://html.spec.whatwg.org/multipage/grouping-content.html#the-p-element"},
 "bd20d53e": {"dfnID":"bd20d53e","dfnText":"srcset","external":true,"refSections":[{"refs":[{"id":"ref-for-attr-source-srcset"}],"title":"6.1. The source element\u2019s parent is a model element"}],"url":"https://html.spec.whatwg.org/multipage/embedded-content.html#attr-source-srcset"},
 "bd7d36d0": {"dfnID":"bd7d36d0","dfnText":"interactive content","external":true,"refSections":[{"refs":[{"id":"ref-for-interactive-content-2"}],"title":"4. The model element"}],"url":"https://html.spec.whatwg.org/multipage/dom.html#interactive-content-2"},
 "bdbd19d1": {"dfnID":"bdbd19d1","dfnText":"Promise","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-promise"},{"id":"ref-for-idl-promise\u2460"}],"title":"5. The HTMLModelElement interface"},{"refs":[{"id":"ref-for-idl-promise\u2461"},{"id":"ref-for-idl-promise\u2462"},{"id":"ref-for-idl-promise\u2463"}],"title":"10. Events"}],"url":"https://webidl.spec.whatwg.org/#idl-promise"},
+"block-model-resource-loading": {"dfnID":"block-model-resource-loading","dfnText":"block model resource loading","external":false,"refSections":[{"refs":[{"id":"ref-for-block-model-resource-loading"},{"id":"ref-for-block-model-resource-loading\u2460"}],"title":"18.1. Secure contexts"}],"url":"#block-model-resource-loading"},
 "bounding-box-calculation-algorithm": {"dfnID":"bounding-box-calculation-algorithm","dfnText":"bounding box calculation algorithm","external":false,"refSections":[{"refs":[{"id":"ref-for-bounding-box-calculation-algorithm"},{"id":"ref-for-bounding-box-calculation-algorithm\u2460"},{"id":"ref-for-bounding-box-calculation-algorithm\u2461"}],"title":"9.2.2. Model bounds and fitting"},{"refs":[{"id":"ref-for-bounding-box-calculation-algorithm\u2462"}],"title":"9.2.4. Orbit fit"}],"url":"#bounding-box-calculation-algorithm"},
 "c0159396": {"dfnID":"c0159396","dfnText":"devicePixelRatio","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-window-devicepixelratio"},{"id":"ref-for-dom-window-devicepixelratio\u2460"},{"id":"ref-for-dom-window-devicepixelratio\u2461"},{"id":"ref-for-dom-window-devicepixelratio\u2462"}],"title":"9.2.1. Coordinate spaces and length units"}],"url":"https://drafts.csswg.org/cssom-view-1/#dom-window-devicepixelratio"},
 "c207bdef": {"dfnID":"c207bdef","dfnText":"Reflect","external":true,"refSections":[{"refs":[{"id":"ref-for-xattr-reflect"}],"title":"5. The HTMLModelElement interface"}],"url":"https://html.spec.whatwg.org/multipage/common-dom-interfaces.html#xattr-reflect"},
 "c269a26c": {"dfnID":"c269a26c","dfnText":":seeking","external":true,"refSections":[{"refs":[{"id":"ref-for-selectordef-seeking"}],"title":"14.1. Media Playback States (:playing, :paused, :seeking)"}],"url":"https://drafts.csswg.org/selectors-4/#selectordef-seeking"},
-"c7740004": {"dfnID":"c7740004","dfnText":"fallback content","external":true,"refSections":[{"refs":[{"id":"ref-for-fallback-content"}],"title":"4. The model element"}],"url":"https://html.spec.whatwg.org/multipage/dom.html#fallback-content"},
+"c3e881ef": {"dfnID":"c3e881ef","dfnText":"SecurityError","external":true,"refSections":[{"refs":[{"id":"ref-for-securityerror"}],"title":"18.1. Secure contexts"}],"url":"https://webidl.spec.whatwg.org/#securityerror"},
+"c7740004": {"dfnID":"c7740004","dfnText":"fallback content","external":true,"refSections":[{"refs":[{"id":"ref-for-fallback-content"}],"title":"4. The model element"},{"refs":[{"id":"ref-for-fallback-content\u2460"}],"title":"18.1. Secure contexts"}],"url":"https://html.spec.whatwg.org/multipage/dom.html#fallback-content"},
 "cad61a81": {"dfnID":"cad61a81","dfnText":"valid non-empty URL potentially surrounded by spaces","external":true,"refSections":[{"refs":[{"id":"ref-for-valid-non-empty-url-potentially-surrounded-by-spaces"}],"title":"4.8. poster attribute"}],"url":"https://html.spec.whatwg.org/multipage/urls-and-fetching.html#valid-non-empty-url-potentially-surrounded-by-spaces"},
 "css-derived-meter": {"dfnID":"css-derived-meter","dfnText":"CSS-derived meter","external":false,"refSections":[{"refs":[{"id":"ref-for-css-derived-meter"},{"id":"ref-for-css-derived-meter\u2460"}],"title":"9.2.1. Coordinate spaces and length units"},{"refs":[{"id":"ref-for-css-derived-meter\u2461"},{"id":"ref-for-css-derived-meter\u2462"}],"title":"9.2.2. Model bounds and fitting"},{"refs":[{"id":"ref-for-css-derived-meter\u2463"}],"title":"9.2.4. Orbit fit"}],"url":"#css-derived-meter"},
 "d219732a": {"dfnID":"d219732a","dfnText":"DOMPoint","external":true,"refSections":[{"refs":[{"id":"ref-for-dompoint"},{"id":"ref-for-dompoint\u2460"}],"title":"9.2.2. Model bounds and fitting"}],"url":"https://drafts.csswg.org/geometry-1/#dompoint"},
 "d54eeea2": {"dfnID":"d54eeea2","dfnText":"palpable content","external":true,"refSections":[{"refs":[{"id":"ref-for-palpable-content-2"}],"title":"4. The model element"}],"url":"https://html.spec.whatwg.org/multipage/dom.html#palpable-content-2"},
 "d8f8bd6e": {"dfnID":"d8f8bd6e","dfnText":"extend","external":true,"refSections":[{"refs":[{"id":"ref-for-list-extend"}],"title":"9.2.2. Model bounds and fitting"}],"url":"https://infra.spec.whatwg.org/#list-extend"},
+"db3b2dfc": {"dfnID":"db3b2dfc","dfnText":"isSecureContext","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-issecurecontext"}],"title":"18.1. Secure contexts"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#dom-issecurecontext"},
 "dom-htmlmodelelement-boundingboxcenter": {"dfnID":"dom-htmlmodelelement-boundingboxcenter","dfnText":"boundingBoxCenter","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-htmlmodelelement-boundingboxcenter"}],"title":"9.2.1. Coordinate spaces and length units"},{"refs":[{"id":"ref-for-dom-htmlmodelelement-boundingboxcenter\u2460"}],"title":"9.2.2. Model bounds and fitting"}],"url":"#dom-htmlmodelelement-boundingboxcenter"},
 "dom-htmlmodelelement-boundingboxextents": {"dfnID":"dom-htmlmodelelement-boundingboxextents","dfnText":"boundingBoxExtents","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-htmlmodelelement-boundingboxextents"}],"title":"9.2.1. Coordinate spaces and length units"},{"refs":[{"id":"ref-for-dom-htmlmodelelement-boundingboxextents\u2460"}],"title":"9.2.2. Model bounds and fitting"}],"url":"#dom-htmlmodelelement-boundingboxextents"},
 "dom-htmlmodelelement-entitytransform": {"dfnID":"dom-htmlmodelelement-entitytransform","dfnText":"entityTransform","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-htmlmodelelement-entitytransform"},{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2460"}],"title":"7.2. orbit"},{"refs":[{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2461"},{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2462"}],"title":"9.2. Model pose"},{"refs":[{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2463"},{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2464"},{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2465"}],"title":"9.2.1. Coordinate spaces and length units"},{"refs":[{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2466"},{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2467"},{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2468"}],"title":"9.2.2. Model bounds and fitting"},{"refs":[{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2460\u24ea"},{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2460\u2460"},{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2460\u2461"},{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2460\u2462"}],"title":"9.2.3. Automatic fitting after resize"},{"refs":[{"id":"ref-for-dom-htmlmodelelement-entitytransform\u2460\u2463"}],"title":"9.2.4. Orbit fit"}],"url":"#dom-htmlmodelelement-entitytransform"},
 "dom-htmlmodelelement-environmentmap": {"dfnID":"dom-htmlmodelelement-environmentmap","dfnText":"environmentMap","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-htmlmodelelement-environmentmap"}],"title":"9.1. Environment map"}],"url":"#dom-htmlmodelelement-environmentmap"},
-"dom-htmlmodelelement-environmentmapready": {"dfnID":"dom-htmlmodelelement-environmentmapready","dfnText":"environmentMapReady","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-htmlmodelelement-environmentmapready"}],"title":"10. Events"}],"url":"#dom-htmlmodelelement-environmentmapready"},
-"dom-htmlmodelelement-ready": {"dfnID":"dom-htmlmodelelement-ready","dfnText":"ready","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-htmlmodelelement-ready"}],"title":"10. Events"}],"url":"#dom-htmlmodelelement-ready"},
+"dom-htmlmodelelement-environmentmapready": {"dfnID":"dom-htmlmodelelement-environmentmapready","dfnText":"environmentMapReady","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-htmlmodelelement-environmentmapready"}],"title":"10. Events"},{"refs":[{"id":"ref-for-dom-htmlmodelelement-environmentmapready\u2460"}],"title":"18.1. Secure contexts"}],"url":"#dom-htmlmodelelement-environmentmapready"},
+"dom-htmlmodelelement-ready": {"dfnID":"dom-htmlmodelelement-ready","dfnText":"ready","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-htmlmodelelement-ready"}],"title":"10. Events"},{"refs":[{"id":"ref-for-dom-htmlmodelelement-ready\u2460"}],"title":"18.1. Secure contexts"}],"url":"#dom-htmlmodelelement-ready"},
 "dom-htmlmodelelement-stagemode": {"dfnID":"dom-htmlmodelelement-stagemode","dfnText":"stageMode","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-htmlmodelelement-stagemode"}],"title":"7.1. none"}],"url":"#dom-htmlmodelelement-stagemode"},
-"e5882acf": {"dfnID":"e5882acf","dfnText":"source","external":true,"refSections":[{"refs":[{"id":"ref-for-the-source-element"}],"title":"3.3. Supporting multiple formats"},{"refs":[{"id":"ref-for-the-source-element\u2460"}],"title":"6. source element integration"},{"refs":[{"id":"ref-for-the-source-element\u2461"},{"id":"ref-for-the-source-element\u2462"},{"id":"ref-for-the-source-element\u2463"}],"title":"6.1. The source element\u2019s parent is a model element"},{"refs":[{"id":"ref-for-the-source-element\u2464"},{"id":"ref-for-the-source-element\u2465"}],"title":"13.2. Integrations with source element"},{"refs":[{"id":"ref-for-the-source-element\u2466"}],"title":"18.3. Content Security Policy"}],"url":"https://html.spec.whatwg.org/multipage/embedded-content.html#the-source-element"},
+"e5882acf": {"dfnID":"e5882acf","dfnText":"source","external":true,"refSections":[{"refs":[{"id":"ref-for-the-source-element"}],"title":"3.3. Supporting multiple formats"},{"refs":[{"id":"ref-for-the-source-element\u2460"}],"title":"6. source element integration"},{"refs":[{"id":"ref-for-the-source-element\u2461"},{"id":"ref-for-the-source-element\u2462"},{"id":"ref-for-the-source-element\u2463"}],"title":"6.1. The source element\u2019s parent is a model element"},{"refs":[{"id":"ref-for-the-source-element\u2464"},{"id":"ref-for-the-source-element\u2465"}],"title":"13.2. Integrations with source element"},{"refs":[{"id":"ref-for-the-source-element\u2466"}],"title":"18.4. Content Security Policy"}],"url":"https://html.spec.whatwg.org/multipage/embedded-content.html#the-source-element"},
 "e5a7e26c": {"dfnID":"e5a7e26c","dfnText":"phrasing content","external":true,"refSections":[{"refs":[{"id":"ref-for-phrasing-content-2"}],"title":"4. The model element"}],"url":"https://html.spec.whatwg.org/multipage/dom.html#phrasing-content-2"},
 "element-attrdef-model-autoplay": {"dfnID":"element-attrdef-model-autoplay","dfnText":"autoplay","external":false,"refSections":[{"refs":[{"id":"ref-for-element-attrdef-model-autoplay"}],"title":"4. The model element"}],"url":"#element-attrdef-model-autoplay"},
 "element-attrdef-model-controls": {"dfnID":"element-attrdef-model-controls","dfnText":"controls","external":false,"refSections":[],"url":"#element-attrdef-model-controls"},
@@ -2264,13 +2378,14 @@ let dfnPanelData = {
 "element-attrdef-model-stagemode": {"dfnID":"element-attrdef-model-stagemode","dfnText":"stagemode","external":false,"refSections":[{"refs":[{"id":"ref-for-element-attrdef-model-stagemode"},{"id":"ref-for-element-attrdef-model-stagemode\u2460"}],"title":"4. The model element"},{"refs":[{"id":"ref-for-element-attrdef-model-stagemode\u2461"}],"title":"9.2.4. Orbit fit"}],"url":"#element-attrdef-model-stagemode"},
 "element-attrdef-model-width": {"dfnID":"element-attrdef-model-width","dfnText":"width","external":false,"refSections":[{"refs":[{"id":"ref-for-element-attrdef-model-width"}],"title":"4. The model element"},{"refs":[{"id":"ref-for-element-attrdef-model-width\u2460"}],"title":"4.10. width attribute"},{"refs":[{"id":"ref-for-element-attrdef-model-width\u2461"}],"title":"9.2.2. Model bounds and fitting"},{"refs":[{"id":"ref-for-element-attrdef-model-width\u2462"}],"title":"9.2.3. Automatic fitting after resize"}],"url":"#element-attrdef-model-width"},
 "element-space": {"dfnID":"element-space","dfnText":"element space","external":false,"refSections":[{"refs":[{"id":"ref-for-element-space"},{"id":"ref-for-element-space\u2460"},{"id":"ref-for-element-space\u2461"}],"title":"9.2.1. Coordinate spaces and length units"},{"refs":[{"id":"ref-for-element-space\u2462"},{"id":"ref-for-element-space\u2463"}],"title":"9.2.2. Model bounds and fitting"},{"refs":[{"id":"ref-for-element-space\u2464"}],"title":"9.2.4. Orbit fit"}],"url":"#element-space"},
-"elementdef-model": {"dfnID":"elementdef-model","dfnText":"model","external":false,"refSections":[{"refs":[{"id":"ref-for-elementdef-model\u2461"},{"id":"ref-for-elementdef-model\u2462"},{"id":"ref-for-elementdef-model\u2463"},{"id":"ref-for-elementdef-model\u2464"}],"title":"1. Introduction"},{"refs":[{"id":"ref-for-elementdef-model\u2465"}],"title":"2.3. Stateful interaction with model contents"},{"refs":[{"id":"ref-for-elementdef-model\u2466"}],"title":"3.3. Supporting multiple formats"},{"refs":[{"id":"ref-for-elementdef-model\u2467"}],"title":"3.5. Making model accessible"},{"refs":[{"id":"ref-for-elementdef-model\u2468"},{"id":"ref-for-elementdef-model\u2460\u24ea"},{"id":"ref-for-elementdef-model\u2460\u2460"},{"id":"ref-for-elementdef-model\u2460\u2461"}],"title":"4. The model element"},{"refs":[{"id":"ref-for-elementdef-model\u2460\u2462"}],"title":"4.5. height attribute"},{"refs":[{"id":"ref-for-elementdef-model\u2460\u2463"}],"title":"4.6. loading attribute"},{"refs":[{"id":"ref-for-elementdef-model\u2460\u2464"}],"title":"4.10. width attribute"},{"refs":[{"id":"ref-for-elementdef-model\u2460\u2465"},{"id":"ref-for-elementdef-model\u2460\u2466"}],"title":"6.1. The source element\u2019s parent is a model element"},{"refs":[{"id":"ref-for-elementdef-model\u2460\u2467"},{"id":"ref-for-elementdef-model\u2460\u2468"},{"id":"ref-for-elementdef-model\u2461\u24ea"},{"id":"ref-for-elementdef-model\u2461\u2460"},{"id":"ref-for-elementdef-model\u2461\u2461"}],"title":"9.3. Embedded content"},{"refs":[{"id":"ref-for-elementdef-model\u2461\u2462"}],"title":"10. Events"},{"refs":[{"id":"ref-for-elementdef-model\u2461\u2463"}],"title":"11. Formats"},{"refs":[{"id":"ref-for-elementdef-model\u2461\u2464"}],"title":"12. Overlap with \"media elements\""},{"refs":[{"id":"ref-for-elementdef-model\u2461\u2465"}],"title":"13.2. Integrations with source element"},{"refs":[{"id":"ref-for-elementdef-model\u2461\u2466"}],"title":"14.1. Media Playback States (:playing, :paused, :seeking)"},{"refs":[{"id":"ref-for-elementdef-model\u2461\u2467"}],"title":"15. Fullscreen integration"},{"refs":[{"id":"ref-for-elementdef-model\u2461\u2468"}],"title":"18.3. Content Security Policy"},{"refs":[{"id":"ref-for-elementdef-model\u2462\u24ea"}],"title":"19. Accessibility"},{"refs":[{"id":"ref-for-elementdef-model\u2462\u2460"}],"title":"19.2. For authors"},{"refs":[{"id":"ref-for-elementdef-model\u2462\u2461"}],"title":"19.3. For implementers"}],"url":"#elementdef-model"},
+"elementdef-model": {"dfnID":"elementdef-model","dfnText":"model","external":false,"refSections":[{"refs":[{"id":"ref-for-elementdef-model\u2461"},{"id":"ref-for-elementdef-model\u2462"},{"id":"ref-for-elementdef-model\u2463"},{"id":"ref-for-elementdef-model\u2464"}],"title":"1. Introduction"},{"refs":[{"id":"ref-for-elementdef-model\u2465"}],"title":"2.3. Stateful interaction with model contents"},{"refs":[{"id":"ref-for-elementdef-model\u2466"}],"title":"3.3. Supporting multiple formats"},{"refs":[{"id":"ref-for-elementdef-model\u2467"}],"title":"3.5. Making model accessible"},{"refs":[{"id":"ref-for-elementdef-model\u2468"},{"id":"ref-for-elementdef-model\u2460\u24ea"},{"id":"ref-for-elementdef-model\u2460\u2460"},{"id":"ref-for-elementdef-model\u2460\u2461"}],"title":"4. The model element"},{"refs":[{"id":"ref-for-elementdef-model\u2460\u2462"}],"title":"4.5. height attribute"},{"refs":[{"id":"ref-for-elementdef-model\u2460\u2463"}],"title":"4.6. loading attribute"},{"refs":[{"id":"ref-for-elementdef-model\u2460\u2464"}],"title":"4.10. width attribute"},{"refs":[{"id":"ref-for-elementdef-model\u2460\u2465"},{"id":"ref-for-elementdef-model\u2460\u2466"}],"title":"6.1. The source element\u2019s parent is a model element"},{"refs":[{"id":"ref-for-elementdef-model\u2460\u2467"},{"id":"ref-for-elementdef-model\u2460\u2468"},{"id":"ref-for-elementdef-model\u2461\u24ea"},{"id":"ref-for-elementdef-model\u2461\u2460"},{"id":"ref-for-elementdef-model\u2461\u2461"}],"title":"9.3. Embedded content"},{"refs":[{"id":"ref-for-elementdef-model\u2461\u2462"}],"title":"10. Events"},{"refs":[{"id":"ref-for-elementdef-model\u2461\u2463"}],"title":"11. Formats"},{"refs":[{"id":"ref-for-elementdef-model\u2461\u2464"}],"title":"12. Overlap with \"media elements\""},{"refs":[{"id":"ref-for-elementdef-model\u2461\u2465"}],"title":"13.2. Integrations with source element"},{"refs":[{"id":"ref-for-elementdef-model\u2461\u2466"}],"title":"14.1. Media Playback States (:playing, :paused, :seeking)"},{"refs":[{"id":"ref-for-elementdef-model\u2461\u2467"}],"title":"15. Fullscreen integration"},{"refs":[{"id":"ref-for-elementdef-model\u2461\u2468"},{"id":"ref-for-elementdef-model\u2462\u24ea"},{"id":"ref-for-elementdef-model\u2462\u2460"},{"id":"ref-for-elementdef-model\u2462\u2461"},{"id":"ref-for-elementdef-model\u2462\u2462"}],"title":"18.1. Secure contexts"},{"refs":[{"id":"ref-for-elementdef-model\u2462\u2463"}],"title":"18.4. Content Security Policy"},{"refs":[{"id":"ref-for-elementdef-model\u2462\u2464"}],"title":"19. Accessibility"},{"refs":[{"id":"ref-for-elementdef-model\u2462\u2465"}],"title":"19.2. For authors"},{"refs":[{"id":"ref-for-elementdef-model\u2462\u2466"}],"title":"19.3. For implementers"}],"url":"#elementdef-model"},
 "f01cfe13": {"dfnID":"f01cfe13","dfnText":":playing","external":true,"refSections":[{"refs":[{"id":"ref-for-selectordef-playing"},{"id":"ref-for-selectordef-playing\u2460"}],"title":"14.1. Media Playback States (:playing, :paused, :seeking)"},{"refs":[{"id":"ref-for-selectordef-playing\u2461"}],"title":"15. Fullscreen integration"}],"url":"https://drafts.csswg.org/selectors-4/#selectordef-playing"},
 "f0811ff8": {"dfnID":"f0811ff8","dfnText":"img","external":true,"refSections":[{"refs":[{"id":"ref-for-the-img-element"}],"title":"4. The model element"}],"url":"https://html.spec.whatwg.org/multipage/embedded-content.html#the-img-element"},
 "f49edb73": {"dfnID":"f49edb73","dfnText":"expose a user interface to the user","external":true,"refSections":[{"refs":[{"id":"ref-for-expose-a-user-interface-to-the-user"}],"title":"9.3. Embedded content"}],"url":"https://html.spec.whatwg.org/multipage/media.html#expose-a-user-interface-to-the-user"},
 "fb5883a3": {"dfnID":"fb5883a3","dfnText":"valid non-negative integer","external":true,"refSections":[{"refs":[{"id":"ref-for-valid-non-negative-integer"}],"title":"4.5. height attribute"},{"refs":[{"id":"ref-for-valid-non-negative-integer\u2460"}],"title":"4.10. width attribute"}],"url":"https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-non-negative-integer"},
-"htmlmodelelement": {"dfnID":"htmlmodelelement","dfnText":"HTMLModelElement","external":false,"refSections":[{"refs":[{"id":"ref-for-htmlmodelelement\u2460"}],"title":"4. The model element"},{"refs":[{"id":"ref-for-htmlmodelelement\u2461"},{"id":"ref-for-htmlmodelelement\u2462"}],"title":"5. The HTMLModelElement interface"}],"url":"#htmlmodelelement"},
+"htmlmodelelement": {"dfnID":"htmlmodelelement","dfnText":"HTMLModelElement","external":false,"refSections":[{"refs":[{"id":"ref-for-htmlmodelelement\u2460"}],"title":"4. The model element"},{"refs":[{"id":"ref-for-htmlmodelelement\u2461"},{"id":"ref-for-htmlmodelelement\u2462"}],"title":"5. The HTMLModelElement interface"},{"refs":[{"id":"ref-for-htmlmodelelement\u2463"}],"title":"18.1. Secure contexts"}],"url":"#htmlmodelelement"},
 "model-fit-algorithm": {"dfnID":"model-fit-algorithm","dfnText":"model fit algorithm","external":false,"refSections":[{"refs":[{"id":"ref-for-model-fit-algorithm"}],"title":"9.2.2. Model bounds and fitting"},{"refs":[{"id":"ref-for-model-fit-algorithm\u2460"}],"title":"9.2.3. Automatic fitting after resize"}],"url":"#model-fit-algorithm"},
+"model-resource-loading-is-permitted": {"dfnID":"model-resource-loading-is-permitted","dfnText":"model resource loading is permitted","external":false,"refSections":[{"refs":[{"id":"ref-for-model-resource-loading-is-permitted"},{"id":"ref-for-model-resource-loading-is-permitted\u2460"},{"id":"ref-for-model-resource-loading-is-permitted\u2461"}],"title":"18.1. Secure contexts"}],"url":"#model-resource-loading-is-permitted"},
 "model-space": {"dfnID":"model-space","dfnText":"model space","external":false,"refSections":[{"refs":[{"id":"ref-for-model-space"},{"id":"ref-for-model-space\u2460"},{"id":"ref-for-model-space\u2461"}],"title":"9.2.1. Coordinate spaces and length units"},{"refs":[{"id":"ref-for-model-space\u2462"},{"id":"ref-for-model-space\u2463"}],"title":"9.2.2. Model bounds and fitting"}],"url":"#model-space"},
 "orbit-fit": {"dfnID":"orbit-fit","dfnText":"orbit fit","external":false,"refSections":[],"url":"#orbit-fit"},
 "orbit-fit-algorithm": {"dfnID":"orbit-fit-algorithm","dfnText":"orbit fit algorithm","external":false,"refSections":[{"refs":[{"id":"ref-for-orbit-fit-algorithm"}],"title":"9.2.2. Model bounds and fitting"},{"refs":[{"id":"ref-for-orbit-fit-algorithm\u2460"},{"id":"ref-for-orbit-fit-algorithm\u2461"}],"title":"9.2.3. Automatic fitting after resize"},{"refs":[{"id":"ref-for-orbit-fit-algorithm\u2462"}],"title":"9.2.4. Orbit fit"}],"url":"#orbit-fit-algorithm"},
@@ -2664,6 +2779,7 @@ function genLinkingSyntaxes(dfn) {
 {
 let refsData = {
 "#automatic-fitting-enabled": {"displayText":"automatic fitting enabled","export":true,"for_":[],"level":"","normative":true,"shortname":"model-element","spec":"model-element","status":"local","text":"automatic fitting enabled","type":"dfn","url":"#automatic-fitting-enabled"},
+"#block-model-resource-loading": {"displayText":"block model resource loading","export":true,"for_":[],"level":"","normative":true,"shortname":"model-element","spec":"model-element","status":"local","text":"block model resource loading","type":"dfn","url":"#block-model-resource-loading"},
 "#bounding-box-calculation-algorithm": {"displayText":"bounding box calculation algorithm","export":true,"for_":[],"level":"","normative":true,"shortname":"model-element","spec":"model-element","status":"local","text":"bounding box calculation algorithm","type":"dfn","url":"#bounding-box-calculation-algorithm"},
 "#css-derived-meter": {"displayText":"css-derived meter","export":true,"for_":[],"level":"","normative":true,"shortname":"model-element","spec":"model-element","status":"local","text":"css-derived meter","type":"dfn","url":"#css-derived-meter"},
 "#dom-htmlmodelelement-boundingboxcenter": {"displayText":"boundingBoxCenter","export":true,"for_":["HTMLModelElement"],"level":"","normative":true,"shortname":"model-element","spec":"model-element","status":"local","text":"boundingBoxCenter","type":"attribute","url":"#dom-htmlmodelelement-boundingboxcenter"},
@@ -2686,9 +2802,13 @@ let refsData = {
 "#elementdef-model": {"displayText":"model","export":true,"for_":[],"level":"","normative":true,"shortname":"model-element","spec":"model-element","status":"local","text":"model","type":"element","url":"#elementdef-model"},
 "#htmlmodelelement": {"displayText":"HTMLModelElement","export":true,"for_":[],"level":"","normative":true,"shortname":"model-element","spec":"model-element","status":"local","text":"HTMLModelElement","type":"interface","url":"#htmlmodelelement"},
 "#model-fit-algorithm": {"displayText":"model fit algorithm","export":true,"for_":[],"level":"","normative":true,"shortname":"model-element","spec":"model-element","status":"local","text":"model fit algorithm","type":"dfn","url":"#model-fit-algorithm"},
+"#model-resource-loading-is-permitted": {"displayText":"model resource loading is permitted","export":true,"for_":[],"level":"","normative":true,"shortname":"model-element","spec":"model-element","status":"local","text":"model resource loading is permitted","type":"dfn","url":"#model-resource-loading-is-permitted"},
 "#model-space": {"displayText":"model space","export":true,"for_":[],"level":"","normative":true,"shortname":"model-element","spec":"model-element","status":"local","text":"model space","type":"dfn","url":"#model-space"},
 "#orbit-fit-algorithm": {"displayText":"orbit fit algorithm","export":true,"for_":[],"level":"","normative":true,"shortname":"model-element","spec":"model-element","status":"local","text":"orbit fit algorithm","type":"dfn","url":"#orbit-fit-algorithm"},
 "#physical-presentation-space": {"displayText":"physical presentation space","export":true,"for_":[],"level":"","normative":true,"shortname":"model-element","spec":"model-element","status":"local","text":"physical presentation space","type":"dfn","url":"#physical-presentation-space"},
+"https://dom.spec.whatwg.org/#concept-node-adopt": {"displayText":"adopt","export":true,"for_":[],"level":"1","normative":true,"shortname":"dom","spec":"dom","status":"current","text":"adopt","type":"dfn","url":"https://dom.spec.whatwg.org/#concept-node-adopt"},
+"https://dom.spec.whatwg.org/#concept-node-adopt-ext": {"displayText":"adopting steps","export":true,"for_":[],"level":"1","normative":true,"shortname":"dom","spec":"dom","status":"current","text":"adopting steps","type":"dfn","url":"https://dom.spec.whatwg.org/#concept-node-adopt-ext"},
+"https://dom.spec.whatwg.org/#concept-node-document": {"displayText":"node document","export":true,"for_":["Node"],"level":"1","normative":true,"shortname":"dom","spec":"dom","status":"current","text":"node document","type":"dfn","url":"https://dom.spec.whatwg.org/#concept-node-document"},
 "https://drafts.csswg.org/css-box-3/#content-box": {"displayText":"content box","export":true,"for_":[],"level":"3","normative":true,"shortname":"css-box","spec":"css-box-3","status":"current","text":"content box","type":"dfn","url":"https://drafts.csswg.org/css-box-3/#content-box"},
 "https://drafts.csswg.org/css-cascade-5/#used-value": {"displayText":"used value","export":true,"for_":[],"level":"5","normative":true,"shortname":"css-cascade","spec":"css-cascade-5","status":"current","text":"used value","type":"dfn","url":"https://drafts.csswg.org/css-cascade-5/#used-value"},
 "https://drafts.csswg.org/css-sizing-3/#sizing-property": {"displayText":"sizing property","export":true,"for_":[],"level":"3","normative":true,"shortname":"css-sizing","spec":"css-sizing-3","status":"current","text":"sizing property","type":"dfn","url":"https://drafts.csswg.org/css-sizing-3/#sizing-property"},
@@ -2727,16 +2847,21 @@ let refsData = {
 "https://html.spec.whatwg.org/multipage/media.html#the-track-element": {"displayText":"track","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"track","type":"element","url":"https://html.spec.whatwg.org/multipage/media.html#the-track-element"},
 "https://html.spec.whatwg.org/multipage/media.html#video": {"displayText":"video","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"video","type":"element","url":"https://html.spec.whatwg.org/multipage/media.html#video"},
 "https://html.spec.whatwg.org/multipage/urls-and-fetching.html#valid-non-empty-url-potentially-surrounded-by-spaces": {"displayText":"valid non-empty URL potentially surrounded by spaces","export":true,"for_":[],"level":"","normative":true,"shortname":"html","spec":"html","status":"anchor-block","text":"valid non-empty url potentially surrounded by spaces","type":"dfn","url":"https://html.spec.whatwg.org/multipage/urls-and-fetching.html#valid-non-empty-url-potentially-surrounded-by-spaces"},
+"https://html.spec.whatwg.org/multipage/webappapis.html#dom-issecurecontext": {"displayText":"isSecureContext","export":true,"for_":["WindowOrWorkerGlobalScope"],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"isSecureContext","type":"attribute","url":"https://html.spec.whatwg.org/multipage/webappapis.html#dom-issecurecontext"},
+"https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object": {"displayText":"relevant settings object","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"relevant settings object","type":"dfn","url":"https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object"},
+"https://html.spec.whatwg.org/multipage/webappapis.html#secure-context": {"displayText":"secure context","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"secure context","type":"dfn","url":"https://html.spec.whatwg.org/multipage/webappapis.html#secure-context"},
 "https://infra.spec.whatwg.org/#list": {"displayText":"list","export":true,"for_":[],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"list","type":"dfn","url":"https://infra.spec.whatwg.org/#list"},
 "https://infra.spec.whatwg.org/#list-append": {"displayText":"append","export":true,"for_":["list"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"append","type":"dfn","url":"https://infra.spec.whatwg.org/#list-append"},
 "https://infra.spec.whatwg.org/#list-extend": {"displayText":"extend","export":true,"for_":["list"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"extend","type":"dfn","url":"https://infra.spec.whatwg.org/#list-extend"},
 "https://infra.spec.whatwg.org/#list-remove": {"displayText":"remove","export":true,"for_":["list","set"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"remove","type":"dfn","url":"https://infra.spec.whatwg.org/#list-remove"},
 "https://webidl.spec.whatwg.org/#Exposed": {"displayText":"Exposed","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"Exposed","type":"extended-attribute","url":"https://webidl.spec.whatwg.org/#Exposed"},
+"https://webidl.spec.whatwg.org/#SecureContext": {"displayText":"SecureContext","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"SecureContext","type":"extended-attribute","url":"https://webidl.spec.whatwg.org/#SecureContext"},
 "https://webidl.spec.whatwg.org/#idl-DOMString": {"displayText":"DOMString","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"DOMString","type":"interface","url":"https://webidl.spec.whatwg.org/#idl-DOMString"},
 "https://webidl.spec.whatwg.org/#idl-USVString": {"displayText":"USVString","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"USVString","type":"interface","url":"https://webidl.spec.whatwg.org/#idl-USVString"},
 "https://webidl.spec.whatwg.org/#idl-promise": {"displayText":"Promise","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"Promise","type":"interface","url":"https://webidl.spec.whatwg.org/#idl-promise"},
 "https://webidl.spec.whatwg.org/#idl-undefined": {"displayText":"undefined","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"undefined","type":"interface","url":"https://webidl.spec.whatwg.org/#idl-undefined"},
 "https://webidl.spec.whatwg.org/#new": {"displayText":"new","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"new","type":"dfn","url":"https://webidl.spec.whatwg.org/#new"},
+"https://webidl.spec.whatwg.org/#securityerror": {"displayText":"SecurityError","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"SecurityError","type":"exception","url":"https://webidl.spec.whatwg.org/#securityerror"},
 };
 
 function mkRefHint(link, ref) {
