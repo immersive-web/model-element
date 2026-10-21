@@ -31,6 +31,9 @@ Link Defaults: html (dfn) relevant settings object
 Link Defaults: html (dfn) secure context
 Link Defaults: dom (dfn) adopting steps
 Link Defaults: dom (dfn) adopt
+Link Defaults: html (dfn) encoding-parsing a URL
+Link Defaults: html (dfn) reflect
+Link Defaults: html (dfn) delays the load event
 Boilerplate: issues-index yes
 Ignored Terms: stagemode
 </pre>
@@ -190,6 +193,28 @@ is not supported on the target user agent.
 
 </div>
 
+## Providing a loading preview and fallback content ## {#example-model-poster}
+
+<div class="example" id="example-poster-and-fallback">
+
+The poster provides an image preview while the model loads. The fallback content
+is displayed if the model cannot be loaded, loading is blocked, or the browser
+does not support <{model}>. A <{picture}> in the fallback content can select images
+for different color schemes and formats:
+
+```html
+<model src="3d-assets/teapot.usdz" poster="image-assets/teapot-preview.png">
+  <picture>
+    <source media="(prefers-color-scheme: dark)"
+            srcset="image-assets/teapot-dark.avif" type="image/avif">
+    <source srcset="image-assets/teapot-light.avif" type="image/avif">
+    <img src="image-assets/teapot.png" alt="A ceramic teapot">
+  </picture>
+</model>
+```
+
+</div>
+
 # The <dfn element>model</dfn> element # {#the-model-element}
 
 : Categories
@@ -222,7 +247,7 @@ is not supported on the target user agent.
 :: <{model/height}> — Vertical dimension
 :: <{model/loading}> — Used when determining loading deferral
 :: <{model/loop}> — Whether to loop the media resource
-:: <{model/poster}> — Poster frame to show while the resource is loading
+:: <{model/poster}> — Image preview to show before the model is ready to display
 :: <{model/src}> — Address of the resource
 :: <{model/width}> — Horizontal dimension
 
@@ -234,16 +259,11 @@ The <{model}> element is used for embedding 3D models into a document.
 Its model-specific APIs, resource processing, and rendering are restricted to
 [=secure contexts=], as specified in [[#model-secure-contexts]].
 
-Content may be provided inside the <{model}> element. User agents
-should not show this content to the user unless model loading is blocked by
-[[#model-secure-contexts]]; it is also intended for web browsers which do not support
-<{model}>, to be shown as [=fallback content=].
-
-ISSUE: <span id="issue-14"></span> HTML defines an algorithm to determine the &#91;=poster frame=&#93;, but it's
-  <{video}> specific. Should we accommodate it support <{model}>
-  or specify our own?
-  We also need to consider what happens if the animation resets and the
-  model is paused: does the poster show again? (i.e., do we follow video's behavior?) [GitHub issue #14: Update poster algorithm for model?](https://github.com/immersive-web/model-element/issues/14).
+Content may be provided inside the <{model}> element as [=fallback content=].
+The element MUST represent this content when model loading is blocked or fails,
+as specified in [[#model-poster-display]]. It is also intended for browsers that
+do not support <{model}>. User agents MUST NOT show the fallback content while
+the model is loading or while available model content is displayed.
 
 ## <dfn element-attr for="model">autoplay</dfn> attribute ## {#autoplay-attribute}
 
@@ -271,9 +291,63 @@ ISSUE: <span id="issue-44"></span> Some <{model}>'s resources can be significant
 
 ## <dfn element-attr for="model">poster</dfn> attribute ## {#poster-attribute}
 
-The <{model/poster}> attribute gives the URL of an image file that the
-user agent can show while 3D content is unavailable. The attribute, if
-present, must contain a [=valid non-empty URL potentially surrounded by spaces=].
+The <{model/poster}> attribute gives the URL of an image file that represents the
+model and is displayed before the model is ready to display. The attribute, if
+present, MUST contain a [=valid non-empty URL potentially surrounded by spaces=].
+
+Each <{model}> element has a <dfn for="model" noexport id="model-poster-frame">poster frame</dfn>
+that is an image or null, initially null.
+
+When a <{model}> element is created, or its <{model/poster}> attribute is set,
+changed, or removed, the user agent MUST [=determine a model poster frame=] for
+the element, regardless of whether the poster is currently displayed. A change
+to the document's base URL alone MUST NOT restart this algorithm.
+
+<div class="algorithm" data-algorithm="determine-model-poster-frame">
+
+To <dfn noexport>determine a model poster frame</dfn> for a <{model}> element |element|:
+
+  1. Abort any existing instance of this algorithm for |element| without changing
+    its [=model/poster frame=]. Results from an aborted instance MUST NOT
+    subsequently change the poster frame.
+  1. If |element|'s <{model/poster}> attribute is absent or its value is the empty
+    string, set |element|'s [=model/poster frame=] to null and return.
+  1. Let |url| be the result of [=encoding-parsing a URL=] given the
+    <{model/poster}> attribute's value, relative to |element|'s [=node document=].
+  1. If |url| is failure, set |element|'s [=model/poster frame=] to null and return.
+  1. Let |request| be a new [=/request=] whose [=request/URL=] is |url|,
+    [=request/client=] is |element|'s [=node document=]'s
+    [=relevant settings object=], [=request/destination=] is `"image"`,
+    [=request/initiator type=] is `"model"`, [=request/credentials mode=] is
+    `"include"`, and whose [=request/use-URL-credentials flag=] is set.
+  1. [=Fetch=] |request|. This MUST [=delays the load event|delay the load event=]
+    of |element|'s [=node document=] until this instance of the algorithm
+    completes or is aborted.
+  1. When fetching and image decoding complete, if an image is obtained, set
+    |element|'s [=model/poster frame=] to that image. Otherwise, set it to null.
+
+</div>
+
+Loading or changing a poster image MUST NOT interrupt available model content.
+The poster's availability MUST NOT be a condition for resolving
+{{HTMLModelElement/ready}}, and a failure to fetch or decode the poster MUST NOT
+reject that promise or cause the element to display its fallback content.
+
+The {{HTMLModelElement/poster}} IDL attribute MUST [=reflect=] the
+<{model/poster}> content attribute as a URL.
+
+Note: Poster retrieval follows the
+  [poster-frame retrieval rules for `<video>`](https://html.spec.whatwg.org/multipage/media.html#attr-video-poster)
+  in [[HTML]], with `"model"` as the request's initiator type. Poster display
+  follows [[#model-poster-display]]. The <{model/loading}> attribute's lazy-loading
+  behavior remains to be defined in [GitHub issue #44](https://github.com/immersive-web/model-element/issues/44).
+
+ISSUE: <span id="issue-130"></span> Like <{video/poster}>, <{model/poster}> accepts a single image URL.
+  Should model loading previews also support alternative formats, resolutions,
+  aspect ratios, or color schemes, or richer placeholders such as another model?
+  A <{picture}> in fallback content supports image selection after a model fails,
+  but does not provide a responsive loading poster. See [GitHub issue #130:
+  What role, if any, should poster play?](https://github.com/immersive-web/model-element/issues/130).
 
 ## <dfn element-attr for="model">src</dfn> attribute ## {#src-attribute}
 
@@ -288,6 +362,8 @@ of the <{model}> element in CSS pixels. Zero is permitted.
 <pre class="idl">
 [Exposed=Window, SecureContext]
 interface HTMLModelElement : HTMLElement {
+  [CEReactions, ReflectURL] attribute USVString poster;
+
   readonly attribute Promise&lt;HTMLModelElement&gt; ready;
   readonly attribute DOMPointReadOnly boundingBoxCenter;
   readonly attribute DOMPointReadOnly boundingBoxExtents;
@@ -632,10 +708,51 @@ Whether a <{model}> element is [=expose a user interface to the user|exposing a 
 of the rendering; controls are expected to be overlaid above the page content without
 causing any layout changes, and may disappear when the user does not need them.
 
-When a <{model}> element represents a poster frame, the poster frame is expected to be rendered
-at the largest size that maintains the aspect ratio of that poster frame without being
-taller or wider than the <{model}> element itself, and is expected to be centered in the
-<{model}> element.
+### Poster display ### {#model-poster-display}
+
+For poster display, <dfn noexport>model content is available</dfn> when the selected
+model resource is loaded, processed, and ready to display, the condition used to
+resolve {{HTMLModelElement/ready}}. Beginning to load a new model resource makes
+the previous resource unavailable for the purposes of these display rules.
+
+A <{model}> element MUST represent the content given by the first matching
+condition below:
+
+  1. If [=model resource loading is permitted=] is false, one or more model sources
+    were specified but source selection has finished without finding a supported
+    resource, or the selected model resource cannot be loaded or decoded, the
+    element represents its [=fallback content=].
+  1. Otherwise, if [=model content is available=], the element represents that
+    model content.
+  1. Otherwise, if its [=model/poster frame=] is not null, the element represents
+    that poster frame.
+  1. Otherwise, the element represents transparent black with no natural
+    dimensions.
+
+The absence of a model source alone MUST NOT be treated as a load failure for
+these display rules. A poster can therefore be displayed before a model source
+is provided.
+
+When the element represents its fallback content, it MUST NOT also display its
+poster frame. If no fallback content is provided, the element represents
+nothing. Beginning a new model load MUST re-evaluate these display rules; a
+failure of a previous load MUST NOT prevent the new load's poster from displaying.
+
+Pausing, seeking, looping, or resetting a model's animation MUST NOT, by itself,
+cause the poster to be displayed again. A paused model MUST continue to display
+its current pose.
+
+When a <{model}> element represents its [=model/poster frame=], the image is
+expected to be rendered at the largest size that maintains its aspect ratio
+without being taller or wider than the <{model}> element itself, and is expected
+to be centered in the <{model}> element. The poster MUST NOT affect the model's
+bounding box or {{HTMLModelElement/entityTransform}}.
+
+Note: The poster is a loading preview, whereas fallback content is an alternative
+  when the model cannot be displayed. A poster failure does not constitute a model
+  failure. Posters are ordinary images; the secure-context restriction on 3D model
+  resources and environment maps does not prevent their retrieval. Their requests
+  remain subject to the normal image-loading rules in [[FETCH]] and [[MIX]].
 
 # Events # {#events}
 
