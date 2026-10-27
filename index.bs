@@ -41,6 +41,7 @@ Ignored Terms: stagemode
 ```anchors
 spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     type: dfn; text: valid non-empty URL potentially surrounded by spaces; url: urls-and-fetching.html#valid-non-empty-url-potentially-surrounded-by-spaces
+    type: dfn; text: boolean attribute; url: common-microsyntaxes.html#boolean-attribute
 ```
 
 <!-- Marcos Cáceres retired as editor on 2024-04-01. -->
@@ -240,8 +241,7 @@ for different color schemes and formats:
 
 : Content Attributes:
 :: [[HTML#global-attributes|Global attributes]]
-:: <{model/autoplay}> — Hint that the resource can be started
-    automatically when the page is loaded
+:: <{model/autoplay}> — Start the model's animation automatically when the resource is loaded
 :: <{model/stagemode}> — Allows the user to interact with the model in a specified mode
 :: <{model/crossorigin}> — How the element handles crossorigin requests
 :: <{model/height}> — Vertical dimension
@@ -267,7 +267,35 @@ the model is loading or while available model content is displayed.
 
 ## <dfn element-attr for="model">autoplay</dfn> attribute ## {#autoplay-attribute}
 
-Hint that the model can start its animation automatically, if present, when the asset is loaded.
+The <{model/autoplay}> attribute is a [=boolean attribute=] that controls whether
+the model's animation starts automatically when a new model resource is loaded.
+The {{HTMLModelElement/autoplay}} IDL attribute MUST [=reflect=] the content
+attribute.
+
+After the initial bounds calculation and fitting for a newly loaded model
+resource, and before resolving {{HTMLModelElement/ready}}, the user agent MUST
+[=initialize model animation playback=] for the element.
+
+<div class="algorithm" data-algorithm="initialize-model-animation-playback">
+
+To <dfn noexport>initialize model animation playback</dfn> for a <{model}> element
+|element|:
+
+  1. If |element|'s loaded model resource contains no animation, return.
+  1. Set the animation to its first frame and initialize playback in the paused
+    state.
+  1. If |element| has an <{model/autoplay}> attribute, begin animation playback.
+
+</div>
+
+After playback has been initialized, adding, removing, or changing
+<{model/autoplay}> MUST NOT by itself start, pause, or restart the current
+animation. Its value is used when initializing a subsequently loaded model
+resource; recreating a renderer for the same resource MUST NOT reapply autoplay
+in place of the resource's existing playback state.
+
+Note: Autoplay controls initial animation playback and does not require eager
+  resource loading. A user agent can still defer loading an offscreen model.
 
 ## <dfn element-attr for="model">stagemode</dfn> attribute ## {#stagemode-attribute}
 
@@ -362,6 +390,7 @@ of the <{model}> element in CSS pixels. Zero is permitted.
 <pre class="idl">
 [Exposed=Window, SecureContext]
 interface HTMLModelElement : HTMLElement {
+  [CEReactions, Reflect] attribute boolean autoplay;
   [CEReactions, ReflectURL] attribute USVString poster;
 
   readonly attribute Promise&lt;HTMLModelElement&gt; ready;
