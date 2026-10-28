@@ -230,8 +230,8 @@ for different color schemes and formats:
 :: [=Flow content=].
 :: [=Phrasing content=].
 :: [=Embedded content=].
-:: If the element's <{model/stagemode}> attribute is set to anything other than
-    `none`: [=interactive content=].
+:: If the element's <{model/stagemode}> attribute is in the `orbit` state:
+    [=interactive content=].
 :: [=Palpable content=].
 
 : Contexts in which this element can be used:
@@ -306,6 +306,17 @@ Note: Autoplay controls initial animation playback and does not require eager
   resource loading. A user agent can still defer loading an offscreen model.
 
 ## <dfn element-attr for="model">stagemode</dfn> attribute ## {#stagemode-attribute}
+
+The <{model/stagemode}> attribute determines the model's stage mode. It is an
+[=enumerated attribute=]. The <dfn attr-value for="model/stagemode">none</dfn>
+keyword selects the [[#stage-mode-none|none mode]], and the
+<dfn attr-value for="model/stagemode">orbit</dfn> keyword selects the
+[[#stage-mode-orbit|orbit mode]]. Its missing value default and invalid value
+default are the `none` state.
+
+Changes to the selected mode MUST apply the behavior defined in [[#interaction]]
+and [[#automatic-fitting]]. The {{HTMLModelElement/stageMode}} IDL attribute
+MUST [=reflect=] the <{model/stagemode}> content attribute.
 
 ## <dfn element-attr for="model">controls</dfn> attribute ## {#controls-attribute}
 
@@ -436,7 +447,7 @@ specific stage modes, including `none` and `orbit`.
 
 ## none ## {#stage-mode-none}
 
-The default value for {{HTMLModelElement/stageMode}}. In this this mode, input events do not have
+The default stage mode. In this mode, input events do not have
 any direct action on the behavior of the element.
 
 ## orbit ## {#stage-mode-orbit}
