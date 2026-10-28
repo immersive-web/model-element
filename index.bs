@@ -267,6 +267,7 @@ for different color schemes and formats:
 interface HTMLModelElement : HTMLElement {
   [CEReactions, Reflect] attribute unsigned long width;
   [CEReactions, Reflect] attribute unsigned long height;
+  [CEReactions, ReflectURL] attribute USVString src;
   [CEReactions, Reflect] attribute boolean autoplay;
   [CEReactions, Reflect] attribute boolean loop;
   [CEReactions] attribute DOMString? crossOrigin;
@@ -445,6 +446,11 @@ ISSUE: <span id="issue-130"></span> Like <{video/poster}>, <{model/poster}> acce
   What role, if any, should poster play?](https://github.com/immersive-web/model-element/issues/130).
 
 ## <dfn element-attr for="model">src</dfn> attribute ## {#src-attribute}
+
+The <{model/src}> attribute gives the URL of the model resource. If present, it
+MUST contain a [=valid non-empty URL potentially surrounded by spaces=]. The
+{{HTMLModelElement/src}} IDL attribute MUST [=reflect=] the content attribute as a
+URL.
 
 ## <dfn element-attr for="model">width</dfn> attribute ## {#width-attribute}
 
