@@ -480,7 +480,81 @@ composed using that object's existing API.
 
 The point and matrix interfaces and their operations are defined in [[GEOMETRY-1]].
 
+Each <{model}> element has a <dfn noexport>stored entity transform</dfn>, initially
+a {{DOMMatrixReadOnly}} representing the identity matrix with
+{{DOMMatrixReadOnly/is2D}} set to false.
+
+For the setter steps below, an element's <dfn noexport>model renderer</dfn> is the
+user agent's internal instance that manages loading and rendering the element's
+model, or retained rendering state used while rendering is suspended. It is null
+until such an instance is created, and becomes null when that instance and its
+retained state are discarded. A renderer can exist before
+{{HTMLModelElement/ready}} resolves; its existence does not require the model to
+be visible.
+
 Updates to the {{HTMLModelElement/entityTransform}} SHOULD be reflected on the next rendered frame.
+
+<div class="algorithm" data-algorithm="get-model-entity-transform">
+
+The {{HTMLModelElement/entityTransform}} getter steps are:
+
+  1. Return this element's [=stored entity transform=].
+
+</div>
+
+### Restrictions on script-assigned transforms ### {#entity-transform-restrictions}
+
+A matrix assigned to {{HTMLModelElement/entityTransform}} by script MUST be
+representable as a composition of scale, rotation, and translation, without
+shear or perspective. Its scale factors MUST be non-zero and uniform across the
+X, Y, and Z axes: the scale factors in that decomposition MUST have the same sign
+and magnitude. All matrix components MUST be finite.
+
+When validating a matrix, the user agent MAY account for floating-point rounding
+in the scale factors and in reconstructing the matrix from its scale, rotation,
+and translation. It MUST NOT replace an unsupported matrix with an approximation
+that discards non-uniform scaling, shear, or perspective.
+
+<div class="algorithm" data-algorithm="set-model-entity-transform">
+
+The {{HTMLModelElement/entityTransform}} setter steps, given |value|, are:
+
+  1. Let |element| be this <{model}> element.
+  1. If |element| is in `orbit` mode, throw an {{InvalidStateError}} exception.
+  1. If |element|'s [=model renderer=] is null, throw an {{UnknownError}} exception.
+  1. Let |matrix| be a copy of |value|'s 16 matrix components.
+  1. If |matrix| does not satisfy the matrix restrictions above, throw a
+    {{NotSupportedError}} exception.
+  1. [=Update the model entity transform=] for |element|, given |matrix|.
+  1. Set |element|'s [=automatic fitting enabled=] flag to false.
+
+</div>
+
+If the setter throws, the [=stored entity transform=] and
+[=automatic fitting enabled=] flag MUST remain unchanged. The model MUST continue
+to use its previous transform.
+
+These validation requirements apply to script assignments. They do not prevent
+the user agent's fitting algorithms from producing a zero scale when an element
+has a zero-sized viewport, as specified below.
+
+<div class="algorithm" data-algorithm="update-model-entity-transform">
+
+To <dfn noexport>update the model entity transform</dfn> for a <{model}> element
+|element|, given a matrix |matrix|:
+
+  1. Let |transform| be a new {{DOMMatrixReadOnly}} initialized with the 16
+    components of |matrix|, with {{DOMMatrixReadOnly/is2D}} set to false.
+  1. Set |element|'s [=stored entity transform=] to |transform|.
+
+</div>
+
+This internal operation does not invoke the
+{{HTMLModelElement/entityTransform}} setter, validate script-assigned transforms,
+or change the [=automatic fitting enabled=] flag. Fitting and user-agent-controlled
+orbit rotations MUST use this operation to expose their updated transforms. A
+previously returned {{DOMMatrixReadOnly}} remains unchanged when a new transform
+is stored.
 
 ### Coordinate spaces and length units ### {#model-coordinate-spaces}
 
@@ -585,7 +659,7 @@ it by the existing model fit. No device-pixel-ratio adjustment is needed.
 
 On the initial load for a model, the user agent MUST run the
 [=bounding box calculation algorithm=] and store the resulting model-space bounds.
-The {{HTMLModelElement/entityTransform}} MUST be set so that
+The [=stored entity transform=] MUST be set so that
 the object is fully in view within the model element's laid-out content box
 on the page. Initial fitting uses the [=model fit algorithm=] with an identity rotation
 in `none` mode, or the [=orbit fit algorithm=] in `orbit` mode.
@@ -644,13 +718,15 @@ following steps.
   1. Let |yScale| be |height| divided by |extents|.y, or positive infinity if |extents|.y is zero.
   1. Let |scale| be the minimum of |xScale| and |yScale|. If both are positive infinity, set
     |scale| to 1. If either viewport dimension is zero, set |scale| to 0.
-  1. Set {{HTMLModelElement/entityTransform}} to a uniform scale of |scale| and the supplied
+  1. Let |transform| be a matrix with a uniform scale of |scale| and the supplied
     |rotation|.
-  1. Translate the model so that |center|, after applying the scale and rotation, is aligned
-    with the center of the viewport in X and Y, and is |scale| × |extents|.z / 2 behind
+  1. Set the translation in |transform| so that |center|, after applying the scale
+    and rotation, is aligned with the center of the viewport in X and Y, and is
+    |scale| × |extents|.z / 2 behind
     the viewport plane. The translation must account for the scaled and rotated position
     of |center|. With the identity rotation used for initial fitting, the front face of
     the scaled bounding box lies on the viewport plane and the rest lies behind it.
+  1. [=Update the model entity transform=] for the model element, given |transform|.
 
 Note: For initial fitting with an identity rotation, the translation in element space is
 (-|scale| × |center|.x, -|scale| × |center|.y, -|scale| × (|center|.z + |extents|.z / 2)). Scaling a model around its own origin
@@ -663,9 +739,9 @@ without compensating for its scaled center would not center an off-origin asset.
 Each model element has an <dfn noexport>automatic fitting enabled</dfn> flag, initially true.
 Beginning to load a new model resource MUST set this flag to true.
 
-A successful script assignment to {{HTMLModelElement/entityTransform}} in `none` mode
-MUST set [=automatic fitting enabled=] to false. An update made by a fitting algorithm
-MUST NOT disable automatic fitting.
+The {{HTMLModelElement/entityTransform}} setter disables [=automatic fitting enabled=]
+only after a successful script assignment. An internal update made by a fitting
+algorithm MUST NOT disable automatic fitting.
 
 Entering `orbit` mode MUST set [=automatic fitting enabled=] to true and apply the
 [=orbit fit algorithm=]. Returning from `orbit` to `none` MUST preserve the current
@@ -717,14 +793,19 @@ The <dfn>orbit fit algorithm</dfn> consists of the following steps.
     multiplied by `0.0254 / 96` to obtain [=CSS-derived meters=] in [=element space=].
   1. Let |scale| be the minimum of |width| and |height|, divided by |diameter|. If |diameter|
     is zero, set |scale| to 1. If either viewport dimension is zero, set |scale| to 0.
-  1. Preserve the model's current rotation and replace the scale in
-    {{HTMLModelElement/entityTransform}} with a uniform scale of |scale|.
-  1. Translate the model so that |center|, after applying the scale and rotation, is aligned
-    with the center of the viewport in X and Y, and is |scale| × |diameter| / 2 behind
+  1. Let |transform| be a matrix preserving the rotation of the model's current
+    [=stored entity transform=] and using a uniform scale of |scale|.
+  1. Set the translation in |transform| so that |center|, after applying the scale
+    and rotation, is aligned with the center of the viewport in X and Y, and is
+    |scale| × |diameter| / 2 behind
     the viewport plane. The translation must account for the scaled and rotated position
     of |center|, so that the enclosing sphere lies entirely behind the viewport plane.
+  1. [=Update the model entity transform=] for the model element, given |transform|.
   1. Apply subsequent orbit rotations about this fitted center, preserving its position.
-    The enclosing sphere then remains within the viewport at any orientation.
+    Reflect each resulting matrix by
+    [=update the model entity transform|updating the model entity transform=]
+    for the model element, given that matrix. The enclosing sphere then remains
+    within the viewport at any orientation.
 
 </div>
 
