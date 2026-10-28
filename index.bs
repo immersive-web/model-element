@@ -50,6 +50,8 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     type: dfn; text: CORS settings attribute; url: urls-and-fetching.html#cors-settings-attribute
     type: dfn; text: CORS settings attribute credentials mode; url: urls-and-fetching.html#cors-settings-attribute-credentials-mode
     type: dfn; text: limited to only known values; url: common-dom-interfaces.html#limited-to-only-known-values
+    type: dfn; text: transparent; url: dom.html#transparent
+    type: dfn; text: script-supporting elements; url: dom.html#script-supporting-elements-2
 ```
 
 <!-- Marcos Cáceres retired as editor on 2024-04-01. -->
@@ -238,11 +240,9 @@ for different color schemes and formats:
 :: Where [=embedded content=] is expected.
 
 : Content model:
-:: If the element has a <{model/src}> attribute: transparent, a <{picture}> or
-    <{img}>, or a [=media element=] descendant.
-:: If the element has no <{model/src}> attribute: Zero or more source elements,
-    then transparent, optionally intermixed with script-supporting
-    elements.
+:: If the element has a <{model/src}> attribute: [=transparent|Transparent=].
+:: If the element has no <{model/src}> attribute: Zero or more <{source}> children,
+    then [=transparent=], optionally intermixed with [=script-supporting elements=].
 
 : Tag omission in text/html:
 :: Neither tag is omissible.
@@ -254,7 +254,7 @@ for different color schemes and formats:
 :: <{model/crossorigin}> — Credentials mode for model, environment-map, and poster requests
 :: <{model/height}> — Vertical dimension
 :: <{model/loading}> — Used when determining loading deferral
-:: <{model/loop}> — Whether to loop the media resource
+:: <{model/loop}> — Whether to repeat the model's animation
 :: <{model/poster}> — Image preview to show before the model is ready to display
 :: <{model/src}> — Address of the resource
 :: <{model/width}> — Horizontal dimension
@@ -269,6 +269,7 @@ interface HTMLModelElement : HTMLElement {
   [CEReactions, Reflect] attribute unsigned long width;
   [CEReactions, Reflect] attribute unsigned long height;
   [CEReactions, Reflect] attribute boolean autoplay;
+  [CEReactions, Reflect] attribute boolean loop;
   [CEReactions] attribute DOMString? crossOrigin;
   [CEReactions, ReflectURL] attribute USVString poster;
 
@@ -364,6 +365,34 @@ ISSUE: <span id="issue-44"></span> Some <{model}>'s resources can be significant
   lazy-loaded. [GitHub issue #44: Lazy loading](https://github.com/immersive-web/model-element/issues/44).
 
 ## <dfn element-attr for="model">loop</dfn> attribute ## {#loop-attribute}
+
+The <{model/loop}> attribute is a [=boolean attribute=] that controls repetition
+of the model's animation. The {{HTMLModelElement/loop}} IDL attribute MUST
+[=reflect=] the content attribute.
+
+When a playing animation with non-zero duration reaches its end during forward
+playback or its beginning during reverse playback, the user agent MUST
+[=handle a model animation boundary=] for the element.
+
+<div class="algorithm" data-algorithm="handle-model-animation-boundary">
+
+To <dfn noexport>handle a model animation boundary</dfn> for a <{model}> element
+|element|:
+
+  1. If |element| has no <{model/loop}> attribute, pause the animation at the
+    endpoint it reached and return.
+  1. If playback is forward, seek to the animation's beginning; otherwise, seek
+    to its end.
+  1. Continue playback with the same direction and speed.
+
+</div>
+
+Changes to <{model/loop}> MUST affect subsequent boundary handling. They MUST NOT
+by themselves start, pause, or restart playback.
+
+Note: The [HTML media loop attribute](https://html.spec.whatwg.org/multipage/media.html#attr-media-loop)
+  describes the same forward-playback behavior. Model looping also applies to
+  reverse playback.
 
 ## <dfn element-attr for="model">poster</dfn> attribute ## {#poster-attribute}
 
