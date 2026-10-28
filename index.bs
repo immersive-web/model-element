@@ -36,6 +36,9 @@ Link Defaults: html (dfn) reflect
 Link Defaults: html (dfn) delays the load event
 Link Defaults: csp3 (dfn) media-src
 Link Defaults: csp3 (dfn) img-src
+Link Defaults: css-display-3 (dfn) replaced element
+Link Defaults: css-images-3 (dfn) natural dimensions
+Link Defaults: css-images-3 (dfn) default object size
 Boilerplate: issues-index yes
 Ignored Terms: stagemode
 </pre>
@@ -821,8 +824,39 @@ The <dfn>orbit fit algorithm</dfn> consists of the following steps.
 
 ## Embedded content ## {#embedded-content}
 
-ISSUE: <span id="issue-27"></span> What's the default CSS style for a <{model}> element? Should it have a border
-  around it? what about background color? etc. [GitHub issue #27: What's the default style?](https://github.com/immersive-web/model-element/issues/27).
+### Replaced-element sizing ### {#model-replaced-element-sizing}
+
+For CSS layout, a <{model}> element MUST be treated as a [=replaced element=]
+unless it represents [=fallback content=]. When it represents fallback content,
+it MUST be treated as an ordinary element, following
+[HTML's embedded-content rendering rules](https://html.spec.whatwg.org/multipage/rendering.html#embedded-content-rendering-rules)
+for <{object}>.
+
+When replaced, its used width and height follow the CSS sizing rules for
+[=replaced elements=] in [[CSS2]] and [[CSS-SIZING-3]], with [=natural dimensions=]
+determined below.
+Its [=default object size=] is 300 CSS pixels wide and 150 CSS pixels high,
+as for <{video}> in [[HTML]]. Object sizing follows [[CSS-IMAGES-3#sizing]].
+
+The <{model/width}> and <{model/height}> attributes MUST map to the corresponding
+CSS dimension properties and to ''aspect-ratio'' according to
+[HTML's dimension-attribute rendering rules](https://html.spec.whatwg.org/multipage/rendering.html#dimRendering)
+for <{video}>.
+
+<div class="algorithm" data-algorithm="determine-model-natural-dimensions">
+
+To <dfn noexport>determine model natural dimensions</dfn> for a <{model}> element
+|element|:
+
+  1. If |element| represents its [=model/poster frame=], return that image's
+    [=natural dimensions=].
+  1. Otherwise, return no [=natural dimensions=].
+
+</div>
+
+The user agent MUST use [=determine model natural dimensions=] when sizing the
+replaced element. Model geometry, model-space bounds, and
+{{HTMLModelElement/entityTransform}} MUST NOT supply natural CSS dimensions.
 
 Whether a <{model}> element is [=expose a user interface to the user|exposing a user interface=] is not expected to affect the size
 of the rendering; controls are expected to be overlaid above the page content without
