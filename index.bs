@@ -263,6 +263,28 @@ for different color schemes and formats:
 :: The {{HTMLModelElement}} interface provides a means to interface with
     the embedded resource.
 
+<pre class="idl" id="htmlmodelelement-interface">
+[Exposed=Window, SecureContext]
+interface HTMLModelElement : HTMLElement {
+  [CEReactions, Reflect] attribute unsigned long width;
+  [CEReactions, Reflect] attribute unsigned long height;
+  [CEReactions, Reflect] attribute boolean autoplay;
+  [CEReactions] attribute DOMString? crossOrigin;
+  [CEReactions, ReflectURL] attribute USVString poster;
+
+  readonly attribute Promise&lt;HTMLModelElement&gt; ready;
+  readonly attribute DOMPointReadOnly boundingBoxCenter;
+  readonly attribute DOMPointReadOnly boundingBoxExtents;
+
+  attribute DOMMatrixReadOnly entityTransform;
+
+  attribute USVString environmentMap;
+  readonly attribute Promise&lt;undefined&gt; environmentMapReady;
+
+  [Reflect=stagemode] attribute DOMString stageMode;
+};
+</pre>
+
 The <{model}> element is used for embedding 3D models into a document.
 Its model-specific APIs, resource processing, and rendering are restricted to
 [=secure contexts=], as specified in [[#model-secure-contexts]].
@@ -408,28 +430,6 @@ ISSUE: <span id="issue-130"></span> Like <{video/poster}>, <{model/poster}> acce
 The <{model/width}> attribute, if specified, MUST have a value that is a
 [=valid non-negative integer=]. It gives the desired horizontal dimension
 of the <{model}> element in CSS pixels. Zero is permitted.
-
-# The {{HTMLModelElement}} interface # {#htmlmodelelement-interface}
-
-<pre class="idl">
-[Exposed=Window, SecureContext]
-interface HTMLModelElement : HTMLElement {
-  [CEReactions, Reflect] attribute boolean autoplay;
-  [CEReactions] attribute DOMString? crossOrigin;
-  [CEReactions, ReflectURL] attribute USVString poster;
-
-  readonly attribute Promise&lt;HTMLModelElement&gt; ready;
-  readonly attribute DOMPointReadOnly boundingBoxCenter;
-  readonly attribute DOMPointReadOnly boundingBoxExtents;
-
-  attribute DOMMatrixReadOnly entityTransform;
-
-  attribute USVString environmentMap;
-  readonly attribute Promise&lt;undefined&gt; environmentMapReady;
-
-  [Reflect=stagemode] attribute DOMString stageMode;
-};
-</pre>
 
 # <{source}> element integration # {#source-element-integration}
 
