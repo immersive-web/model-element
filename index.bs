@@ -34,6 +34,8 @@ Link Defaults: dom (dfn) adopt
 Link Defaults: html (dfn) encoding-parsing a URL
 Link Defaults: html (dfn) reflect
 Link Defaults: html (dfn) delays the load event
+Link Defaults: csp3 (dfn) media-src
+Link Defaults: csp3 (dfn) img-src
 Boilerplate: issues-index yes
 Ignored Terms: stagemode
 </pre>
@@ -42,6 +44,9 @@ Ignored Terms: stagemode
 spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     type: dfn; text: valid non-empty URL potentially surrounded by spaces; url: urls-and-fetching.html#valid-non-empty-url-potentially-surrounded-by-spaces
     type: dfn; text: boolean attribute; url: common-microsyntaxes.html#boolean-attribute
+    type: dfn; text: CORS settings attribute; url: urls-and-fetching.html#cors-settings-attribute
+    type: dfn; text: CORS settings attribute credentials mode; url: urls-and-fetching.html#cors-settings-attribute-credentials-mode
+    type: dfn; text: limited to only known values; url: common-dom-interfaces.html#limited-to-only-known-values
 ```
 
 <!-- Marcos Cáceres retired as editor on 2024-04-01. -->
@@ -243,7 +248,7 @@ for different color schemes and formats:
 :: [[HTML#global-attributes|Global attributes]]
 :: <{model/autoplay}> — Start the model's animation automatically when the resource is loaded
 :: <{model/stagemode}> — Allows the user to interact with the model in a specified mode
-:: <{model/crossorigin}> — How the element handles crossorigin requests
+:: <{model/crossorigin}> — Credentials mode for model, environment-map, and poster requests
 :: <{model/height}> — Vertical dimension
 :: <{model/loading}> — Used when determining loading deferral
 :: <{model/loop}> — Whether to loop the media resource
@@ -303,6 +308,13 @@ Note: Autoplay controls initial animation playback and does not require eager
 
 ## <dfn element-attr for="model">crossorigin</dfn> attribute ## {#crossorigin-attribute}
 
+The <{model/crossorigin}> attribute is a [=CORS settings attribute=]. It controls
+request credentials using HTML's [=CORS settings attribute credentials mode=],
+as specified in [[#cors]].
+
+The {{HTMLModelElement/crossOrigin}} IDL attribute MUST [=reflect=] the
+<{model/crossorigin}> content attribute, [=limited to only known values=].
+
 ## <dfn element-attr for="model">height</dfn> attribute ## {#height-attribute}
 
 The <{model/height}> attribute, if specified, MUST have a value that is a
@@ -343,11 +355,8 @@ To <dfn noexport>determine a model poster frame</dfn> for a <{model}> element |e
   1. Let |url| be the result of [=encoding-parsing a URL=] given the
     <{model/poster}> attribute's value, relative to |element|'s [=node document=].
   1. If |url| is failure, set |element|'s [=model/poster frame=] to null and return.
-  1. Let |request| be a new [=/request=] whose [=request/URL=] is |url|,
-    [=request/client=] is |element|'s [=node document=]'s
-    [=relevant settings object=], [=request/destination=] is `"image"`,
-    [=request/initiator type=] is `"model"`, [=request/credentials mode=] is
-    `"include"`, and whose [=request/use-URL-credentials flag=] is set.
+  1. Let |request| be a new [=/request=] whose [=request/URL=] is |url| and
+    [=request/destination=] is `"image"`, configured as specified in [[#cors]].
   1. [=Fetch=] |request|. This MUST [=delays the load event|delay the load event=]
     of |element|'s [=node document=] until this instance of the algorithm
     completes or is aborted.
@@ -364,10 +373,10 @@ reject that promise or cause the element to display its fallback content.
 The {{HTMLModelElement/poster}} IDL attribute MUST [=reflect=] the
 <{model/poster}> content attribute as a URL.
 
-Note: Poster retrieval follows the
+Note: Poster URL parsing, cancellation, and load-event behavior follow the
   [poster-frame retrieval rules for `<video>`](https://html.spec.whatwg.org/multipage/media.html#attr-video-poster)
-  in [[HTML]], with `"model"` as the request's initiator type. Poster display
-  follows [[#model-poster-display]]. The <{model/loading}> attribute's lazy-loading
+  in [[HTML]]. Request construction follows [[#cors]], and
+  poster display follows [[#model-poster-display]]. The <{model/loading}> attribute's lazy-loading
   behavior remains to be defined in [GitHub issue #44](https://github.com/immersive-web/model-element/issues/44).
 
 ISSUE: <span id="issue-130"></span> Like <{video/poster}>, <{model/poster}> accepts a single image URL.
@@ -391,6 +400,7 @@ of the <{model}> element in CSS pixels. Zero is permitted.
 [Exposed=Window, SecureContext]
 interface HTMLModelElement : HTMLElement {
   [CEReactions, Reflect] attribute boolean autoplay;
+  [CEReactions] attribute DOMString? crossOrigin;
   [CEReactions, ReflectURL] attribute USVString poster;
 
   readonly attribute Promise&lt;HTMLModelElement&gt; ready;
@@ -862,7 +872,8 @@ Note: The poster is a loading preview, whereas fallback content is an alternativ
   when the model cannot be displayed. A poster failure does not constitute a model
   failure. Posters are ordinary images; the secure-context restriction on 3D model
   resources and environment maps does not prevent their retrieval. Their requests
-  remain subject to the normal image-loading rules in [[FETCH]] and [[MIX]].
+  remain subject to [[#cors]], [[#content-security-policy]], and the mixed-content
+  checks in [[MIX]].
 
 # Events # {#events}
 
@@ -921,13 +932,6 @@ ISSUE: <span id="issue-31-css"></span> If [#13](https://github.com/immersive-web
 ISSUE: <span id="issue-31-fullscreen"></span> If [#13](https://github.com/immersive-web/model-element/issues/13) holds, how does
   the <{model}> work with Media Playback States '':playing'',
   '':paused''? [GitHub issue #31: CSS integrations: Media Playback States](https://github.com/immersive-web/model-element/issues/31).
-
-# Fetch integration # {#fetch-integration}
-
-## `"model"` destination ## {#model-destination}
-
-ISSUE: <span id="issue-35"></span> The formats that model support can fetch a lot of other resources. We probably need a new
-  fetch destination ("model"). [GitHub issue #35: Fetch integration: new destination?](https://github.com/immersive-web/model-element/issues/35).
 
 # Privacy considerations # {#privacy-considerations}
 
@@ -1029,17 +1033,45 @@ Note: Secure contexts normally use HTTPS, but the standard also recognizes
 
 ## CORS ## {#cors}
 
-## Formats and CORS ## {#formats-and-cors}
+Model resources, author-provided environment maps, and posters MUST be loaded
+using [=Fetch=]. Each request MUST have [=request/mode=] `"cors"`,
+[=request/client=] set to the element's [=node document=]'s
+[=relevant settings object=], [=request/credentials mode=] set to the
+[=CORS settings attribute credentials mode=] of <{model/crossorigin}>, and
+[=request/initiator type=] `"model"`. This uses Fetch's [=CORS protocol=];
+<{model/crossorigin}> controls credentials and does not disable CORS.
 
-ISSUE: <span id="issue-15"></span> Need to clarify that 3D resources can fetch resources, and as such need to be subject the
-  document's CSP (probably "media-src"). However, we need to clarify what this means
-  in relation to, say, "img-src", for example... as models can load png/jpg textures. [GitHub issue #15: Formats and CSP](https://github.com/immersive-web/model-element/issues/15).
+Note: This follows the request setup used by
+  [HTML module-script fetching](https://html.spec.whatwg.org/multipage/webappapis.html#fetch-a-single-module-script)
+  and the [font-fetching requirements](https://drafts.csswg.org/css-fonts-4/#font-fetching-requirements)
+  in [[CSS-FONTS-4]]. Same-origin `blob:` URLs remain usable, subject to
+  [[FETCH]] and the document's CSP.
+
+## Model resource dependencies ## {#formats-and-cors}
+
+As specified in [[#subresource-loading]], model resources MUST be self-contained.
+Parsers and renderers MUST NOT retrieve external dependencies; a model requiring
+them MUST fail to load. Embedded textures do not cause separate requests and
+are covered by the model resource's CSP check.
 
 ## Content Security Policy ## {#content-security-policy}
 
-ISSUE: <span id="issue-16"></span> Given the close relationship to media elements, and given the reliance on
-  <{source}> elements, we could just say that `media-src` applies to
-  <{model}> too. [GitHub issue #16: Reuse media-src?](https://github.com/immersive-web/model-element/issues/16).
+Model resource requests MUST use destination `"model"`, which this specification
+adds to the [=destination type=] and {{RequestDestination}} enumeration in
+[[FETCH]]. The [=Fetch=] algorithm applies the request client's CSP as defined by
+[[CSP3]]. In CSP's [[CSP3#effective-directive-for-a-request|Get the effective directive for request]]
+algorithm, `"model"` MUST be handled together with `"audio"`, `"track"`, and
+`"video"`, returning [=media-src=]. Environment-map and poster requests MUST use
+the existing `"image"` destination and [=img-src=] mapping.
+
+### Fetch failures ### {#model-fetch-failures}
+
+A model or environment-map load that encounters a [=network error=] from Fetch
+MUST reject its own unsettled {{HTMLModelElement/ready}} or
+{{HTMLModelElement/environmentMapReady}} promise, respectively, with a
+{{TypeError}} exception. Model failures follow [[#model-poster-display]];
+poster failures follow [=determine a model poster frame=]. A failure MUST affect
+only the load that initiated the request.
 
 ## Format concerns ## {#format-concerns}
 
