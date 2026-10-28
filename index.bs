@@ -929,9 +929,9 @@ ISSUE: <span id="issue-31-css"></span> If [#13](https://github.com/immersive-web
 
 # Fullscreen integration # {#fullscreen-integration}
 
-ISSUE: <span id="issue-31-fullscreen"></span> If [#13](https://github.com/immersive-web/model-element/issues/13) holds, how does
-  the <{model}> work with Media Playback States '':playing'',
-  '':paused''? [GitHub issue #31: CSS integrations: Media Playback States](https://github.com/immersive-web/model-element/issues/31).
+Fullscreen presentation of <{model}> is governed by [[FULLSCREEN]]. Changes to
+its [=content box=] dimensions on entering or leaving fullscreen MUST be handled
+according to [[#automatic-fitting]].
 
 # Privacy considerations # {#privacy-considerations}
 
