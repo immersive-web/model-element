@@ -356,7 +356,8 @@ To <dfn noexport>determine a model poster frame</dfn> for a <{model}> element |e
     <{model/poster}> attribute's value, relative to |element|'s [=node document=].
   1. If |url| is failure, set |element|'s [=model/poster frame=] to null and return.
   1. Let |request| be a new [=/request=] whose [=request/URL=] is |url| and
-    [=request/destination=] is `"image"`, configured as specified in [[#cors]].
+    [=request/destination=] is `"image"`.
+  1. [=Configure a model request=] given |request| and |element|.
   1. [=Fetch=] |request|. This MUST [=delays the load event|delay the load event=]
     of |element|'s [=node document=] until this instance of the algorithm
     completes or is aborted.
@@ -1034,12 +1035,23 @@ Note: Secure contexts normally use HTTPS, but the standard also recognizes
 ## CORS ## {#cors}
 
 Model resources, author-provided environment maps, and posters MUST be loaded
-using [=Fetch=]. Each request MUST have [=request/mode=] `"cors"`,
-[=request/client=] set to the element's [=node document=]'s
-[=relevant settings object=], [=request/credentials mode=] set to the
-[=CORS settings attribute credentials mode=] of <{model/crossorigin}>, and
-[=request/initiator type=] `"model"`. This uses Fetch's [=CORS protocol=];
-<{model/crossorigin}> controls credentials and does not disable CORS.
+using [=Fetch=]. Before fetching each request, the user agent MUST
+[=configure a model request=] given the request and the element.
+
+<div class="algorithm" data-algorithm="configure-model-request">
+
+To <dfn noexport>configure a model request</dfn>, given a [=/request=] |request|
+and a <{model}> element |element|:
+
+  1. Set |request|'s [=request/client=] to |element|'s [=node document=]'s
+    [=relevant settings object=].
+  1. Set |request|'s [=request/mode=] to `"cors"`.
+  1. Set |request|'s [=request/credentials mode=] to the
+    [=CORS settings attribute credentials mode=] of |element|'s
+    <{model/crossorigin}> attribute.
+  1. Set |request|'s [=request/initiator type=] to `"model"`.
+
+</div>
 
 Note: This follows the request setup used by
   [HTML module-script fetching](https://html.spec.whatwg.org/multipage/webappapis.html#fetch-a-single-module-script)
