@@ -253,7 +253,6 @@ for different color schemes and formats:
 :: <{model/stagemode}> — Allows the user to interact with the model in a specified mode
 :: <{model/crossorigin}> — Credentials mode for model, environment-map, and poster requests
 :: <{model/height}> — Vertical dimension
-:: <{model/loading}> — Used when determining loading deferral
 :: <{model/loop}> — Whether to repeat the model's animation
 :: <{model/poster}> — Image preview to show before the model is ready to display
 :: <{model/src}> — Address of the resource
@@ -358,12 +357,6 @@ The <{model/height}> attribute, if specified, MUST have a value that is a
 [=valid non-negative integer=]. It gives the desired vertical dimension
 of the <{model}> element in CSS pixels. Zero is permitted.
 
-## <dfn element-attr for="model">loading</dfn> attribute ## {#loading-attribute}
-
-ISSUE: <span id="issue-44"></span> Some <{model}>'s resources can be significant in size. As such, it
-  might be good to support the <{model/loading}> attribute to allow these resources to be
-  lazy-loaded. [GitHub issue #44: Lazy loading](https://github.com/immersive-web/model-element/issues/44).
-
 ## <dfn element-attr for="model">loop</dfn> attribute ## {#loop-attribute}
 
 The <{model/loop}> attribute is a [=boolean attribute=] that controls repetition
@@ -442,8 +435,7 @@ The {{HTMLModelElement/poster}} IDL attribute MUST [=reflect=] the
 Note: Poster URL parsing, cancellation, and load-event behavior follow the
   [poster-frame retrieval rules for `<video>`](https://html.spec.whatwg.org/multipage/media.html#attr-video-poster)
   in [[HTML]]. Request construction follows [[#cors]], and
-  poster display follows [[#model-poster-display]]. The <{model/loading}> attribute's lazy-loading
-  behavior remains to be defined in [GitHub issue #44](https://github.com/immersive-web/model-element/issues/44).
+  poster display follows [[#model-poster-display]].
 
 ISSUE: <span id="issue-130"></span> Like <{video/poster}>, <{model/poster}> accepts a single image URL.
   Should model loading previews also support alternative formats, resolutions,
