@@ -1007,12 +1007,6 @@ ISSUE: <span id="issue-source-attributes"></span> Some attributes on <{source}> 
 
 # CSS integrations # {#css-integrations}
 
-## Media Playback States ('':playing'', '':paused'', '':seeking'') ## {#media-playback-states}
-
-ISSUE: <span id="issue-31-css"></span> If [#13](https://github.com/immersive-web/model-element/issues/13) holds, how does
-  the <{model}> work with Media Playback States '':playing'',
-  '':paused''? [GitHub issue #31: CSS integrations: Media Playback States](https://github.com/immersive-web/model-element/issues/31).
-
 ## Fullscreen Presentation State: the '':fullscreen'' pseudo-class ## {#fullscreen-presentation-state}
 
 # Fullscreen integration # {#fullscreen-integration}
