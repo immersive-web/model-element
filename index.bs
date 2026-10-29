@@ -962,15 +962,6 @@ ISSUE: <span id="issue-18"></span> Need to investigate what formats are suitable
   of evaluation matrix. Model can support multiple formats out of the box, but it might be good to
   evaluate what is best of users and developers and why. [GitHub issue #18: Which formats?](https://github.com/immersive-web/model-element/issues/18).
 
-# Overlap with "media elements" # {#overlap-with-media-elements}
-
-ISSUE: <span id="issue-13"></span> The <{model}> element shares a lot of similarities with the
-  <{audio}> and <{video}> elements, yet it's distinct in some
-  ways (we need to tease these out). It's similar in being potentially temporal multimedia
-  content (i.e., it has audio, it potentially animates over time). We need to figure out if model
-  sufficiently different to warrant being its own element class, or if it can reuse much of
-  "media element"'s infrastructure. [GitHub issue #13: Is model a "media element"?](https://github.com/immersive-web/model-element/issues/13).
-
 # HTML Integrations # {#html-integrations}
 
 Additional integrations into HTML:
