@@ -962,15 +962,6 @@ ISSUE: <span id="issue-18"></span> Need to investigate what formats are suitable
   of evaluation matrix. Model can support multiple formats out of the box, but it might be good to
   evaluate what is best of users and developers and why. [GitHub issue #18: Which formats?](https://github.com/immersive-web/model-element/issues/18).
 
-# Overlap with "media elements" # {#overlap-with-media-elements}
-
-ISSUE: <span id="issue-13"></span> The <{model}> element shares a lot of similarities with the
-  <{audio}> and <{video}> elements, yet it's distinct in some
-  ways (we need to tease these out). It's similar in being potentially temporal multimedia
-  content (i.e., it has audio, it potentially animates over time). We need to figure out if model
-  sufficiently different to warrant being its own element class, or if it can reuse much of
-  "media element"'s infrastructure. [GitHub issue #13: Is model a "media element"?](https://github.com/immersive-web/model-element/issues/13).
-
 # HTML Integrations # {#html-integrations}
 
 Additional integrations into HTML:
@@ -984,7 +975,25 @@ Note: This matches the rule for <{audio}> and <{video}>. Omission before a
 following element remains governed by HTML's existing rules. A <{model}>
 start tag does not implicitly close an enclosing <{p}> element.
 
-ISSUE: <span id="issue-29"></span> Need to specify that model is an appropriate child of <{figure}>. [GitHub issue #29: model is an appropriate child of figure](https://github.com/immersive-web/model-element/issues/29).
+Note: Because <{model}> is [=flow content=], it is permitted as a child
+of <{figure}> by [[HTML#the-figure-element|HTML's existing content model]].
+An optional <{figcaption}>, placed as the <{figure}>'s first or last
+child, provides a caption for the figure.
+
+<div class="example" id="example-model-figure">
+
+The following example presents a model with fallback content and a caption:
+
+```html
+<figure>
+  <model src="3d-assets/teapot.glb">
+    <img src="image-assets/teapot.png" alt="A ceramic teapot with a curved handle">
+  </model>
+  <figcaption>A 3D model of a ceramic teapot.</figcaption>
+</figure>
+```
+
+</div>
 
 ## Preload link relationship ## {#preload-link-relationship}
 
