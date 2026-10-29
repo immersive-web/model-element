@@ -984,7 +984,25 @@ Note: This matches the rule for <{audio}> and <{video}>. Omission before a
 following element remains governed by HTML's existing rules. A <{model}>
 start tag does not implicitly close an enclosing <{p}> element.
 
-ISSUE: <span id="issue-29"></span> Need to specify that model is an appropriate child of <{figure}>. [GitHub issue #29: model is an appropriate child of figure](https://github.com/immersive-web/model-element/issues/29).
+Note: Because <{model}> is [=flow content=], it is permitted as a child
+of <{figure}> by [[HTML#the-figure-element|HTML's existing content model]].
+An optional <{figcaption}>, placed as the <{figure}>'s first or last
+child, provides a caption for the figure.
+
+<div class="example" id="example-model-figure">
+
+The following example presents a model with fallback content and a caption:
+
+```html
+<figure>
+  <model src="3d-assets/teapot.glb">
+    <img src="image-assets/teapot.png" alt="A ceramic teapot with a curved handle">
+  </model>
+  <figcaption>A 3D model of a ceramic teapot.</figcaption>
+</figure>
+```
+
+</div>
 
 ## Preload link relationship ## {#preload-link-relationship}
 
