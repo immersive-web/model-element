@@ -975,8 +975,14 @@ ISSUE: <span id="issue-13"></span> The <{model}> element shares a lot of similar
 
 Additional integrations into HTML:
 
-ISSUE: <span id="issue-28"></span> Need same behavior as <{audio}> and <{video}> when including into a
-  <{p}> element with no end tag. [GitHub issue #28: HTML parser integration](https://github.com/immersive-web/model-element/issues/28).
+For the purposes of [[HTML#optional-tags|HTML's optional-tag rules]],
+<{model}> is added to the list of parent elements for which a <{p}>
+element's end tag MUST NOT be omitted solely because there is no more
+content in the parent element.
+
+Note: This matches the rule for <{audio}> and <{video}>. Omission before a
+following element remains governed by HTML's existing rules. A <{model}>
+start tag does not implicitly close an enclosing <{p}> element.
 
 ISSUE: <span id="issue-29"></span> Need to specify that model is an appropriate child of <{figure}>. [GitHub issue #29: model is an appropriate child of figure](https://github.com/immersive-web/model-element/issues/29).
 
