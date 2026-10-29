@@ -39,6 +39,7 @@ Link Defaults: csp3 (dfn) img-src
 Link Defaults: css-display-3 (dfn) replaced element
 Link Defaults: css-images-3 (dfn) natural dimensions
 Link Defaults: css-images-3 (dfn) default object size
+Link Defaults: mediaqueries-5 (value) @media/screen
 Boilerplate: issues-index yes
 Ignored Terms: stagemode
 </pre>
@@ -52,6 +53,11 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     type: dfn; text: limited to only known values; url: common-dom-interfaces.html#limited-to-only-known-values
     type: dfn; text: transparent; url: dom.html#transparent
     type: dfn; text: script-supporting elements; url: dom.html#script-supporting-elements-2
+    type: dfn; text: valid media query list; url: common-microsyntaxes.html#valid-media-query-list
+    type: dfn; text: matches the environment; url: common-microsyntaxes.html#matches-the-environment
+    type: dfn; text: source insertion steps; url: embedded-content.html#the-source-element:html-element-insertion-steps
+    type: dfn; text: source removing steps; url: embedded-content.html#the-source-element:html-element-removing-steps
+    type: dfn; text: source moving steps; url: embedded-content.html#the-source-element:html-element-moving-steps
 ```
 
 <!-- Marcos Cáceres retired as editor on 2024-04-01. -->
@@ -163,9 +169,10 @@ that can be selected from:
 </model>
 ```
 
-<{model}> source selection follows <{video}> selection,
-where the top-level <{model/src}> attribute takes precedence if present,
-followed by the first compatible <{source}> element encountered.
+The [=select a model source|model source selection algorithm=] gives a valid,
+non-empty <{model/src}> URL precedence over <{source}> children. Otherwise,
+it selects the first child with a valid URL, a supported type if specified,
+and a matching media query if specified.
 
 </div>
 
@@ -462,10 +469,129 @@ of the <{model}> element in CSS pixels. Zero is permitted.
 
 ## The <{source}> element's parent is a <{model}> element ## {#source-parent-model}
 
-ISSUE: <span id="issue-24"></span> The <{source}> element behaves differently depending on who the parent is.
-  For instance, when the parent is <{picture}>, the <{source/srcset}> attribute
-  comes into to play. We need to look at the attributes of <{source}> and figure
-  out what they mean in when used in the context of <{model}>. [GitHub issue #24: Specify the behavior for when a &lt;source&gt; element's parent is a `<model>` element](https://github.com/immersive-web/model-element/issues/24).
+The <{source}> element is permitted as a child of <{model}>, in the position
+specified by the <{model}> element's content model. Its <{source/src}> attribute
+MUST be present and contain a [=valid non-empty URL potentially surrounded by spaces=]
+identifying a model resource. The optional <{source/type}> attribute MUST contain
+a [=valid MIME type string=] and indicates the model format, allowing unsupported
+formats to be skipped before fetching. The optional <{source/media}> attribute
+MUST contain a [=valid media query list=] and is evaluated using HTML's
+[=matches the environment=] definition, with the media type fixed to
+''@media/screen'' and media features taken from the parent <{model}>'s
+[=node document=].
+
+The <{source/srcset}>, <{source/sizes}>, <{source/width}>, and <{source/height}>
+attributes MUST NOT be specified when the parent is <{model}>. They have no effect
+on model source selection or the model element's dimensions.
+
+Each <{model}> element has a <dfn for="model" noexport>selected source URL</dfn>,
+initially null.
+
+<div class="algorithm" data-algorithm="select-model-source">
+
+To <dfn noexport>select a model source</dfn> for a <{model}> element |element|,
+return a URL or null as follows:
+
+  1. If |element|'s [=node document=]'s [=Document/browsing context=] is null,
+    return null.
+  1. Let |candidates| be a [=list=] containing |element|, followed by its
+    <{source}> children in [=tree order=].
+  1. For each |candidate| of |candidates|:
+    1. If |candidate| is a <{source}> element with a non-empty <{source/type}>
+        value indicating a model format the user agent does not support, continue.
+    1. If |candidate| is a <{source}> element with a <{source/media}> attribute
+        whose value does not [=matches the environment|match the environment=],
+        using the ''@media/screen'' media type, continue.
+    1. Let |value| be |candidate|'s `src` attribute value, or the empty string
+        if the attribute is absent.
+    1. Set |value| to the result of
+        [=strip leading and trailing ASCII whitespace|stripping leading and trailing ASCII whitespace=]
+        from |value|.
+    1. If |value| is the empty string, continue.
+    1. Let |url| be the result of [=encoding-parsing a URL=] given |value|,
+        relative to |candidate|'s [=node document=].
+    1. If |url| is not failure, return |url|.
+  1. Return null.
+
+</div>
+
+<div class="algorithm" data-algorithm="update-model-source">
+
+To <dfn noexport>update the model source</dfn> for a <{model}> element |element|:
+
+  1. Let |url| be the result of [=select a model source=] for |element|.
+  1. If |url| and |element|'s [=model/selected source URL=] are both null, return.
+  1. If both are URLs whose [=URL serializer|serializations=] are identical, return.
+  1. Abort any pending model fetch and decoding operations for |element| and
+    discard its previous model content, stored bounds, and animation playback state.
+    Any completion of an aborted load MUST be ignored.
+  1. [=Update the model entity transform=] for |element|, given the identity matrix.
+  1. Set |element|'s {{HTMLModelElement/boundingBoxCenter}} and
+    {{HTMLModelElement/boundingBoxExtents}} to separate new {{DOMPointReadOnly}}
+    objects with X, Y, and Z components set to zero and W set to one.
+  1. Reject |element|'s unsettled {{HTMLModelElement/ready}} promise, if any,
+    with an {{AbortError}} exception, and replace it with [=a new promise=].
+  1. Set |element|'s [=model/selected source URL=] to |url|.
+  1. If |url| is null, [=queue an element task=] on the
+    [=DOM manipulation task source=] given |element| to [=fire an event=]
+    named `error` at |element|.
+  1. Otherwise, begin loading that resource, subject to
+    [[#model-secure-contexts]], [[#cors]], and [[#content-security-policy]].
+    The user agent MAY defer fetching as for other model loads.
+  1. Re-evaluate [[#model-poster-display]].
+
+</div>
+
+Failure to fetch or decode the selected resource MUST follow
+[[#model-fetch-failures]] and [[#model-poster-display]]. It MUST NOT, by itself,
+cause selection of a later <{source}> element.
+
+Note: Unlike <{picture}>, media queries are evaluated when model source selection
+runs. Changes in the environment alone do not trigger source selection. Unlike
+<{audio}> and <{video}>, changing an existing <{source}>'s attributes can change
+the selected model resource.
+
+When a <{model}> element is created, or its <{model/src}> attribute is set,
+changed, or removed, the user agent MUST [=update the model source=] for it.
+
+As additional [=attribute change steps=] for <{source}>, setting, changing,
+or removing its <{source/src}>, <{source/type}>, or <{source/media}> attribute
+MUST [=update the model source=] for its parent if the parent is <{model}>.
+
+<div class="algorithm" data-algorithm="model-source-insertion-steps">
+
+The <{source}> [=source insertion steps|HTML element insertion steps=],
+given |insertedNode|, are extended with the following additional step:
+
+  1. If |insertedNode|'s parent is a <{model}> element,
+    [=update the model source=] for that parent.
+
+</div>
+
+<div class="algorithm" data-algorithm="model-source-removing-steps">
+
+The <{source}> [=source removing steps|HTML element removing steps=],
+given <var ignore>removedNode</var>, |isSubtreeRoot|, and |oldAncestor|,
+are extended with the following additional step:
+
+  1. If |isSubtreeRoot| is true and |oldAncestor| is a <{model}> element,
+    [=update the model source=] for |oldAncestor|.
+
+</div>
+
+<div class="algorithm" data-algorithm="model-source-moving-steps">
+
+The <{source}> [=source moving steps|HTML element moving steps=],
+given |movedNode|, |isSubtreeRoot|, and |oldAncestor|,
+are extended with the following additional steps:
+
+  1. If |isSubtreeRoot| is false, return.
+  1. If |oldAncestor| is a <{model}> element,
+    [=update the model source=] for |oldAncestor|.
+  1. If |movedNode|'s parent is a <{model}> element other than |oldAncestor|,
+    [=update the model source=] for that parent.
+
+</div>
 
 # Interaction # {#interaction}
 
@@ -709,7 +835,7 @@ it by the existing model fit. No device-pixel-ratio adjustment is needed.
 
 ### Model bounds and fitting ### {#model-bounds-and-fitting}
 
-On the initial load for a model, the user agent MUST run the
+When a new model resource is loaded, the user agent MUST run the
 [=bounding box calculation algorithm=] and store the resulting model-space bounds.
 The [=stored entity transform=] MUST be set so that
 the object is fully in view within the model element's laid-out content box
@@ -1002,8 +1128,9 @@ ISSUE: <span id="issue-30"></span> Need to specify Integration with [[HTML#link-
 
 ## Integrations with <{source}> element ## {#integrations-with-source-element}
 
-ISSUE: <span id="issue-source-attributes"></span> Some attributes on <{source}> are currently restricted to <{picture}>.
-  We need to figure out which apply to <{model}>.
+The attributes and mutation hooks for <{source}> children of <{model}>
+are defined in [[#source-parent-model]]. Other uses of <{source}> retain
+their behavior defined in [[HTML]].
 
 # CSS integrations # {#css-integrations}
 
@@ -1057,6 +1184,7 @@ The [=adopting steps=] for a <{model}> element, given |node| and
 
   1. If [=model resource loading is permitted=] is false for |node|,
     [=block model resource loading=] for |node|.
+  1. Otherwise, [=update the model source=] for |node|.
 
 </div>
 
@@ -1069,6 +1197,7 @@ To <dfn noexport>block model resource loading</dfn> for a <{model}> element
     |element|, and MUST NOT start new ones while loading remains blocked.
   1. Stop rendering |element|'s model and environment map, including any
     previously loaded content.
+  1. Set |element|'s [=model/selected source URL=] to null.
   1. Reject any unsettled {{HTMLModelElement/ready}} and
     {{HTMLModelElement/environmentMapReady}} promises of |element|, if they
     exist, with a {{SecurityError}} exception.
